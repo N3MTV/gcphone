@@ -1,0 +1,307 @@
+<template>
+  <div class="contact">
+    <div class="title">{{contact.display}}</div>
+    <div class='content inputText'>
+        <div class="group select" data-type="text" data-model='display' data-maxlength = '64'>      
+            <input type="text" v-model="contact.display">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label>Nom - Prenom</label>
+        </div>
+        
+        <div class="group inputText" data-type="text" data-model='number' data-maxlength='10'>      
+            <input type="text" v-model="contact.number">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label>Numéro</label>
+        </div>
+
+        <div class="group " data-type="button" data-action='save'>      
+            <input type='button' class="btn btn-green" value='Enregistre'></input>
+        </div>
+        <div class="group" data-type="button" data-action='cancel'>      
+            <input type='button' class="btn btn-orange" value='Annuler'></input>
+        </div>
+        <div class="group" data-type="button" data-action='delete'>      
+            <input type='button' class="btn btn-red" value='Supprimer'></input>
+        </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import request from '../../request'
+import Modal from '@/components/Modal/index.js'
+
+export default {
+  data () {
+    return {
+      id: -1,
+      currentSelect: 0,
+      ignoreControls: false,
+      newContact: {
+        display: 'Nouveau Contact',
+        number: '',
+        id: -1
+      }
+    }
+  },
+  methods: {
+    onUp: function () {
+      if (this.ignoreControls === true) return
+      let select = document.querySelector('.group.select')
+      if (select.previousElementSibling !== null) {
+        document.querySelectorAll('.group').forEach(elem => {
+          elem.classList.remove('select')
+        })
+        select.previousElementSibling.classList.add('select')
+        let i = select.previousElementSibling.querySelector('input')
+        if (i !== null) {
+          i.focus()
+        }
+      }
+    },
+    onDown: function () {
+      if (this.ignoreControls === true) return
+      let select = document.querySelector('.group.select')
+      if (select.nextElementSibling !== null) {
+        document.querySelectorAll('.group').forEach(elem => {
+          elem.classList.remove('select')
+        })
+        select.nextElementSibling.classList.add('select')
+        let i = select.nextElementSibling.querySelector('input')
+        if (i !== null) {
+          i.focus()
+        }
+      }
+    },
+    onEnter: function () {
+      if (this.ignoreControls === true) return
+      let select = document.querySelector('.group.select')
+      if (select.dataset.type === 'text') {
+        let options = {
+          limit: parseInt(select.dataset.maxlength) || 64,
+          text: this.contact[select.dataset.model] || ''
+        }
+        request.getReponseText(options).then(data => {
+          this.contact[select.dataset.model] = data.text
+        })
+      }
+      if (select.dataset.action && this[select.dataset.action]) {
+        this[select.dataset.action]()
+      }
+    },
+    save: function () {
+      if (this.id !== -1) {
+        request.updateContact(this.id, this.contact.display, this.contact.number)
+      } else {
+        request.addContact(this.contact.display, this.contact.number)
+      }
+      history.back()
+    },
+    cancel: function () {
+      if (this.ignoreControls === true) return
+      history.back()
+    },
+    delete: function () {
+      if (this.id !== -1) {
+        this.ignoreControls = true
+        let choix = [{title: 'Annuler'}, {title: 'Annuler'}, {title: 'Supprimer', color: 'red'}, {title: 'Annuler'}, {title: 'Annuler'}]
+        Modal.CreateModal({choix}).then(reponse => {
+          this.ignoreControls = false
+          if (reponse.title === 'Supprimer') {
+            request.deleteContact(this.id)
+            history.back()
+          }
+        })
+      } else {
+        history.back()
+      }
+    }
+  },
+  computed: {
+    contact: function () {
+      let contact = this.$root.contacts.find(e => e.id === this.id)
+      if (contact === undefined) {
+        return this.newContact
+      }
+      return contact
+    }
+  },
+  created: function () {
+    this.$bus.$on('keyUpArrowDown', this.onDown)
+    this.$bus.$on('keyUpArrowUp', this.onUp)
+    this.$bus.$on('keyUpEnter', this.onEnter)
+    this.$bus.$on('keyUpBackspace', this.cancel)
+    this.id = parseInt(this.$route.params.id)
+    if (this.id !== -1) {
+      request.getContacts().then(contacts => {
+        this.contact = contacts.find(e => e.id === this.id)
+      })
+    }
+  },
+  beforeDestroy: function () {
+    this.$bus.$off('keyUpArrowDown', this.onDown)
+    this.$bus.$off('keyUpArrowUp', this.onUp)
+    this.$bus.$off('keyUpEnter', this.onEnter)
+    this.$bus.$off('keyUpBackspace', this.cancel)
+  }
+}
+</script>
+
+<style scoped>
+.contact{
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+.title{
+    padding-left: 16px;
+    height: 34px;
+    line-height: 34px;
+    font-weight: 700;
+    background-color: #5264AE;
+    color: white;
+}
+.content{
+    margin: 6px 10px;
+    margin-top: 28px;
+}
+.group { 
+  position:relative; 
+  margin-top:16px; 
+}
+.group.inputText { 
+  position:relative; 
+  margin-top:45px; 
+}
+input 				{
+  font-size:18px;
+  display:block;
+  width:100%;
+  border:none;
+  border-bottom:1px solid #757575;
+}
+input:focus 		{ outline:none; }
+
+/* LABEL ======================================= */
+label 				 {
+  color:#999; 
+  font-size:18px;
+  font-weight:normal;
+  position:absolute;
+  pointer-events:none;
+  left:5px;
+  top:10px;
+  transition:0.2s ease all; 
+  -moz-transition:0.2s ease all; 
+  -webkit-transition:0.2s ease all;
+}
+
+/* active state */
+input:focus ~ label, input:valid ~ label 		{
+  top:-20px;
+  font-size:14px;
+  color:#5264AE;
+}
+
+/* BOTTOM BARS ================================= */
+.bar 	{ position:relative; display:block; width:100%; }
+.bar:before, .bar:after 	{
+  content:'';
+  height:1px; 
+  width:0;
+  bottom:1px; 
+  position:absolute;
+  background:#5264AE; 
+  transition:0.2s ease all; 
+  -moz-transition:0.2s ease all; 
+  -webkit-transition:0.2s ease all;
+}
+.bar:before {
+  left:50%;
+}
+.bar:after {
+  right:50%; 
+}
+
+/* active state */
+input:focus ~ .bar:before, input:focus ~ .bar:after,
+.group.select input ~ .bar:before, .group.select input ~ .bar:after{
+  width:50%;
+}
+
+/* HIGHLIGHTER ================================== */
+.highlight {
+  position:absolute;
+  height:60%; 
+  width:100px; 
+  top:25%; 
+  left:0;
+  pointer-events:none;
+  opacity:0.5;
+}
+
+/* active state */
+input:focus ~ .highlight {
+  -webkit-animation:inputHighlighter 0.3s ease;
+  -moz-animation:inputHighlighter 0.3s ease;
+  animation:inputHighlighter 0.3s ease;
+}
+
+.group .btn{
+    width: 100%;
+    padding: 0px 0px;
+    height: 34px;
+    color: #fff;
+    border: 0 none;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 34px;
+    color: #202129;
+    background-color: #edeeee;
+}
+.group.select .btn{
+    border: 3px solid #C0C0C0;
+    line-height: 18px;
+}
+
+.group .btn.btn-green{
+    background-color: #2ecc71;
+    color: white;
+}
+.group.select .btn.btn-green{
+    border-color:#27ae60;
+}
+.group .btn.btn-orange{
+    background-color: #e67e22;
+    color: white;
+}
+.group.select .btn.btn-orange{
+    border-color: #d35400;
+}
+
+.group .btn.btn-red{
+    background-color: #e74c3c;
+    color: white;
+}
+.group.select .btn.btn-red{
+    border-color: #c0392b;
+}
+
+/* ANIMATIONS ================ */
+@-webkit-keyframes inputHighlighter {
+	from { background:#5264AE; }
+  to 	{ width:0; background:transparent; }
+}
+@-moz-keyframes inputHighlighter {
+	from { background:#5264AE; }
+  to 	{ width:0; background:transparent; }
+}
+@keyframes inputHighlighter {
+	from { background:#5264AE; }
+  to 	{ width:0; background:transparent; }
+}
+</style>
