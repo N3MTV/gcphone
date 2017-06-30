@@ -19,7 +19,6 @@ export default {
       ignoreControls: false,
       callList: [{
         display: 'Police',
-        eventName: 'mecano:callMecano',
         subMenu: [
           {title: 'Signaler un vol', eventName: 'police:callPolice', type: 'Vole'},
           {title: 'Signaler une agression', eventName: 'police:callPolice', type: 'Aggression'},
@@ -28,7 +27,6 @@ export default {
         ]
       }, {
         display: 'Ambulance',
-        eventName: 'mecano:callMecano',
         subMenu: [
           {title: 'Appel Coma', eventName: 'ambulancier:callAmbulancier', type: 'Coma'},
           {title: 'Appel ambulance', eventName: 'ambulancier:callAmbulancier', type: 'Soin'},
@@ -37,7 +35,6 @@ export default {
         ]
       }, {
         display: 'Taxi',
-        eventName: 'mecano:callMecano',
         subMenu: [
           {title: '1 personne', eventName: 'taxi:callService', type: '1 personne'},
           {title: '2 personnes', eventName: 'taxi:callService', type: '2 personnes'},
@@ -46,7 +43,6 @@ export default {
         ]
       }, {
         display: 'Mecano',
-        eventName: 'mecano:callMecano',
         subMenu: [
           {title: 'Moto', eventName: 'mecano:callMecano', type: 'Moto'},
           {title: 'Voiture', eventName: 'mecano:callMecano', type: 'Voiture'},
