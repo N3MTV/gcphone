@@ -131,31 +131,61 @@ function getMessages(identifier)
 end
 
 function _internalAddMessage(transmitter, receiver, message, owner)
-    print('ADD MESSAGE: ' .. transmitter .. receiver .. message .. owner)
-    MySQL.Sync.execute("INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)", {
+    -- print('ADD MESSAGE: ' .. transmitter .. receiver .. message .. owner)
+    -- MySQL.Sync.execute("INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)", {
+    --     ['@transmitter'] = transmitter,
+    --     ['@receiver'] = receiver,
+    --     ['@message'] = message,
+    --     ['@isRead'] = owner,
+    --     ['@owner'] = owner
+    -- })
+    Parameters = {
         ['@transmitter'] = transmitter,
         ['@receiver'] = receiver,
         ['@message'] = message,
         ['@isRead'] = owner,
         ['@owner'] = owner
-    })
+    }
+    local Query = "INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)"
+    local Query2 = 'SELECT * from phone_messages WHERE `id` = (SELECT LAST_INSERT_ID())'
+    local Connection = MySQL:createConnection()
+    local Command = Connection.CreateCommand()
+    Command.CommandText = Query
+    if type(Parameters) == "table" then
+        for Param in pairs(Parameters) do
+            Command.Parameters.AddWithValue(Param, Parameters[Param])
+        end
+    end
+    pcall(Command.ExecuteNonQuery)
+
+    --phase2
+    Command = Connection.CreateCommand()
+    Command.CommandText = Query2
+    local status, result = pcall(Command.ExecuteReader)
+    return MySQL.Async.wrapQuery(
+        function (Result)
+            return Result
+        end,
+        Connection,
+        Command.CommandText
+    )(MyConvertResultToTable(result), nil)[1]
 end
 
 function addMessage(source, identifier, phone_number, message)
     local otherIdentifier = getIdentifierByPhoneNumber(phone_number)
     local myPhone = getNumberPhone(identifier)
     if otherIdentifier ~= nil then 
-        _internalAddMessage(myPhone, phone_number, message, 0)
+        local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
         getSourceFromIdentifier(otherIdentifier, function (osou)
             if osou ~= nil then 
-                TriggerClientEvent("gcPhone:allMessage", osou, getMessages(otherIdentifier))
-                TriggerClientEvent("gcPhone:receiveMessage", osou, myPhone, message)
+                -- TriggerClientEvent("gcPhone:allMessage", osou, getMessages(otherIdentifier))
+                TriggerClientEvent("gcPhone:receiveMessage", osou, tomess)
             end
         end) 
     end
-    _internalAddMessage(phone_number, myPhone, message, 1)
-    TriggerClientEvent("gcPhone:allMessage", source, getMessages(identifier))
-    -- TriggerClientEvent("gcPhone:receiveMessage", source, myPhone, message)
+    local memess = _internalAddMessage(phone_number, myPhone, message, 1)
+    -- TriggerClientEvent("gcPhone:allMessage", source, getMessages(identifier))
+    TriggerClientEvent("gcPhone:receiveMessage", source, memess)
 
 end
 
@@ -190,7 +220,6 @@ end
 
 RegisterServerEvent('gcPhone:sendMessage')
 AddEventHandler('gcPhone:sendMessage', function(phoneNumber, message)
-    print('---sendMessage ' .. phoneNumber .. ' -> ' .. message)
     local identifier = GetPlayerIdentifiers(source)[1]
     print(identifier)
     addMessage(source, identifier, phoneNumber, message)
@@ -198,9 +227,7 @@ end)
 
 RegisterServerEvent('gcPhone:deleteMessage')
 AddEventHandler('gcPhone:deleteMessage', function(msgId)
-    print('---deleteMessage' .. msgId)
     deleteMessage(msgId)
-    -- gcPhone:deleteMessage id
 end)
 
 RegisterServerEvent('gcPhone:deleteMessageNumber')
@@ -283,14 +310,108 @@ print('                                             /_|       /_|')
 print('')
 print('')
 
-local query = "INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)"
-local params = {
-        ['@transmitter'] = '00',
-        ['@receiver'] = '00',
-        ['@message'] = '00',
-        ['@isRead'] = 1,
-        ['@owner'] = 1
-    }
+-- local Transaction = MySQL.Sync.beginTransaction()
+-- MySQL.Sync.execute("INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)", {
+--     ['@transmitter'] = 'Inconnu',
+--     ['@receiver'] = '06',
+--     ['@message'] = 'Je sais qui tu est',
+--     ['@isRead'] = 0,
+--     ['@owner'] = 0
+-- }, Transaction)
+
+-- MySQL.Sync.fetchScalar('SELECT LAST_INSERT_ID()', nil, Transaction)
+-- local result = MySQL.Sync.commitTransaction(Transaction)
+-- print('result: ' .. json.encode(result))
+
+
+
+-- function wrapQueryNoClose(next, Connection, Message, Transformer)
+--     Transformer = Transformer or function (Result) return Result end
+--     local Stopwatch = clr.System.Diagnostics.Stopwatch()
+--     Stopwatch.Start()
+
+--     return function (Result, Error)
+--         if Error ~= nil then
+--             Logger:Error(Error.ToString())
+
+--             -- if Connection then
+--             --     Connection.Close()
+--             --     Connection.Dispose()
+--             -- end
+
+--             return nil
+--         end
+
+--         local ConnectionId = -1;
+
+--         Result = Transformer(Result)
+
+--         -- if Connection then
+--         --     ConnectionId = Connection.ServerThread
+--         --     Connection.Close()
+--         --     Connection.Dispose()
+--         -- end
+
+--         Stopwatch.Stop()
+        
+--         next(Result)
+
+--         return Result
+--     end
+-- end
+
+-- function MySQLInsertMessage(Parameters) 
+--     local Query = "INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)"
+--     local Query2 = 'SELECT * from phone_messages WHERE `id` = (SELECT LAST_INSERT_ID())'
+--     local Connection = MySQL:createConnection()
+--     local Command = Connection.CreateCommand()
+--     Command.CommandText = Query
+--     if type(Parameters) == "table" then
+--         for Param in pairs(Parameters) do
+--             Command.Parameters.AddWithValue(Param, Parameters[Param])
+--         end
+--     end
+--     pcall(Command.ExecuteNonQuery)
+
+--     --phase2
+--     Command = Connection.CreateCommand()
+--     Command.CommandText = Query2
+--     local status, result = pcall(Command.ExecuteReader)
+--     return MySQL.Async.wrapQuery(
+--         function (Result)
+--             return Result
+--         end,
+--         Connection,
+--         Command.CommandText
+--     )(MyConvertResultToTable(result), nil)
+-- end
+
+
+-- local result = MySQLInsertMessage({
+--         ['@transmitter'] = 'Inconnu',
+--         ['@receiver'] = '06',
+--         ['@message'] = 'Je sais qui tu est',
+--         ['@isRead'] = 0,
+--         ['@owner'] = 0
+--     })
+-- print('result: ' .. json.encode(result))
+-- local mess = MySQL.Sync.fetchAll('SELECT * from phone_messages WHERE `id` = (SELECT LAST_INSERT_ID())', {})
+-- print('result: ' .. json.encode(mess))
+-- for _, v in pairs(data) do 
+--     for key, vv in pairs(v) do 
+--         print(key .. ' -> ' .. vv)
+--     end
+--     print('----')
+-- end
+
+-- local query = "INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)"
+-- local params = {
+--         ['@transmitter'] = '00',
+--         ['@receiver'] = '00',
+--         ['@message'] = '00',
+--         ['@isRead'] = 1,
+--         ['@owner'] = 1
+--     }
 -- local insert = MySQL.Sync.execute(, )
 -- print('TTTTTTTTTTTTTTTT')
 -- print(insert)

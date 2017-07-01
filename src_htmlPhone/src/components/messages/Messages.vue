@@ -202,6 +202,7 @@ export default {
 .sms{
   overflow: auto;
   zoom: 1;
+
 }
 
 .sms_me{
@@ -247,6 +248,7 @@ export default {
 }
 .sms_message{
   word-wrap: break-word;
+  max-width: 80%;
 }
 #sms_write{
     height: 26px;

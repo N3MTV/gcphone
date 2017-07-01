@@ -71,15 +71,19 @@ AddEventHandler("gcPhone:allMessage", function(_messages)
 end)
 
 RegisterNetEvent("gcPhone:receiveMessage")
-AddEventHandler("gcPhone:receiveMessage", function(number, message)
-  SetNotificationTextEntry("STRING")
-  AddTextComponentString('Nouveau message')
-  DrawNotification(false, false)
-  PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
-  Citizen.Wait(300)
-  PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
-  Citizen.Wait(300)
-  PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
+AddEventHandler("gcPhone:receiveMessage", function(message)
+  table.insert(messages, message)
+  SendNUIMessage({event = 'updateMessages', messages = messages})
+  if message.owner == 0 then 
+    SetNotificationTextEntry("STRING")
+    AddTextComponentString('~o~Nouveau message')
+    DrawNotification(false, false)
+    PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
+    Citizen.Wait(300)
+    PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
+    Citizen.Wait(300)
+    PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
+  end
 end)
 --====================================================================================
 --  Function client | Contacts
@@ -101,6 +105,13 @@ end
 function deleteMessage(msgId)
   Citizen.Trace('deleteMessage' .. msgId)
   TriggerServerEvent('gcPhone:deleteMessage', msgId)
+  for k, v in ipairs(messages) do 
+    if v.id == msgId then
+      table.remove(messages, k)
+      SendNUIMessage({event = 'updateMessages', messages = messages})
+      return
+    end
+  end
 end
 
 function deleteMessageContact(num)

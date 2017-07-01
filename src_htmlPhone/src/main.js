@@ -46,13 +46,13 @@ new Vue({
           number: '09',
           id: 15
         })
-        this.messages.push({id: 6, transmitter: '09', time: new Date().getTime(), message: 'GPS: -1036.7025146484, -2735.7883300781', isRead: 0, owner: 0})
+        this.messages.push({id: 6, transmitter: '09', time: new Date().getTime(), message: 'GPS: 5555555555555555, 22222222', isRead: 0, owner: Math.random() > 0.5 ? 1 : 0})
         // this.urgenceOnly = !this.urgenceOnly
       })
     }
     // in Game
     window.addEventListener('message', (event) => {
-      console.log(JSON.stringify(event.data))
+      // console.log(JSON.stringify(event.data))
       if (event.data.keyUp !== undefined) {
         this.$bus.$emit('keyUp' + event.data.keyUp)
       }

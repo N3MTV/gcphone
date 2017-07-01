@@ -24,10 +24,10 @@ export default {
         eventName: 'ambulancier:callAmbulancier',
         type: 'Coma'
       }, {
-        title: 'Police',
-        eventName: 'police:callPolice',
-        type: 'Homme à terre'
-      }, {
+      //   title: 'Police',
+      //   eventName: 'police:callPolice',
+      //   type: 'Homme à terre'
+      // }, {
         title: 'Hopital',
         eventName: 'ambulancier:selfRespawn'
       }],
