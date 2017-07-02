@@ -123,8 +123,12 @@ function deleteAllMessage()
 end
 
 function setReadMessageNumber(num)
-  Citizen.Trace('setReadMessageNumber :d:eded')
   TriggerServerEvent('gcPhone:setReadMessageNumber', num)
+  for k, v in ipairs(messages) do 
+    if v.transmitter == num then
+      v.isRead = true
+    end
+  end
 end
 
 function requestAllMessages()
