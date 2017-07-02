@@ -55,6 +55,9 @@ export default new Router({
       path: '/paramtre',
       name: 'Paramtre',
       component: Paramtre
+    }, {
+      path: '*',
+      redirect: '/'
     }
   ]
 })
