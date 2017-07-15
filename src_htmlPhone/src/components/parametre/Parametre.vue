@@ -33,7 +33,6 @@ export default {
         {icons: 'fa-picture-o', title: 'Font d\'écran', value: localStorage['background_display'] || 'Calvin & Hobbes', onValid: 'onChangeBackground', values: {
           'Calvin & Hobbes': 'back001.jpg',
           'Destiny': 'back002.jpg',
-          'Assassins\'s Creed': '18.jpg',
           'Guitare': '01.jpg',
           'Los Santos': '02.jpg',
           'Poursuite': '03.jpg',
@@ -50,7 +49,12 @@ export default {
           'Rose': '14.jpg',
           'Bleu': '15.jpg',
           'Noir': '16.jpg',
-          'Chocolat': '17.jpg'
+          'Chocolat': '17.jpg',
+          'Assassins\'s Creed': '18.jpg',
+          'Stalactite': '19.jpg',
+          'Origin': '20.jpg',
+          'Pacman': '21.jpg',
+          'Custom URL': 'URL'
         }},
         // eslint-disable-next-line
         {icons: 'fa-mobile', title: 'Coque telephone', value: localStorage['coque_display'] || 'Bleu', onValid: 'onChangeCoque', values: {
@@ -122,9 +126,18 @@ export default {
       }
     },
     onChangeBackground: function (param, data) {
-      localStorage['background_display'] = data.title
-      localStorage['background_img'] = data.value
-      param.value = data.title
+      let val = data.value
+      if (val === 'URL') {
+        request.getReponseText().then(valueText => {
+          localStorage['background_display'] = data.title
+          localStorage['background_img'] = valueText.text
+          param.value = valueText.text
+        })
+      } else {
+        localStorage['background_display'] = data.title
+        localStorage['background_img'] = data.value
+        param.value = data.title
+      }
     },
     onChangeCoque: function (param, data) {
       localStorage['coque_display'] = data.title

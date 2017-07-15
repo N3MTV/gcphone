@@ -1,5 +1,6 @@
 <template>
   <div class="home" v-bind:style="{background: 'url(' + backgroundImg +')'}">
+    <span class="warningMess" v-if="this.$root.messages.length >= 220">Saturation mémoires !<br>{{this.$root.messages.length}} / 250</span>
     <span class="time"><current-time></current-time></span>
     <div class='home_buttons'>
       <button v-for="(but, key) of buttons" 
@@ -40,8 +41,16 @@ export default {
         img: '/html/static/img/settings.png',
         urlPath: 'paramtre'
       }],
-      backgroundImg: '/html/static/img/' + (localStorage['background_img'] || 'back001.jpg'),
       currentSelect: 0
+    }
+  },
+  computed: {
+    backgroundImg: function () {
+      let backImg = localStorage['background_img'] || 'back001.jpg'
+      if (backImg.startsWith('http') === true) {
+        return backImg
+      }
+      return '/html/static/img/' + backImg
     }
   },
   watch: {
@@ -105,7 +114,20 @@ export default {
   align-content: center;
   justify-content: center;
 }
-
+.warningMess{
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  color: red;
+  text-align: center;
+  top: 150px;
+  font-size: 1.4em;
+  text-shadow: -1px 0 0 rgba(0,0,0, 0.8), 
+            1px 0 0 rgba(0,0,0, 0.8),
+            0 -1px 0 rgba(0,0,0, 0.8),
+            0 1px 0 rgba(0,0,0, 0.8);
+}
 .time{
   font-size: 48px;
   margin-top: 100px;

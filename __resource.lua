@@ -40,6 +40,10 @@ files {
 	'html/static/img/16.jpg',
 	'html/static/img/17.jpg',
 	'html/static/img/18.jpg',
+	'html/static/img/19.jpg',
+	'html/static/img/20.jpg',
+	'html/static/img/21.jpg',
+	
 	
 	'html/static/img/call.png',
 	'html/static/img/contacts.png',
@@ -51,6 +55,7 @@ files {
 }
 
 client_script {
+	"animation.lua",
 	"client.lua"
 }
 

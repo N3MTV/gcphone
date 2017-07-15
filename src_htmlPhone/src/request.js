@@ -41,7 +41,7 @@ export default {
     } else {
       let time = new Date().getTime()
       return Promise.resolve([
-        {id: 1, transmitter: '01', time: time - 160, message: 'Salut sa va ?!!!', isRead: true, owner: false},
+        {id: 1, transmitter: '01', receiver: '06', time: time - 160, message: 'Salut sa va ?!!!', isRead: true, owner: false},
         {id: 2, transmitter: '01', time, message: 'Tu fait quoi?', isRead: false, owner: false},
         {id: 0, transmitter: '01', time, message: 'Oui est toi ?', isRead: true, owner: true},
         {id: 1, transmitter: '01', time, message: 'GPS : 244 - 123', isRead: true, owner: false},
@@ -76,7 +76,7 @@ export default {
     if (process.env.NODE_ENV === 'production') {
       return post('reponseText', data || {})
     } else {
-      return Promise.resolve({text: 'Salut'})
+      return Promise.resolve({text: 'http://i.imgur.com/8nr0gw1.jpg'})
     }
   },
 

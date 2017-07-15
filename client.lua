@@ -74,6 +74,7 @@ RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
   table.insert(messages, message)
   SendNUIMessage({event = 'updateMessages', messages = messages})
+  Citizen.Trace('sendMessage: ' .. json.encode(messages))
   if message.owner == 0 then 
     SetNotificationTextEntry("STRING")
     AddTextComponentString('~o~Nouveau message')
@@ -244,12 +245,19 @@ end)
 function TooglePhone() 
   menuIsOpen = not menuIsOpen
   SendNUIMessage({show = menuIsOpen})
+  if menuIsOpen == true then 
+    Citizen.Trace('open')
+    ePhoneInAnim()
+  else
+    ePhoneOutAnim()
+  end
 end
 
+
 RegisterNUICallback('closePhone', function(data, cb)
-  Citizen.Trace('closePhone')
   menuIsOpen = false
   SendNUIMessage({show = false})
+  ePhoneOutAnim()
   cb()
 end)
 
