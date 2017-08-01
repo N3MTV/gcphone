@@ -48,6 +48,7 @@ export default {
           {title: 'Voiture', eventName: 'mecano:callMecano', type: 'Voiture'},
           {title: 'Camionnette', eventName: 'mecano:callMecano', type: 'Camionnette'},
           {title: 'Camion', eventName: 'mecano:callMecano', type: 'Camion'},
+          {title: 'Fourrière', eventName: 'mecano:callMecano', type: 'Fourrière'},
           {title: 'Annuler l\'appel en cour', color: 'orange', eventName: 'mecano:cancelCall'}
         ]
       }]

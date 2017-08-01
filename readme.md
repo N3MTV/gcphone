@@ -60,8 +60,8 @@ TriggerEvent('mecano:cancelCall')
 --==================================================================
 -- Ambulance
 TriggerEvent('ambulancier:callAmbulancier', {type: 'Coma'})
--- Police
-TriggerEvent('police:callPolice', {type: 'Homme à terre'})
+-- Police REMOVE
+-- TriggerEvent('police:callPolice', {type: 'Homme à terre'})
 -- Hopital
 TriggerEvent('ambulancier:selfRespawn')
 

@@ -50,28 +50,29 @@ end
 --====================================================================================
 --  Events
 --====================================================================================
-RegisterNetEvent("gcPhone:myPhoneNumber")
-AddEventHandler("gcPhone:myPhoneNumber", function(_myPhoneNumber)
-  myPhoneNumber = _myPhoneNumber
+RegisterNetEvent("gcphone:myPhoneNumber")
+AddEventHandler("gcphone:myPhoneNumber", function(myPhoneNumber)
+  Citizen.Trace('myPhoneNumber: ' .. myPhoneNumber)
+  myPhoneNumber = myPhoneNumber
   SendNUIMessage({event = 'updateYyPhoneNumber', myPhoneNumber = myPhoneNumber})
 end)
 
-RegisterNetEvent("gcPhone:contactList")
-AddEventHandler("gcPhone:contactList", function(_contacts)
+RegisterNetEvent("gcphone:contactList")
+AddEventHandler("gcphone:contactList", function(_contacts)
   Citizen.Trace('contactList')
   SendNUIMessage({event = 'updateContacts', contacts = _contacts})
   contacts = _contacts
 end)
 
-RegisterNetEvent("gcPhone:allMessage")
-AddEventHandler("gcPhone:allMessage", function(_messages)
-  Citizen.Trace('allMessage')
-  SendNUIMessage({event = 'updateMessages', messages = _messages})
-  messages = _messages
+RegisterNetEvent("gcphone:allMessage")
+AddEventHandler("gcphone:allMessage", function(allmessages)
+  Citizen.Trace('allMessage : ', allmessages)
+  SendNUIMessage({event = 'updateMessages', messages = allmessages})
+  messages = allmessages
 end)
 
-RegisterNetEvent("gcPhone:receiveMessage")
-AddEventHandler("gcPhone:receiveMessage", function(message)
+RegisterNetEvent("gcphone:receiveMessage")
+AddEventHandler("gcphone:receiveMessage", function(message)
   table.insert(messages, message)
   SendNUIMessage({event = 'updateMessages', messages = messages})
   Citizen.Trace('sendMessage: ' .. json.encode(messages))
@@ -90,22 +91,21 @@ end)
 --  Function client | Contacts
 --====================================================================================
 function addContact(display, num) 
-  TriggerServerEvent('gcPhone:addContact', display, num)
+  TriggerServerEvent('gcphone:addContact', display, num)
 end
 
 function deleteContact(num) 
-  TriggerServerEvent('gcPhone:deleteContact', num)
+  TriggerServerEvent('gcphone:deleteContact', num)
 end
 --====================================================================================
 --  Function client | Messages
 --====================================================================================
 function sendMessage(num, message)
-  TriggerServerEvent('gcPhone:sendMessage', num, message)
+  TriggerServerEvent('gcphone:sendMessage', num, message)
 end
 
 function deleteMessage(msgId)
-  Citizen.Trace('deleteMessage' .. msgId)
-  TriggerServerEvent('gcPhone:deleteMessage', msgId)
+  TriggerServerEvent('gcphone:deleteMessage', msgId)
   for k, v in ipairs(messages) do 
     if v.id == msgId then
       table.remove(messages, k)
@@ -116,15 +116,15 @@ function deleteMessage(msgId)
 end
 
 function deleteMessageContact(num)
-  TriggerServerEvent('gcPhone:deleteMessageNumber', num)
+  TriggerServerEvent('gcphone:deleteMessageNumber', num)
 end
 
 function deleteAllMessage()
-  TriggerServerEvent('gcPhone:deleteAllMessage')
+  TriggerServerEvent('gcphone:deleteAllMessage')
 end
 
 function setReadMessageNumber(num)
-  TriggerServerEvent('gcPhone:setReadMessageNumber', num)
+  TriggerServerEvent('gcphone:setReadMessageNumber', num)
   for k, v in ipairs(messages) do 
     if v.transmitter == num then
       v.isRead = true
@@ -133,17 +133,17 @@ function setReadMessageNumber(num)
 end
 
 function requestAllMessages()
-  TriggerServerEvent('gcPhone:requestAllMessages')
+  TriggerServerEvent('gcphone:requestAllMessages')
 end
 
 function requestAllContact()
-  TriggerServerEvent('gcPhone:requestAllContact')
+  TriggerServerEvent('gcphone:requestAllContact')
 end
 --====================================================================================
 --  Gestion des evenements NUI
 --==================================================================================== 
 RegisterNUICallback('log', function(data, cb)
-  Citizen.Trace('NUI Log | ' .. json.encode(data))
+  -- Citizen.Trace('NUI Log | ' .. json.encode(data))
   cb()
 end)
 RegisterNUICallback('focus', function(data, cb)
@@ -173,7 +173,6 @@ end)
 --  Event - Messages
 --====================================================================================
 RegisterNUICallback('getMessages', function(data, cb)
-  Citizen.Trace('call getMessages | ' .. json.encode(messages))
   cb(json.encode(messages))
 end)
 
@@ -182,7 +181,7 @@ RegisterNUICallback('sendMessage', function(data, cb)
     local myPos = GetEntityCoords(GetPlayerPed(-1))
     data.message = 'GPS: ' .. myPos.x .. ', ' .. myPos.y
   end
-  TriggerServerEvent('gcPhone:sendMessage', data.phoneNumber, data.message)
+  TriggerServerEvent('gcphone:sendMessage', data.phoneNumber, data.message)
 end)
 
 RegisterNUICallback('deleteMessage', function(data, cb)
@@ -209,15 +208,15 @@ end)
 --====================================================================================
 RegisterNUICallback('addContact', function(data, cb)
   Citizen.Trace('addContact: ' .. json.encode(data))
-  TriggerServerEvent('gcPhone:addContact', data.display, data.phoneNumber)
+  TriggerServerEvent('gcphone:addContact', data.display, data.phoneNumber)
 end)
 
 RegisterNUICallback('updateContact', function(data, cb)
-  TriggerServerEvent('gcPhone:updateContact', data.id, data.display, data.phoneNumber)
+  TriggerServerEvent('gcphone:updateContact', data.id, data.display, data.phoneNumber)
 end)
 
 RegisterNUICallback('deleteContact', function(data, cb)
-  TriggerServerEvent('gcPhone:deleteContact', data.id)
+  TriggerServerEvent('gcphone:deleteContact', data.id)
 end)
 
 RegisterNUICallback('getContacts', function(data, cb)
@@ -238,7 +237,7 @@ RegisterNUICallback('callEvent', function(data, cb)
 end)
 
 RegisterNUICallback('deleteALL', function(data, cb)
-  TriggerServerEvent('gcPhone:deleteALL')
+  TriggerServerEvent('gcphone:deleteALL')
   cb()
 end)
 
@@ -261,5 +260,10 @@ RegisterNUICallback('closePhone', function(data, cb)
   cb()
 end)
 
+
 -- Just For reload 
-TriggerServerEvent('gcPhone:allUpdate')
+TriggerServerEvent('gcphone:allUpdate')
+
+
+
+

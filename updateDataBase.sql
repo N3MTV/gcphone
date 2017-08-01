@@ -19,10 +19,3 @@ CREATE TABLE IF NOT EXISTS `phone_users_contacts` (
   `display` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
 );
-
-
-
--- CONVERT
--- INSERT into phone_users_contacts ( identifier, number, display) 
--- (Select user_phonelist.owner_id , users.phone_number , CONCAT(users.prenom, ' ', users.nom)
--- from user_phonelist left join users on users.identifier = user_phonelist.contact_id)

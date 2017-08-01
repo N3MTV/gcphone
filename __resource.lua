@@ -1,3 +1,6 @@
+server_script '@mysql-async/lib/MySQL.lua'
+-- server_script 'mysqltimestamp'
+
 ui_page 'html/index.html'
 
 files {
