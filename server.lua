@@ -149,6 +149,7 @@ AddEventHandler('playerDropped', function()
                     ['@owner'] = MessagesToAdd[k].owner
                 })
             end
+            MessagesToAdd = {}
         end
     end
 end)
@@ -167,6 +168,7 @@ local function updatePlayerMessages()
                 })
             end
         end
+        MessagesToAdd = {}
         updatePlayerMessages()
     end)
 end
@@ -186,7 +188,6 @@ function _internalAddMessage(transmitter, receiver, message, owner)
     local tstamp = os.date("*t", os.time())
     local time = os.date(tstamp.year .. "-" .. tstamp.month .. "-" .. tstamp.day .. " " .. tstamp.hour .. ":" .. tstamp.min .. ":" .. tstamp.sec)
     table.insert(MessagesToAdd, {transmitter=transmitter,receiver=receiver,message=message,owner=owner})
-    print(MessagesToAdd[1].transmitter)
     lastmessage.transmitter = transmitter
     lastmessage.receiver = receiver
     lastmessage.message = message
