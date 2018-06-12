@@ -5,23 +5,11 @@
 
 -- Generation Alétoire des numero
 --- Modifier ici le format
-function getPhoneRandomNumber(identifier)
-    local tel = ""
-	for i = #identifier, 1, -1 do
-	    local c = string.sub(identifier,i,i)
-	    -- do something with c
-	    if (#tel) < 8 then
-	        c = tonumber(c)
-	        if c ~= nil then
-	            if string.len(tel) == 3 then
-	                tel = tel .. "-"
-	            end
-	            c = tostring(c)
-	            tel = tel .. c
-	        end
-	    end
-	end
-	return tel
+function getPhoneRandomNumber()
+    local numBase0 = math.random(0,999)
+    local numBase1 = math.random(0,9999)
+    local num = string.format("%03d-%04d", numBase0, numBase1 )
+	return num
 end
 
 --====================================================================================
@@ -455,7 +443,22 @@ end)
 
 
 
-
+function getOrGeneratePhoneNumber (sourcePlayer, identifier, cb)
+    local sourcePlayer = sourcePlayer
+    local identifier = identifier
+    local myPhoneNumber = getNumberPhone(identifier)
+    if myPhoneNumber == '0' then
+        local randomNumberPhone = getPhoneRandomNumber(identifier)
+        MySQL.Async.insert("UPDATE users SET phone_number = @randomNumberPhone WHERE identifier = @identifier", { 
+            ['@randomNumberPhone'] = randomNumberPhone,
+            ['@identifier'] = identifier
+        }, function ()
+            getOrGeneratePhoneNumber(sourcePlayer, identifier, cb)
+        end)
+    else
+        cb(myPhoneNumber)
+    end
+end
 
 --====================================================================================
 --  OnLoad
@@ -463,18 +466,26 @@ end)
 AddEventHandler('es:playerLoaded',function(source)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(source)
-    local myPhoneNumber = getNumberPhone(identifier)
-    while myPhoneNumber == 0 do 
-        local randomNumberPhone = getPhoneRandomNumber(identifier)
-        MySQL.Sync.execute("UPDATE users SET phone_number = @randomNumberPhone WHERE identifier = @identifier", { 
-            ['@randomNumberPhone'] = randomNumberPhone,
-            ['@identifier'] = identifier
-        })
-        myPhoneNumber = getNumberPhone(identifier)
-    end
-    TriggerClientEvent("gcPhone:myPhoneNumber", sourcePlayer, myPhoneNumber)
-    TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier))
-    TriggerClientEvent("gcPhone:allMessage", sourcePlayer, getMessages(identifier))
+    getOrGeneratePhoneNumber(sourcePlayer, identifier, function (myPhoneNumber)
+        TriggerClientEvent("gcPhone:myPhoneNumber", sourcePlayer, myPhoneNumber)
+        TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier))
+        TriggerClientEvent("gcPhone:allMessage", sourcePlayer, getMessages(identifier))
+    end)
+    -- local myPhoneNumber = getNumberPhone(identifier)
+    -- print('myPhoneNumber', myPhoneNumber)
+    -- while myPhoneNumber == '0' do 
+    --     local randomNumberPhone = getPhoneRandomNumber(identifier)
+    --     print('TEST: randomNumberPhone', randomNumberPhone, identifier)
+    --     MySQL.Sync.execute("UPDATE users SET phone_number = @randomNumberPhone WHERE identifier = @identifier", { 
+    --         ['@randomNumberPhone'] = randomNumberPhone,
+    --         ['@identifier'] = identifier
+    --     })
+    --     Citizen.
+    --     print('GET')
+    --     myPhoneNumber = getNumberPhone(identifier)
+    --     print('myPhoneNumber', myPhoneNumber)
+    -- end
+
 end)
 
 -- Just For reload
