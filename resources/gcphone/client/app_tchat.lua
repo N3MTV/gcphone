@@ -15,7 +15,3 @@ end)
 RegisterNUICallback('tchat_getChannel', function(data, cb)
   TriggerServerEvent('gcPhone:tchat_channel', data.channel)
 end)
-
-
--- TriggerServerEvent('gcPhone:tchat_channel', 'cha1')
--- TriggerServerEvent('gcPhone:tchat_addMessage', "cha1", "Gann", "Salutation")

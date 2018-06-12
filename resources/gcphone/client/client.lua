@@ -11,7 +11,7 @@ local KeyToucheCloseEvent = {
   { code = 176, event = 'Enter' },
   { code = 177, event = 'Backspace' },
 }
-local KeyOpenClose = 168
+local KeyOpenClose = 289
 local menuIsOpen = false
 local contacts = {}
 local messages = {}
@@ -176,8 +176,6 @@ end)
 
 RegisterNetEvent("gcPhone:acceptCall")
 AddEventHandler("gcPhone:acceptCall", function(infoCall)
-  print('infoCall')
-  print(json.encode(infoCall))
   if inCall == false then
     inCall = true
     NetworkSetVoiceChannel(infoCall.id + 1)
@@ -199,6 +197,7 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
   end
   if aminCall == true then
     ePhoneStopCall()
+    aminCall = false
   end
   SendNUIMessage({event = 'rejectCall', infoCall = infoCall})
 end)
@@ -472,7 +471,6 @@ AddEventHandler('onClientResourceStart', function(res)
     --ClearPedTasksImmediately(GetPlayerPed(-1))
     DoScreenFadeIn(300)
     if res == "gcphone" then
-        print('Reload Info')
         TriggerServerEvent('gcPhone:allUpdate')
     end
 end)
@@ -481,62 +479,3 @@ end)
 ----------------------------------
 ---------- GESTION APPEL ---------
 ----------------------------------
-
-local confirmed = 0
-local teldest = ""
-
-RegisterNetEvent('callService')
-AddEventHandler("callService", function(arg)
-    DisplayOnscreenKeyboard(true, "FMMC_KEY_TIP8", "", "", "", "", "", 50)
-	teldest = arg
-	confirmed = 1
-end)
-
-Citizen.CreateThread(function()
-	while true do
-		Wait(0)
-		if confirmed == 1 then
-			if UpdateOnscreenKeyboard() == 3 then
-				confirmed = 0
-			elseif UpdateOnscreenKeyboard() == 1 then
-				local txt = GetOnscreenKeyboardResult()
-				if string.len(txt) > 0 then
-					msg = txt
-					confirmed = 2
-				else
-					TriggerEvent('hud:NotifColor',"Votre message est vide",6)
-					confirmed = 0
-				end
-			elseif UpdateOnscreenKeyboard() == 2 then
-				confirmed = 0
-			end
-		end
-		if confirmed == 2 then
-            if teldest == "police" then
-                TriggerEvent("es_freeroam:notify", "CHAR_CALL911", 1, "911", false, "911 Prévenu!")
-                local plyPos = GetEntityCoords(GetPlayerPed(-1), true)
-                TriggerServerEvent("call:makeCall", "police", {x=plyPos.x,y=plyPos.y,z=plyPos.z},msg)
-            elseif teldest == "mecano" then
-                TriggerEvent("es_freeroam:notify", "CHAR_CARSITE2", 1, "Garagiste", false, "Garagiste prévenu!")
-                local plyPos = GetEntityCoords(GetPlayerPed(-1), true)
-                TriggerServerEvent("call:makeCall", "depanneur", {x=plyPos.x,y=plyPos.y,z=plyPos.z},msg)
-            elseif teldest == "taxi" then
-                TriggerEvent("es_freeroam:notify", "CHAR_TAXI", 1, "Taxi", false, "Taxi prévenu!")
-                local plyPos = GetEntityCoords(GetPlayerPed(-1), true)
-                TriggerServerEvent("call:makeCall", "taxi", {x=plyPos.x,y=plyPos.y,z=plyPos.z},msg)
-            elseif teldest == "ambulance" then
-                TriggerEvent("es_freeroam:notify", "CHAR_PLANESITE", 1, "Urgence", false, "Ambulancier prévenu!")
-                local plyPos = GetEntityCoords(GetPlayerPed(-1), true)
-                TriggerServerEvent("call:makeCall", "medic", {x=plyPos.x,y=plyPos.y,z=plyPos.z},msg)
-            elseif teldest == "journaliste" then
-                TriggerEvent("es_freeroam:notify", "CHAR_LIFEINVADER", 1, "LifeInvader", false, "Journaliste prévenu!")
-                local plyPos = GetEntityCoords(GetPlayerPed(-1), true)
-                TriggerServerEvent("call:makeCall", "journaliste", {x=plyPos.x,y=plyPos.y,z=plyPos.z},msg)
-            else
-                TriggerEvent('hud:NotifColor',"Erreur de destinataire",6)
-            end
-			confirmed = 0
-		end
-	end
-end)
-

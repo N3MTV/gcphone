@@ -29,7 +29,7 @@ export default {
     ...mapActions(['loadConfig', 'rejectCall'])
   },
   computed: {
-    ...mapGetters(['show', 'zoom', 'coque', 'appelsInfo'])
+    ...mapGetters(['show', 'zoom', 'coque', 'appelsInfo', 'myPhoneNumber'])
   },
   watch: {
     appelsInfo (newValue, oldValue) {
@@ -37,7 +37,11 @@ export default {
         if (this.soundCall !== null) {
           this.soundCall.pause()
         }
-        this.soundCall = new Audio('/html/static/sound/ring.ogg')
+        if (this.myPhoneNumber === this.appelsInfo.transmitter_num) {
+          this.soundCall = new Audio('/html/static/sound/Phone_Call_Sound_Effect.ogg')
+        } else {
+          this.soundCall = new Audio('/html/static/sound/ring.ogg')
+        }
         this.soundCall.loop = true
         this.soundCall.volume = 0.2
         this.soundCall.play()

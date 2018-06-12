@@ -161,7 +161,7 @@ class PhoneAPI {
   onwaitingCall (data) {
     store.commit('SET_APPELS_INFO', data.infoCall)
   }
-  onacceptsCall (data) {
+  onacceptCall (data) {
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
   }
   onrejectCall (data) {

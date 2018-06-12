@@ -6,7 +6,7 @@ import VueTimeago from 'vue-timeago'
 import PhoneAPI from './PhoneAPI'
 
 Vue.use(VueTimeago, {
-  name: 'timeago', // component name, `timeago` by default
+  name: 'timeago',
   locale: 'fr-FR',
   locales: {
     'fr-FR': require('vue-timeago/locales/fr-FR.json')

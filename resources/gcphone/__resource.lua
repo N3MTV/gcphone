@@ -57,12 +57,12 @@ files {
 
 	'html/static/img/app_tchat/splashtchat.png',
 
-
 	'html/static/img/courbure.png',
 	'html/static/fonts/fontawesome-webfont.ttf',
 
 	'html/static/sound/ring.ogg',
 	'html/static/sound/tchatNotification.ogg',
+	'html/static/sound/Phone_Call_Sound_Effect.ogg',
 
 }
 

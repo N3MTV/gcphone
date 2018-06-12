@@ -37,7 +37,6 @@ export default {
   },
   watch: {
     tchatMessages () {
-      console.log('tchatMessages')
       const c = this.$refs.elementsDiv
       c.scrollTop = c.scrollHeight
     }

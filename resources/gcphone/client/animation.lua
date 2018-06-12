@@ -37,6 +37,7 @@ end
 
 
 function ePhoneStartCall () 
+	print('ePhoneStartCall before', lastAnim)
 	if lastAnim ~= inAnim and lastAnim ~= CallToText then
 		return
 	end
