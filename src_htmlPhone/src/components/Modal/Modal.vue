@@ -72,7 +72,7 @@ export default {
 <style scoped>
     .modal-mask {
         position: absolute;
-        z-index: 9998;
+        z-index: 99;
         top: 0;
         left: 0;
         width: 100%;
@@ -150,4 +150,51 @@ export default {
         -webkit-transform: scale(1.1);
         transform: scale(1.1);
     }
+    .barre-header {
+    font-size: 15px;
+    padding: 5px;
+    position: absolute;
+    background-color: rgba(20, 20, 20, 0.6);
+    width: 100%;
+    top:0px;
+   color: white;
+}
+.barre-header hr {
+    position: absolute;
+    vertical-align: bottom;
+    display: inline-block;
+    float: right;
+    bottom: 0px;
+    border: none;
+}
+.barre1 {
+    height: 12px;
+    width: 3px;
+    right: 71px;
+    background-color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.6);
+}
+.barre2 {
+    height: 9px;
+    width: 3px;
+    right: 76px;
+    background-color: white;
+}
+.barre3 {
+    height: 6px;
+    width: 3px;
+    right: 81px;
+    background-color: white;
+}
+.barre4 {
+    height: 3px;
+    width: 3px;
+    right: 86px;
+    background-color: white;
+}
+.time{
+    text-align: right;
+    float: right;
+    /*padding-right: 10px;*/
+}
 </style>

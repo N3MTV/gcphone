@@ -1,6 +1,6 @@
 <template>
   <div class="list">
-    <div class="title" v-bind:style="classTitle()">{{title}}</div>
+    <div v-if="title !== ''" class="title" v-bind:style="classTitle()">{{title}}</div>
     <div class="elements">
         <div class="element" v-for='(elem, key) in list' 
           v-bind:key="elem[keyDispay]"
@@ -48,6 +48,10 @@ export default {
     disable: {
       type: Boolean,
       default: false
+    },
+    titleBackgroundColor: {
+      type: String,
+      default: '#FFFFFF'
     }
   },
   watch: {

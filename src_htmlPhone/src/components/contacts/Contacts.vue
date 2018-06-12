@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { generateColorForStr } from '@/Utils'
 import List from './../List.vue'
 
 export default {
@@ -13,18 +15,16 @@ export default {
   },
   data () {
     return {
-      contacts: []
     }
   },
   computed: {
+    ...mapGetters(['contacts']),
     lcontacts: function () {
       let addContact = {display: 'Ajouter un contact', letter: '+', num: '', id: -1}
-      if (this.$root.contacts.length !== 0) {
-        let contacts = this.$root.contacts.slice()
-        contacts.sort((a, b) => a.display.localeCompare(b.display))
-        return [addContact, ...contacts]
-      }
-      return [addContact]
+      return [addContact, ...this.contacts.map(e => {
+        e.backgroundColor = generateColorForStr(e.number)
+        return e
+      })]
     }
   },
   methods: {
@@ -32,7 +32,7 @@ export default {
       this.$router.push({path: '/contact/' + contact.id})
     },
     back: function () {
-      history.back()
+      this.$router.push({ name: 'home' })
     }
   },
   created: function () {

@@ -17,20 +17,20 @@
         </div>
 
         <div class="group " data-type="button" data-action='save'>      
-            <input type='button' class="btn btn-green" value='Enregistre'></input>
+            <input type='button' class="btn btn-green" value='Enregistre' />
         </div>
         <div class="group" data-type="button" data-action='cancel'>      
-            <input type='button' class="btn btn-orange" value='Annuler'></input>
+            <input type='button' class="btn btn-orange" value='Annuler' />
         </div>
         <div class="group" data-type="button" data-action='delete'>      
-            <input type='button' class="btn btn-red" value='Supprimer'></input>
+            <input type='button' class="btn btn-red" value='Supprimer' />
         </div>
     </div>
   </div>
 </template>
 
 <script>
-import request from '../../request'
+import { mapGetters, mapActions } from 'vuex'
 import Modal from '@/components/Modal/index.js'
 
 export default {
@@ -39,7 +39,7 @@ export default {
       id: -1,
       currentSelect: 0,
       ignoreControls: false,
-      newContact: {
+      contact: {
         display: 'Nouveau Contact',
         number: '',
         id: -1
@@ -47,6 +47,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['updateContact', 'addContact']),
     onUp: function () {
       if (this.ignoreControls === true) return
       let select = document.querySelector('.group.select')
@@ -83,7 +84,7 @@ export default {
           limit: parseInt(select.dataset.maxlength) || 64,
           text: this.contact[select.dataset.model] || ''
         }
-        request.getReponseText(options).then(data => {
+        this.$phoneAPI.getReponseText(options).then(data => {
           this.contact[select.dataset.model] = data.text
         })
       }
@@ -93,9 +94,16 @@ export default {
     },
     save: function () {
       if (this.id !== -1) {
-        request.updateContact(this.id, this.contact.display, this.contact.number)
+        this.updateContact({
+          id: this.id,
+          display: this.contact.display,
+          number: this.contact.number
+        })
       } else {
-        request.addContact(this.contact.display, this.contact.number)
+        this.addContact({
+          display: this.contact.display,
+          number: this.contact.number
+        })
       }
       history.back()
     },
@@ -110,7 +118,7 @@ export default {
         Modal.CreateModal({choix}).then(reponse => {
           this.ignoreControls = false
           if (reponse.title === 'Supprimer') {
-            request.deleteContact(this.id)
+            this.$phoneAPI.deleteContact(this.id)
             history.back()
           }
         })
@@ -120,13 +128,7 @@ export default {
     }
   },
   computed: {
-    contact: function () {
-      let contact = this.$root.contacts.find(e => e.id === this.id)
-      if (contact === undefined) {
-        return this.newContact
-      }
-      return contact
-    }
+    ...mapGetters(['contacts'])
   },
   created: function () {
     this.$bus.$on('keyUpArrowDown', this.onDown)
@@ -135,9 +137,10 @@ export default {
     this.$bus.$on('keyUpBackspace', this.cancel)
     this.id = parseInt(this.$route.params.id)
     if (this.id !== -1) {
-      request.getContacts().then(contacts => {
-        this.contact = contacts.find(e => e.id === this.id)
-      })
+      const c = this.contacts.find(e => e.id === this.id)
+      if (c !== undefined) {
+        this.contact = c
+      }
     }
   },
   beforeDestroy: function () {

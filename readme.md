@@ -1,68 +1,64 @@
-## T�l�phone pour FiveM
+<h2 align="center">Téléphone pour FiveM</h2>
 
-### Appel event
-```LUA
---==================================================================
--- Police
---==================================================================
--- Police [Signaler un vol]
-TriggerEvent('police:callPolice', {type: 'Vole'})
--- Police [Signaler une agression]
-TriggerEvent('police:callPolice', {type: 'Aggression'})
--- Police [Autre]
-TriggerEvent('police:callPoliceCustom')
--- Police [Annuler l'appel en cour]
-TriggerEvent('police:cancelCall')
+**Fonctionalitées**
+  - List des conctacts
+  - Envoie de sms
+  - Appel vocal
+  - Appel anonyme
+  - Application Banque
+  - Application Tchat anonyme
+  - Application Bourse
+  - Coque / Fond ecran customisable
 
-
---==================================================================
--- Ambulance
---==================================================================
--- Ambulance [Appel Coma]
-TriggerEvent('ambulancier:callAmbulancier', {type: 'Vole'})
--- Ambulance [Appel ambulance]
-TriggerEvent('ambulancier:callAmbulancier', {type: 'Aggression'})
--- Ambulance [Respawn]
-TriggerEvent('ambulancier:selfRespawn')
--- Ambulance [Annuler l'appel en cour]
-TriggerEvent('ambulancier:cancelCall')
-
-
---==================================================================
--- Taxi
---==================================================================
--- Taxi [1 personne]
-TriggerEvent('taxi:callService', {type: '1 personne'})
--- Taxi [2 personnes]
-TriggerEvent('taxi:callService', {type: '2 personnes'})
--- Taxi [3 personnes]
-TriggerEvent('taxi:callService', {type: '3 personnes'})
--- Taxi [Annuler l'appel en cour]
-TriggerEvent('taxi:cancelCall')
-
-
---==================================================================
--- Mecano
---==================================================================
--- Mecano [Moto]
-TriggerEvent('mecano:callMecano', {type: 'Moto'})
--- Mecano [Voiture]
-TriggerEvent('mecano:callMecano', {type: 'Voiture'})
--- Mecano [Camionnette]
-TriggerEvent('mecano:callMecano', {type: 'Camionnette'})
--- Mecano [Camion]
-TriggerEvent('mecano:callMecano', {type: 'Camion'})
--- Mecano [Annuler l'appel en cour]
-TriggerEvent('mecano:cancelCall')
-
---==================================================================
--- Urgence
---==================================================================
--- Ambulance
-TriggerEvent('ambulancier:callAmbulancier', {type: 'Coma'})
--- Police
-TriggerEvent('police:callPolice', {type: 'Homme � terre'})
--- Hopital
-TriggerEvent('ambulancier:selfRespawn')
-
+## Info
+#Changer le nom du réseau
 ```
+* Modifier la clef 'reseau' dans le fichier /html/static/config/config.json
+```
+
+Pour ajouter / modifier les coques & fond d'écrans
+```
+* Coque => Modifier les images dans le dossier /html/static/img/coque
+* Fond d'écran => Modifier les images dans le dossier /html/static/img/background
+* Mettre à jour le fichier /html/static/config/config.json
+```
+
+Customiser les appels services
+``` javascript
+// fichier /html/static/config/config.json
+// ...
+"serviceCall": [
+  // Service
+  {
+    "display": "Police", // Nom du service
+    "backgroundColor": "#FF0000", // Couleur
+    "subMenu": [  // List des options proposé par le service
+      {
+        "title": "Envoyer un message", // Nom de l'option
+        "color": "#303F9F" // Couleur de l'option
+        "eventName": "callService", // Nom de l'event générer
+        "type": "journaliste", // Parametre supplement dans l'event
+      },
+      {
+        // Option 2
+      }
+    ] // List des options
+  }
+  },
+  {
+    // Service 2
+    "display": "Samu",
+    "subMenu": [{
+      // ...
+    }]
+  }
+]
+// ...
+```
+
+
+## License
+
+[GNU v3](https://opensource.org/licenses/gpl-3.0.html)
+
+Jonathan (Gannon) D

@@ -5,9 +5,11 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+import { generateColorForStr } from '@/Utils'
 import Modal from '@/components/Modal/index.js'
 import List from '@/components/List'
-import request from './../../request'
+
 export default {
   components: {
     List
@@ -15,16 +17,16 @@ export default {
   data () {
     return {
       nouveauMessage: {backgroundColor: '#C0C0C0', display: 'Nouveau message', letter: '+', id: -1},
-      // messagesData: [this.nouveauMessage],
       disableList: false
     }
   },
   methods: {
+    ...mapActions(['deleteMessagesNumber', 'deleteAllMessages']),
     onSelect: function (data) {
       if (data.id === -1) {
-        this.$router.push({path: '/contacts/select'})
+        this.$router.push({name: 'messages.selectcontact'})
       } else {
-        this.$router.push({path: '/message/' + data.number + '/' + data.display})
+        this.$router.push({name: 'messages.view', params: data})
       }
     },
     onOption: function (data) {
@@ -32,55 +34,29 @@ export default {
       this.disableList = true
       Modal.CreateModal({
         choix: [
-          {id: 1, title: 'Effacer la conversation', icons: 'fa-circle-o'},
-          {id: 2, title: 'Effacer toutes conv.', icons: 'fa-circle-o'},
+          {id: 1, title: 'Effacer la conversation', icons: 'fa-circle-o', color: 'orange'},
+          {id: 2, title: 'Effacer toutes conv.', icons: 'fa-circle-o', color: 'red'},
           {id: 3, title: 'Annuler', icons: 'fa-undo'}
         ]
       }).then(rep => {
         if (rep.id === 1) {
-          request.deleteMessageNumber(data.number)
+          this.deleteMessagesNumber({num: data.number})
         } else if (rep.id === 2) {
-          request.deleteAllMessage()
+          this.deleteAllMessages()
         }
         this.disableList = false
       })
     },
-    // updateList: function () {
-    //   Promise.all([request.getMessages(), request.getContacts()]).then(data => {
-    //     let messages = data[0]
-    //     let contacts = data[1]
-    //     let messGroup = messages.reduce((rv, x) => {
-    //       if (rv[x['transmitter']] === undefined) {
-    //         let contact = contacts.find(e => e.number === x.transmitter)
-    //         let display = contact !== undefined ? contact.display : x.transmitter
-    //         rv[x['transmitter']] = {noRead: 0, display}
-    //       }
-    //       console.log('isRead', x.isRead)
-    //       if (x.isRead === 0) {
-    //         rv[x['transmitter']].noRead += 1
-    //       }
-    //       return rv
-    //     }, {})
-    //     let mess = []
-    //     Object.keys(messGroup).forEach(key => {
-    //       mess.push({
-    //         display: messGroup[key].display,
-    //         puce: messGroup[key].noRead,
-    //         number: key
-    //       })
-    //     })
-    //     this.messagesData = [this.nouveauMessage, ...mess]
-    //   })
-    // },
     back: function () {
       if (this.disableList === true) return
-      this.$router.push({path: '/'})
+      this.$router.push({ name: 'home' })
     }
   },
   computed: {
+    ...mapGetters(['contacts', 'messages']),
     messagesData: function () {
-      let messages = this.$root.messages
-      let contacts = this.$root.contacts
+      let messages = this.messages
+      let contacts = this.contacts
       let messGroup = messages.reduce((rv, x) => {
         if (rv[x['transmitter']] === undefined) {
           let contact = contacts.find(e => e.number === x.transmitter)
@@ -99,7 +75,8 @@ export default {
           display: messGroup[key].display,
           puce: messGroup[key].noRead,
           number: key,
-          lastMessage: messGroup[key].lastMessage
+          lastMessage: messGroup[key].lastMessage,
+          backgroundColor: generateColorForStr(key)
         })
       })
       mess.sort((a, b) => b.lastMessage - a.lastMessage)
@@ -107,7 +84,6 @@ export default {
     }
   },
   created: function () {
-    // this.updateList()
     this.$bus.$on('keyUpBackspace', this.back)
   },
   beforeDestroy: function () {

@@ -13,12 +13,13 @@
         </div>
       </div>
     </div>
+    
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 import List from './../List.vue'
-import request from '../../request'
 import Modal from '@/components/Modal/index.js'
 
 export default {
@@ -27,70 +28,62 @@ export default {
   },
   data () {
     return {
-      paramList: [
-        {icons: 'fa-phone', title: 'Mon numéro', value: this.$root.myPhoneNumber},
-        // eslint-disable-next-line
-        {icons: 'fa-picture-o', title: 'Font d\'écran', value: localStorage['background_display'] || 'Calvin & Hobbes', onValid: 'onChangeBackground', values: {
-          'Calvin & Hobbes': 'back001.jpg',
-          'Destiny': 'back002.jpg',
-          'Guitare': '01.jpg',
-          'Los Santos': '02.jpg',
-          'Poursuite': '03.jpg',
-          'Franklin': '04.jpg',
-          'Police boom': '05.jpg',
-          'Trevor & Michael': '06.jpg',
-          'San Andreas': '07.jpg',
-          'Cité': '08.jpg',
-          'Ciel & Forêt': '09.jpg',
-          'Forêt Colorer': '10.jpg',
-          'Vague Géante': '11.jpg',
-          'Lion': '12.jpg',
-          'Planète': '13.jpg',
-          'Rose': '14.jpg',
-          'Bleu': '15.jpg',
-          'Noir': '16.jpg',
-          'Chocolat': '17.jpg',
-          'Assassins\'s Creed': '18.jpg',
-          'Stalactite': '19.jpg',
-          'Origin': '20.jpg',
-          'Pacman': '21.jpg',
-          'Custom URL': 'URL'
-        }},
-        // eslint-disable-next-line
-        {icons: 'fa-mobile', title: 'Coque telephone', value: localStorage['coque_display'] || 'Bleu', onValid: 'onChangeCoque', values: {
-          'Coque Bleu': 'bleu.png',
-          'Coque blanc': 'blanc.png',
-          'Coque Jaune': 'jaune.png',
-          'Coque Leopard': 'leopard.png',
-          'Coque Noir': 'noir.png',
-          'Coque Or': 'or.png',
-          'Coque Rose': 'rose.png',
-          'Coque Rouge': 'rouge.png',
-          'Coque Vert': 'vert.png',
-          'Coque Violet': 'violet.png',
-          'Coque Zebre': 'zebre.png'
-        }},
-        // {icons: 'fa-paint-brush', title: 'Theme color', value: 'Defaut'},
-        // eslint-disable-next-line
-        {icons: 'fa-search', title: 'Zoom', onValid: 'setZoom', values: {
-          '250 %': '250%',
-          '200 %': '200%',
-          '150 %': '150%',
-          '125 %': '125%',
-          '100 %': '100%',
-          '75 %': '75%'
-        }},
-        // eslint-disable-next-line
-        {icons: 'fa-exclamation-triangle', color: '#c0392b', title: 'Formater', onValid: 'resetPhone', values: {
-          'TOUT SUPPRIMER': 'accept',
-          'Annuler': 'cancel'
-        }}
-      ],
       ignoreControls: false,
       currentSelect: 0
     }
   },
+  computed: {
+    ...mapGetters(['myPhoneNumber', 'backgroundLabel', 'coqueLabel', 'zoom', 'config']),
+    paramList () {
+      return [
+        {
+          icons: 'fa-phone',
+          title: 'Mon numéro',
+          value: this.myPhoneNumber
+        },
+        {
+          icons: 'fa-picture-o',
+          title: 'Fond d\'écran',
+          value: this.backgroundLabel,
+          onValid: 'onChangeBackground',
+          values: this.config.background
+        },
+        {
+          icons: 'fa-mobile',
+          title: 'Coque telephone',
+          value: this.coqueLabel,
+          onValid: 'onChangeCoque',
+          values: this.config.coque
+        },
+        {
+          icons: 'fa-search',
+          title: 'Zoom',
+          value: this.zoom,
+          onValid: 'setZoom',
+          values: {
+            '250 %': '250%',
+            '200 %': '200%',
+            '150 %': '150%',
+            '125 %': '125%',
+            '100 %': '100%',
+            '75 %': '75%'
+          }
+        },
+        {
+          icons: 'fa-exclamation-triangle',
+          color: '#c0392b',
+          title: 'Formater',
+          onValid: 'resetPhone',
+          values: {
+            'TOUT SUPPRIMER': 'accept',
+            'Annuler': 'cancel'
+          }
+        }
+      ]
+    }
+  },
   methods: {
+    ...mapActions(['setZoon', 'setBackground', 'setCoque']),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
         document.querySelector('.select').scrollIntoViewIfNeeded()
@@ -98,7 +91,7 @@ export default {
     },
     onBackspace: function () {
       if (this.ignoreControls === true) return
-      history.back()
+      this.$router.push({ name: 'home' })
     },
     onUp: function () {
       if (this.ignoreControls === true) return
@@ -128,22 +121,27 @@ export default {
     onChangeBackground: function (param, data) {
       let val = data.value
       if (val === 'URL') {
-        request.getReponseText().then(valueText => {
-          localStorage['background_display'] = data.title
-          localStorage['background_img'] = valueText.text
-          param.value = valueText.text
+        this.$phoneAPI.getReponseText().then(valueText => {
+          this.setBackground({
+            label: 'Custom',
+            value: valueText.text
+          })
         })
       } else {
-        localStorage['background_display'] = data.title
-        localStorage['background_img'] = data.value
-        param.value = data.title
+        this.setBackground({
+          label: data.title,
+          value: data.value
+        })
       }
     },
     onChangeCoque: function (param, data) {
-      localStorage['coque_display'] = data.title
-      localStorage['coque_img'] = data.value
-      param.value = data.title
-      this.$root.coque = data.value
+      this.setCoque({
+        label: data.title,
+        value: data.value
+      })
+    },
+    setZoom: function (param, data) {
+      this.setZoon(data.value)
     },
     resetPhone: function (param, data) {
       if (data.title !== 'Annuler') {
@@ -152,14 +150,10 @@ export default {
         Modal.CreateModal({choix}).then(reponse => {
           this.ignoreControls = false
           if (reponse.title === 'EFFACER') {
-            request.deleteALL()
+            this.$phoneAPI.deleteALL()
           }
         })
       }
-    },
-    setZoom: function (param, data) {
-      localStorage['zoom'] = data.value
-      this.$root.zoom = data.value
     }
   },
 

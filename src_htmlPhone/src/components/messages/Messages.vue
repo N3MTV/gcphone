@@ -3,11 +3,11 @@
     <div id='sms_contact'>{{display}}</div>
 
     <div id='sms_list'>
-        <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messages' v-bind:key="mess.id">
+        <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesList' v-bind:key="mess.id">
             <span class='sms_message sms_me' 
               v-bind:class="{ sms_other : mess.owner === 0}">
                 {{mess.message}}
-                <span class="sms_time"><timeago :since='mess.time * 1000' :auto-update="20"></timeago></span>
+                <span class="sms_time"><timeago :since='mess.time' :auto-update="20"></timeago></span>
             </span>
         </div>
     </div>
@@ -20,8 +20,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 import Modal from '@/components/Modal/index.js'
-import request from './../../request'
 
 export default {
   data () {
@@ -30,10 +30,10 @@ export default {
       selectMessage: -1,
       display: '',
       phoneNumber: ''
-      // messages: []
     }
   },
   methods: {
+    ...mapActions(['setMessageRead', 'sendMessage', 'deleteMessage']),
     resetScroll: function () {
       this.$nextTick(() => {
         let elem = document.querySelector('#sms_list')
@@ -43,13 +43,16 @@ export default {
     },
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
-        document.querySelector('.select').scrollIntoViewIfNeeded()
+        const elem = this.$el.querySelector('.select')
+        if (elem !== null) {
+          elem.scrollIntoViewIfNeeded()
+        }
       })
     },
     onUp: function () {
       if (this.ignoreControls === true) return
       if (this.selectMessage === -1) {
-        this.selectMessage = this.messages.length - 1
+        this.selectMessage = this.messagesList.length - 1
       } else {
         this.selectMessage = this.selectMessage === 0 ? 0 : this.selectMessage - 1
       }
@@ -60,7 +63,7 @@ export default {
       if (this.selectMessage === -1) {
         this.selectMessage = this.messages.length - 1
       } else {
-        this.selectMessage = this.selectMessage === this.messages.length - 1 ? this.selectMessage : this.selectMessage + 1
+        this.selectMessage = this.selectMessage === this.messagesList.length - 1 ? this.selectMessage : this.selectMessage + 1
       }
       this.scrollIntoViewIfNeeded()
     },
@@ -69,16 +72,19 @@ export default {
       if (this.selectMessage !== -1) {
         this.onActionMessage()
       } else {
-        request.getReponseText().then(data => {
+        this.$phoneAPI.getReponseText().then(data => {
           let message = data.text.trim()
           if (message !== '') {
-            request.sendMessage(this.phoneNumber, message)
+            this.sendMessage({
+              phoneNumber: this.phoneNumber,
+              message
+            })
           }
         })
       }
     },
     onActionMessage: function () {
-      let message = this.messages[this.selectMessage]
+      let message = this.messagesList[this.selectMessage]
       let isGPS = /^GPS: -?\d*(\.\d+), -?\d*(\.\d+)/.test(message.message)
       let choix = [{
         title: 'Effacer',
@@ -96,11 +102,10 @@ export default {
       this.ignoreControls = true
       Modal.CreateModal({choix}).then(data => {
         if (data.title === 'Effacer') {
-          request.deleteMessage(message.id)
-          this.messages.splice(this.selectMessage, 1)
+          this.deleteMessage({ id: message.id })
         } else if (data.title === 'Position GPS') {
           let val = message.message.match(/((-?)\d+(\.\d+))/g)
-          request.setGPS(val[0], val[1])
+          this.$phoneAPI.setGPS(val[0], val[1])
         }
         this.ignoreControls = false
         this.selectMessage = -1
@@ -123,7 +128,10 @@ export default {
           {title: 'Annuler', icons: 'fa-undo'}
         ]}).then(data => {
           if (data.title === 'Envoyer Coord GPS') {
-            request.sendMessage(this.phoneNumber, '%pos%')
+            this.sendMessage({
+              phoneNumber: this.phoneNumber,
+              message: '%pos%'
+            })
           }
           this.ignoreControls = false
         })
@@ -131,28 +139,25 @@ export default {
     }
   },
   computed: {
-    messages: function () {
-      for (let i in this.$root.messages) {
-        if (this.$root.messages[i].transmitter === this.phoneNumber) {
-          this.$root.messages[i].isRead = 1
-        }
-      }
-      let messages = this.$root.messages.filter(e => e.transmitter === this.phoneNumber).sort((m1, m2) => {
-        return m1.time - m2.time
-      })
+    ...mapGetters(['messages']),
+    messagesList () {
+      return this.messages.filter(e => e.transmitter === this.phoneNumber)
+    }
+  },
+  watch: {
+    messagesList () {
+      this.setMessageRead(this.phoneNumber)
       this.resetScroll()
-      return messages
     }
   },
   created: function () {
     this.display = this.$route.params.display
-    this.phoneNumber = this.$route.params.num
+    this.phoneNumber = this.$route.params.number
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBackspace)
     this.$bus.$on('keyUpArrowRight', this.onRight)
-    request.setReadMessageNumber(this.phoneNumber)
   },
   beforeDestroy: function () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
