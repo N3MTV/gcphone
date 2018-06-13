@@ -4,12 +4,20 @@
 --====================================================================================
 
 math.randomseed(os.time()) 
+
+--- Pour les numero du style XXX-XXXX
 function getPhoneRandomNumber()
     local numBase0 = math.random(0,999)
     local numBase1 = math.random(0,9999)
     local num = string.format("%03d-%04d", numBase0, numBase1 )
 	return num
 end
+
+
+--- Pour les numero du style 06 XX XX XX XX
+-- function getPhoneRandomNumber()
+--     return '0' .. math.random(600000000,699999999)
+-- end
 
 --====================================================================================
 --  Utils
@@ -62,7 +70,6 @@ function getOrGeneratePhoneNumber (sourcePlayer, identifier, cb)
     local identifier = identifier
     local myPhoneNumber = getNumberPhone(identifier)
     if myPhoneNumber == '0' or myPhoneNumber == nil then
-        print('LSLSL')
         repeat
             myPhoneNumber = getPhoneRandomNumber()
             local id = getIdentifierByPhoneNumber(myPhoneNumber)

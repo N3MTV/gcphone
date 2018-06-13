@@ -1,12 +1,12 @@
 <template>
   <div class="list">
-    <div v-if="title !== ''" class="title" v-bind:style="classTitle()">{{title}}</div>
+    <div v-if="title !== ''" class="title" v-bind:style="styleTitle()">{{title}}</div>
     <div class="elements">
         <div class="element" v-for='(elem, key) in list' 
           v-bind:key="elem[keyDispay]"
           v-bind:class="{ select: key === currentSelect}"
           >
-            <div class="elem-pic" v-bind:style="classTitle(elem)">
+            <div class="elem-pic" v-bind:style="stylePuce(elem)">
               {{elem.letter || elem[keyDispay][0]}}
             </div>
             <div v-if="elem.puce !== undefined && elem.puce !== 0" class="elem-puce">{{elem.puce}}</div>
@@ -62,11 +62,25 @@ export default {
   computed: {
   },
   methods: {
-    classTitle: function (data) {
+    styleTitle: function () {
+      return {
+        color: this.color,
+        backgroundColor: this.backgroundColor
+      }
+    },
+    stylePuce (data) {
       data = data || {}
+      if (data.icon !== undefined) {
+        return {
+          backgroundImage: `url(${data.icon})`,
+          backgroundSize: 'cover',
+          color: 'rgba(0,0,0,0)'
+        }
+      }
       return {
         color: data.color || this.color,
-        backgroundColor: data.backgroundColor || this.backgroundColor
+        backgroundColor: data.backgroundColor || this.backgroundColor,
+        borderRadius: '50%'
       }
     },
     scrollIntoViewIfNeeded: function () {
@@ -142,7 +156,6 @@ export default {
     text-align: center;
     line-height: 32px;
     font-weight: 700;
-    border-radius: 50%;
 }
 .elem-puce{
   background-color: red;

@@ -8,7 +8,8 @@ const state = {
   zoom: window.localStorage['gc_zoom'] || '100%',
   volume: window.localStorage['gc_volume'] || 1,
   config: {
-    reseau: 'Gannon'
+    reseau: 'Gannon',
+    useFormatNumberFrance: false
   }
 }
 
@@ -50,12 +51,7 @@ const getters = {
   coqueLabel: (state, getters) => getters.coque.label,
   zoom: ({ zoom }) => zoom,
   config: ({ config }) => config,
-  resetPhone ({ dispatch, getters }) {
-    dispatch('setZoon', '100%')
-    dispatch('setVolume', 1)
-    dispatch('setBackground', getters.config.background_default)
-    dispatch('setCoque', getters.config.coque_default)
-  }
+  useFormatNumberFrance: ({ config }) => config.useFormatNumberFrance
 }
 
 const actions = {
@@ -84,6 +80,12 @@ const actions = {
   },
   closePhone () {
     PhoneAPI.closePhone()
+  },
+  resetPhone ({ dispatch, getters }) {
+    dispatch('setZoon', '100%')
+    dispatch('setVolume', 1)
+    dispatch('setBackground', getters.config.background_default)
+    dispatch('setCoque', getters.config.coque_default)
   }
 }
 

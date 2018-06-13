@@ -1,5 +1,6 @@
 {
   "reseau": "Gannon",
+  "useFormatNumberFrance": false,
   "background" : {
     "Calvin & Hobbes": "back001.jpg",
     "Destiny": "back002.jpg",
@@ -43,6 +44,7 @@
   "serviceCall": [
     {
       "display": "Police",
+      "icon": "/html/static/img/icons_app/bank.png",
       "subMenu": [
         {
           "title": "Envoyer un message",
@@ -53,6 +55,7 @@
     },
     {
       "display": "Ambulance",
+      "backgroundColor": "red",
       "subMenu": [
         {
           "title": "Envoyer un message",

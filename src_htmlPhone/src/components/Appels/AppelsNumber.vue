@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   components: {},
   data () {
@@ -93,7 +93,11 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['useFormatNumberFrance']),
     numeroFormat () {
+      if (this.useFormatNumberFrance === true) {
+        return this.numero
+      }
       const l = this.numero.startsWith('#') ? 4 : 3
       if (this.numero.length > l) {
         return this.numero.slice(0, l) + '-' + this.numero.slice(l)

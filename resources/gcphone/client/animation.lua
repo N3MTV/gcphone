@@ -16,7 +16,6 @@ local lastAnim = nil
 
 
 function ePhoneInAnim()
-	print('ePhoneInAnim')
 	if IsPlayerDead(PlayerId()) then
 		return
 	end
@@ -37,11 +36,9 @@ end
 
 
 function ePhoneStartCall () 
-	print('ePhoneStartCall before', lastAnim)
 	if lastAnim ~= inAnim and lastAnim ~= CallToText then
 		return
 	end
-	print('ePhoneStartCall')
 	local dict = "cellphone@"
 	if IsPedInAnyVehicle(GetPlayerPed(-1), false) then
 		dict = dict .. "in_car@ds"
@@ -57,7 +54,6 @@ function ePhoneStopCall ()
 	if lastAnim ~= textToCall then
 		return
 	end
-	print('ePhoneStopCall')
 	local dict = "cellphone@"
 	if IsPedInAnyVehicle(GetPlayerPed(-1), false) then
 		dict = dict .. "in_car@ds"
@@ -70,7 +66,6 @@ end
 
 
 function ePhoneOutAnim()
-	print('ePhoneOutAnim')
 	if IsPlayerDead(PlayerId()) then
 		return
 	end
