@@ -3,8 +3,7 @@
 -- #Version 2.0
 --====================================================================================
 
--- Generation Alétoire des numero
---- Modifier ici le format
+math.randomseed(os.time()) 
 function getPhoneRandomNumber()
     local numBase0 = math.random(0,999)
     local numBase1 = math.random(0,9999)
@@ -44,6 +43,8 @@ function getIdentifierByPhoneNumber(phone_number)
     end
     return nil
 end
+
+
 function getPlayerID(source)
     local identifiers = GetPlayerIdentifiers(source)
     local player = getIdentifiant(identifiers)
@@ -52,6 +53,28 @@ end
 function getIdentifiant(id)
     for _, v in ipairs(id) do
         return v
+    end
+end
+
+
+function getOrGeneratePhoneNumber (sourcePlayer, identifier, cb)
+    local sourcePlayer = sourcePlayer
+    local identifier = identifier
+    local myPhoneNumber = getNumberPhone(identifier)
+    if myPhoneNumber == '0' or myPhoneNumber == nil then
+        print('LSLSL')
+        repeat
+            myPhoneNumber = getPhoneRandomNumber()
+            local id = getIdentifierByPhoneNumber(myPhoneNumber)
+        until id == nil
+        MySQL.Async.insert("UPDATE users SET phone_number = @myPhoneNumber WHERE identifier = @identifier", { 
+            ['@myPhoneNumber'] = myPhoneNumber,
+            ['@identifier'] = identifier
+        }, function ()
+            cb(myPhoneNumber)
+        end)
+    else
+        cb(myPhoneNumber)
     end
 end
 --====================================================================================
@@ -443,22 +466,7 @@ end)
 
 
 
-function getOrGeneratePhoneNumber (sourcePlayer, identifier, cb)
-    local sourcePlayer = sourcePlayer
-    local identifier = identifier
-    local myPhoneNumber = getNumberPhone(identifier)
-    if myPhoneNumber == '0' then
-        local randomNumberPhone = getPhoneRandomNumber(identifier)
-        MySQL.Async.insert("UPDATE users SET phone_number = @randomNumberPhone WHERE identifier = @identifier", { 
-            ['@randomNumberPhone'] = randomNumberPhone,
-            ['@identifier'] = identifier
-        }, function ()
-            getOrGeneratePhoneNumber(sourcePlayer, identifier, cb)
-        end)
-    else
-        cb(myPhoneNumber)
-    end
-end
+
 
 --====================================================================================
 --  OnLoad
