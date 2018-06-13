@@ -33,7 +33,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['myPhoneNumber', 'backgroundLabel', 'coqueLabel', 'zoom', 'config']),
+    ...mapGetters(['myPhoneNumber', 'backgroundLabel', 'coqueLabel', 'zoom', 'config', 'volume']),
     paramList () {
       return [
         {
@@ -70,6 +70,20 @@ export default {
           }
         },
         {
+          icons: 'fa-volume-down',
+          title: 'Volume',
+          value: this.valumeDisplay,
+          onValid: 'setPhoneVolume',
+          values: {
+            '100 %': 1,
+            '80 %': 0.8,
+            '60 %': 0.6,
+            '40 %': 0.4,
+            '20 %': 0.2,
+            '0 %': 0
+          }
+        },
+        {
           icons: 'fa-exclamation-triangle',
           color: '#c0392b',
           title: 'Formater',
@@ -80,10 +94,13 @@ export default {
           }
         }
       ]
+    },
+    valumeDisplay () {
+      return `${this.volume * 100} %`
     }
   },
   methods: {
-    ...mapActions(['setZoon', 'setBackground', 'setCoque']),
+    ...mapActions(['setZoon', 'setBackground', 'setCoque', 'setVolume']),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
         document.querySelector('.select').scrollIntoViewIfNeeded()
@@ -142,6 +159,9 @@ export default {
     },
     setZoom: function (param, data) {
       this.setZoon(data.value)
+    },
+    setPhoneVolume (param, data) {
+      this.setVolume(data.value)
     },
     resetPhone: function (param, data) {
       if (data.title !== 'Annuler') {

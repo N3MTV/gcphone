@@ -6,6 +6,7 @@ const state = {
   background: JSON.parse(window.localStorage['gc_background'] || null),
   coque: JSON.parse(window.localStorage['gc_coque'] || null),
   zoom: window.localStorage['gc_zoom'] || '100%',
+  volume: window.localStorage['gc_volume'] || 1,
   config: {
     reseau: 'Gannon'
   }
@@ -14,6 +15,7 @@ const state = {
 const getters = {
   show: ({ show }) => show,
   myPhoneNumber: ({ myPhoneNumber }) => myPhoneNumber,
+  volume: ({ volume }) => volume,
   background: ({ background, config }) => {
     if (background === null) {
       if (config.background_default !== undefined) {
@@ -39,8 +41,8 @@ const getters = {
         return config.coque_default
       }
       return {
-        label: 'noir',
-        value: 'noir.jpg'
+        label: 'base',
+        value: 'base.jpg'
       }
     }
     return coque
@@ -50,6 +52,7 @@ const getters = {
   config: ({ config }) => config,
   resetPhone ({ dispatch, getters }) {
     dispatch('setZoon', '100%')
+    dispatch('setVolume', 1)
     dispatch('setBackground', getters.config.background_default)
     dispatch('setCoque', getters.config.coque_default)
   }
@@ -75,6 +78,10 @@ const actions = {
     window.localStorage['gc_coque'] = JSON.stringify(coque)
     commit('SET_COQUE', coque)
   },
+  setVolume ({ commit }, volume) {
+    window.localStorage['gc_volume'] = volume
+    commit('SET_VOLUME', volume)
+  },
   closePhone () {
     PhoneAPI.closePhone()
   }
@@ -98,6 +105,9 @@ const mutations = {
   },
   SET_ZOOM (state, zoom) {
     state.zoom = zoom
+  },
+  SET_VOLUME (state, volume) {
+    state.volume = volume
   }
 }
 

@@ -479,3 +479,24 @@ end)
 ----------------------------------
 ---------- GESTION APPEL ---------
 ----------------------------------
+
+--- VDK_CALL , maybe
+-- RegisterNetEvent('callService')
+-- AddEventHandler("callService", function(type)
+-- 	local limit = 120
+-- 	local defautText = ""
+-- 	DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", defautText, "", "", "", limit)
+-- 	while (UpdateOnscreenKeyboard() == 0) do
+-- 	  DisableAllControlActions(0);
+-- 	  Wait(0);
+-- 	 end
+-- 	if (GetOnscreenKeyboardResult()) then
+-- 		local msg = GetOnscreenKeyboardResult()
+-- 		local plyPos = GetEntityCoords(GetPlayerPed(-1), true)
+-- 		TriggerServerEvent("call:makeCall", type, {
+-- 			x = plyPos.x,
+-- 			y = plyPos.y,
+-- 			z = plyPos.z
+-- 		}, msg)
+-- 	end
+-- end)

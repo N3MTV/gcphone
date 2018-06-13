@@ -28,7 +28,7 @@ const actions = {
       dispatch('tchatGetMessagesChannel', { channel })
     }
   },
-  tchatAddMessage ({ state, commit }, { message }) {
+  tchatAddMessage ({ state, commit, getters }, { message }) {
     const channel = message.channel
     if (state.channels.find(e => e.channel === channel) !== undefined) {
       if (TchatAudio !== null) {
@@ -36,6 +36,7 @@ const actions = {
         TchatAudio = null
       }
       TchatAudio = new Audio('/html/static/sound/tchatNotification.ogg')
+      TchatAudio.volume = getters.volume
       TchatAudio.play()
     }
     commit('TCHAT_ADD_MESSAGES', { message })

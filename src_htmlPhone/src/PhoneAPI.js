@@ -159,7 +159,7 @@ class PhoneAPI {
     store.commit('SET_BOURSE_INFO', data.bourse)
   }
   onwaitingCall (data) {
-    store.commit('SET_APPELS_INFO', data.infoCall)
+    store.commit('SET_APPELS_INFO_IF_EMPTY', data.infoCall)
   }
   onacceptCall (data) {
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)

@@ -2,9 +2,9 @@
   <div class="screen">
     <div class='elements'>
       <img class="logo_maze" src="/html/static/img/app_bank/logo_mazebank.jpg">
+      <div class="hr"></div>
       <div class='element'>
         <div class="element-content">
-          <hr>
           <span>$ {{ bankAmontFormat }}</span>
         </div>
       </div>
@@ -47,7 +47,8 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: #e1090a;
+  padding: 18px;
+  background-color: white;
 }
 .title{
   padding-left: 16px;
@@ -58,31 +59,32 @@ export default {
   background-color: rgb(76, 175, 80);
 }
 .elements{
-  overflow-y: auto;
-  margin-left: auto;
-  margin-right: auto;
-  top: 50%;
-  transform: translateY(-50%);
+  display: flex;
   position: relative;
-  width: 50%;
-  text-align: center;
+  width: 100%;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+}
+.hr{
+  width: 100;
+  height: 4px;
+  margin-top: 4px;
+  background-color: #EB202D;
 }
 .logo_maze {
-    width: 75%; 
-    text-align: center;
-}
-.elements hr{
-    width: 100%;
-    box-shadow: none;
-    border: 1px solid white;
+  width: 100%; 
+  height: auto;
+  flex-shrink: 0;
 }
 .element-content{
+  margin-top: 24px;
   display: block;
   height: 40px;
   width: 100%;
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  color: white;
+  text-align: center;
+  font-weight: 700;
+  font-size: 24px;
+  color: #EB202D;
 }
 </style>
