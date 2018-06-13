@@ -12,7 +12,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 
-ALTER TABLE `user_message`
+ALTER TABLE `users`
 	ADD COLUMN `phone_number` VARCHAR(10) NULL;
 
 
