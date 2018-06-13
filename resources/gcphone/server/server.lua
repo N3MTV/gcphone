@@ -18,7 +18,7 @@ end
 function getSourceFromIdentifier(identifier, cb)
     TriggerEvent("es:getPlayers", function(users)
         for k , user in pairs(users) do
-            if user.identifier == identifier then
+            if (user.getIdentifier ~= nil and user.getIdentifier() == identifier) or (user.identifier == identifier) then
                 cb(k)
                 return
             end
@@ -471,21 +471,6 @@ AddEventHandler('es:playerLoaded',function(source)
         TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier))
         TriggerClientEvent("gcPhone:allMessage", sourcePlayer, getMessages(identifier))
     end)
-    -- local myPhoneNumber = getNumberPhone(identifier)
-    -- print('myPhoneNumber', myPhoneNumber)
-    -- while myPhoneNumber == '0' do 
-    --     local randomNumberPhone = getPhoneRandomNumber(identifier)
-    --     print('TEST: randomNumberPhone', randomNumberPhone, identifier)
-    --     MySQL.Sync.execute("UPDATE users SET phone_number = @randomNumberPhone WHERE identifier = @identifier", { 
-    --         ['@randomNumberPhone'] = randomNumberPhone,
-    --         ['@identifier'] = identifier
-    --     })
-    --     Citizen.
-    --     print('GET')
-    --     myPhoneNumber = getNumberPhone(identifier)
-    --     print('myPhoneNumber', myPhoneNumber)
-    -- end
-
 end)
 
 -- Just For reload

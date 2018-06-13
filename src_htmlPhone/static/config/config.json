@@ -31,12 +31,10 @@
     "value": "back001.jpg"
   },
   "coque": {
-    "Coque Bleu": "bleu.png",
-    "Coque blanc": "blanc.png",
-    "Coque Noir": "noir.png",
-    "Coque Rose": "rose.png",
-    "Coque Rouge": "rouge.png",
-    "Brick Base": "base.png"
+    "Sansumg S8": "s8.png",
+    "Iphone X": "iphonex.png",
+    "Brick Base": "base.png",
+    "Transparent": "transparent.png"
   },
   "coque_default": {
     "label": "Coque Noir",

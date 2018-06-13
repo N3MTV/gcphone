@@ -102,28 +102,28 @@ export default {
 <style >
     .phone_content{
         position: absolute;
-        bottom: 2vh;
-        right: 2vh;
-        width: 266px;
-        height: 530px;
+        bottom: 0vh;
+        right: 0vh;
+        width: 325px;
+        height: 650px;
         background-size: cover;
     }
     .phone_wrapper{
         position: absolute;
         width: 100%;
         z-index: 999;
-        width: 266px;
-        height: 530px;
+        width: 325px;
+        height: 650px;
         background-size: cover;
     }
     .phone_screen{
         overflow: hidden;
         position: absolute;
         background-color: white;
-        bottom: 26px;
-        left: 13px;
-        right: 12px;
-        top: 25px;
+        bottom: 65px;
+        left: 32px;
+        right: 32px;
+        top: 65px;
     }
     .phone_courbure{
         position: absolute;

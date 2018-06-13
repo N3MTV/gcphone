@@ -12,8 +12,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 
-ALTER TABLE `user_message`
-	ADD COLUMN `phone_number` VARCHAR(10) NULL;
+ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `phone_number` VARCHAR(10) NOT NULL DEFAULT '0'
 
 
 -- Export de la structure de la table gtarp. phone_app_chat

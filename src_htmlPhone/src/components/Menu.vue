@@ -136,6 +136,7 @@ export default {
   width: 100%;
   align-items: flex-start;
   align-content: flex-start;
+  justify-content: space-around;
   flex-flow: row;
   flex-wrap: wrap;
   margin-bottom: 0px;

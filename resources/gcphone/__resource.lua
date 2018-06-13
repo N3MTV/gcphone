@@ -10,14 +10,12 @@ files {
 	'html/static/config/config.json',
 	
 	-- Coque
-	'html/static/img/coque/bleu.png',
-	'html/static/img/coque/blanc.png',
-	'html/static/img/coque/noir.png',
-	'html/static/img/coque/rose.png',
-	'html/static/img/coque/rouge.png',
+	'html/static/img/coque/s8.png',
+	'html/static/img/coque/iphonex.png',
 	'html/static/img/coque/base.png',
+	'html/static/img/coque/transparent.png',
 	
-	
+	-- Background
 	'html/static/img/background/back001.jpg',
 	'html/static/img/background/back002.jpg',
 	'html/static/img/background/back003.jpg',
