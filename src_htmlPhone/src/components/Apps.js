@@ -6,17 +6,17 @@ const Apps = [
     inHomePage: true
   },
   {
-    name: 'Contacts',
-    icons: '/html/static/img/icons_app/contacts.png',
-    routeName: 'contacts',
-    inHomePage: true
-  },
-  {
     name: 'Messages',
     icons: '/html/static/img/icons_app/sms.png',
     routeName: 'messages',
     inHomePage: true,
     puceRef: 'nbMessagesUnread'
+  },
+  {
+    name: 'Contacts',
+    icons: '/html/static/img/icons_app/contacts.png',
+    routeName: 'contacts',
+    inHomePage: true
   },
   {
     name: 'Paramètres',

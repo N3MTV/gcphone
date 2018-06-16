@@ -1,5 +1,7 @@
 import store from '@/store'
+import VoiceRTC from './VoiceRCT'
 
+const USE_VOICE_RTC = false
 const BASE_URL = 'http://gcphone/'
 
 /* eslint-disable camelcase */
@@ -14,6 +16,7 @@ class PhoneAPI {
       }
     })
     this.config = null
+    this.voiceRTC = new VoiceRTC()
   }
 
   async post (method, data) {
@@ -60,10 +63,23 @@ class PhoneAPI {
 
   // == Gestion des appels
   async startCall (numero) {
-    return this.post('startCall', { numero })
+    if (USE_VOICE_RTC === true) {
+      const rtcOffer = await this.voiceRTC.prepareCall()
+      console.log('PhneAPI startCall')
+      return this.post('startCall', { numero, rtcOffer })
+    } else {
+      return this.post('startCall', { numero })
+    }
   }
   async acceptCall (infoCall) {
-    return this.post('acceptCall', { infoCall })
+    if (USE_VOICE_RTC === true) {
+      console.log('PhneAPI acceptCall' + JSON.stringify(infoCall))
+      const rtcAnswer = await this.voiceRTC.acceptCall(infoCall.rtcOffer)
+      console.log('PhneAPI acceptCall')
+      return this.post('acceptCall', { infoCall, rtcAnswer })
+    } else {
+      return this.post('acceptCall', { infoCall })
+    }
   }
   async rejectCall (infoCall) {
     return this.post('rejectCall', { infoCall })
@@ -121,6 +137,8 @@ class PhoneAPI {
       } else {
         this.config = response
       }
+      this.voiceRTC = new VoiceRTC(this)
+      window.VR = this.voiceRTC
     }
     return this.config
   }
@@ -129,7 +147,6 @@ class PhoneAPI {
   async tchatGetMessagesChannel (channel) {
     this.post('tchat_getChannel', { channel })
   }
-
   async tchatSendMessage (channel, message) {
     this.post('tchat_addMessage', { channel, message })
   }
@@ -159,9 +176,16 @@ class PhoneAPI {
     store.commit('SET_BOURSE_INFO', data.bourse)
   }
   onwaitingCall (data) {
-    store.commit('SET_APPELS_INFO_IF_EMPTY', data.infoCall)
+    store.commit('SET_APPELS_INFO_IF_EMPTY', {
+      ...data.infoCall,
+      initiator: data.initiator
+    })
   }
   onacceptCall (data) {
+    console.log('onacceptCall ' + data.initiator)
+    if (data.initiator === true) {
+      this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer)
+    }
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
   }
   onrejectCall (data) {
@@ -173,6 +197,21 @@ class PhoneAPI {
   }
   ontchat_channel (data) {
     store.commit('TCHAT_SET_MESSAGES', data)
+  }
+
+  // =====================
+  rtcSendOffer (data) {
+    this.voiceRTC.prepareCall()
+  }
+  rtcSendAnswer (data) {
+    this.post('gcPhoneRTC_send_answer', data)
+  }
+  ongcPhoneRTC_receive_offer (data) {
+    console.log('')
+  }
+
+  ongcPhoneRTC_receive_answer (data) {
+    console.log('')
   }
 
 }

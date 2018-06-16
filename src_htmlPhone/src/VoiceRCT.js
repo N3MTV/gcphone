@@ -16,8 +16,8 @@ class VoiceRTC {
     this.initiator = null
     this.RTCConfig = {
       iceServers: [{
-        urls: ['turn:youserve.com'],
-        username: 'user',
+        urls: ['turn:51.38.231.119'],
+        username: 'jojo',
         credential: 'pass'
       }]
     }

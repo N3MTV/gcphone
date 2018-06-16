@@ -60,6 +60,8 @@ export default {
           title: 'Zoom',
           value: this.zoom,
           onValid: 'setZoom',
+          onLeft: this.ajustZoom(-1),
+          onRight: this.ajustZoom(1),
           values: {
             '250 %': '250%',
             '200 %': '200%',
@@ -74,6 +76,8 @@ export default {
           title: 'Volume',
           value: this.valumeDisplay,
           onValid: 'setPhoneVolume',
+          onLeft: this.ajustVolume(-0.01),
+          onRight: this.ajustVolume(0.01),
           values: {
             '100 %': 1,
             '80 %': 0.8,
@@ -96,7 +100,7 @@ export default {
       ]
     },
     valumeDisplay () {
-      return `${this.volume * 100} %`
+      return `${Math.floor(this.volume * 100)} %`
     }
   },
   methods: {
@@ -119,6 +123,20 @@ export default {
       if (this.ignoreControls === true) return
       this.currentSelect = this.currentSelect === this.paramList.length - 1 ? this.currentSelect : this.currentSelect + 1
       this.scrollIntoViewIfNeeded()
+    },
+    onRight () {
+      if (this.ignoreControls === true) return
+      let param = this.paramList[this.currentSelect]
+      if (param.onRight !== undefined) {
+        param.onRight(param)
+      }
+    },
+    onLeft () {
+      if (this.ignoreControls === true) return
+      let param = this.paramList[this.currentSelect]
+      if (param.onLeft !== undefined) {
+        param.onLeft(param)
+      }
     },
     onEnter: function () {
       if (this.ignoreControls === true) return
@@ -160,8 +178,20 @@ export default {
     setZoom: function (param, data) {
       this.setZoon(data.value)
     },
+    ajustZoom (inc) {
+      return () => {
+        const percent = Math.max(50, (parseInt(this.zoom) || 100) + inc)
+        this.setZoon(`${percent}%`)
+      }
+    },
     setPhoneVolume (param, data) {
       this.setVolume(data.value)
+    },
+    ajustVolume (inc) {
+      return () => {
+        const newVolume = Math.max(0, Math.min(1, this.volume + inc))
+        this.setVolume(newVolume)
+      }
     },
     resetPhone: function (param, data) {
       if (data.title !== 'Annuler') {
@@ -178,12 +208,16 @@ export default {
   },
 
   created: function () {
+    this.$bus.$on('keyUpArrowRight', this.onRight)
+    this.$bus.$on('keyUpArrowLeft', this.onLeft)
     this.$bus.$on('keyUpArrowDown', this.onDown)
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBackspace)
   },
   beforeDestroy: function () {
+    this.$bus.$off('keyUpArrowRight', this.onRight)
+    this.$bus.$off('keyUpArrowLeft', this.onLeft)
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpEnter', this.onEnter)

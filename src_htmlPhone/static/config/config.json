@@ -4,27 +4,7 @@
   "background" : {
     "Calvin & Hobbes": "back001.jpg",
     "Destiny": "back002.jpg",
-    "Guitare": "01.jpg",
-    "Los Santos": "02.jpg",
-    "Poursuite": "03.jpg",
-    "Franklin": "04.jpg",
-    "Police boom": "05.jpg",
-    "Trevor & Michael": "06.jpg",
-    "San Andreas": "07.jpg",
-    "Cité": "08.jpg",
-    "Ciel & Forêt": "09.jpg",
-    "Forêt Colorer": "10.jpg",
-    "Vague Géante": "11.jpg",
-    "Lion": "12.jpg",
-    "Planète": "13.jpg",
-    "Rose": "14.jpg",
-    "Bleu": "15.jpg",
-    "Noir": "16.jpg",
-    "Chocolat": "17.jpg",
-    "Assassins Creed": "18.jpg",
-    "Stalactite": "19.jpg",
-    "Origin": "20.jpg",
-    "Pacman": "21.jpg",
+    "Stormtrooper": "back003.jpg",
     "Custom": "URL"
   },
   "background_default": {
@@ -48,8 +28,10 @@
       "subMenu": [
         {
           "title": "Envoyer un message",
-          "eventName": "callService",
-          "type": "police"
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "police"
+          }
         }
       ]
     },
