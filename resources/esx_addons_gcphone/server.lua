@@ -14,7 +14,7 @@ AddEventHandler('gcPhone:addCall', function (AppelsInfo)
   local phoneNumber = AppelsInfo.receiver_num
   if PhoneNumbers[phoneNumber] ~= nil then
     for k,v in pairs(PhoneNumbers[phoneNumber].sources) do
-      TriggerClientEvent('esx_addons_gcphone:alert', tonumber(v), AppelsInfo)
+      TriggerClientEvent('esx_addons_gcphone:alert', tonumber(k), AppelsInfo)
     end
   end
 end)
@@ -70,6 +70,7 @@ end)
 
 
 AddEventHandler('esx_phone:registerNumber', function(number, type, sharePos, hasDispatch, hideNumber, hidePosIfAnon)
+  print('==== Enregistrement du telephone ' .. number)
 	local hideNumber    = hideNumber    or false
 	local hidePosIfAnon = hidePosIfAnon or false
 
