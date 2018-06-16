@@ -1,3 +1,4 @@
+
 ui_page 'html/index.html'
 
 files {
@@ -19,27 +20,6 @@ files {
 	'html/static/img/background/back001.jpg',
 	'html/static/img/background/back002.jpg',
 	'html/static/img/background/back003.jpg',
-	'html/static/img/background/01.jpg',
-	'html/static/img/background/02.jpg',
-	'html/static/img/background/03.jpg',
-	'html/static/img/background/04.jpg',
-	'html/static/img/background/05.jpg',
-	'html/static/img/background/06.jpg',
-	'html/static/img/background/07.jpg',
-	'html/static/img/background/08.jpg',
-	'html/static/img/background/09.jpg',
-	'html/static/img/background/10.jpg',
-	'html/static/img/background/11.jpg',
-	'html/static/img/background/12.jpg',
-	'html/static/img/background/13.jpg',
-	'html/static/img/background/14.jpg',
-	'html/static/img/background/15.jpg',
-	'html/static/img/background/16.jpg',
-	'html/static/img/background/17.jpg',
-	'html/static/img/background/18.jpg',
-	'html/static/img/background/19.jpg',
-	'html/static/img/background/20.jpg',
-	'html/static/img/background/21.jpg',
 	
 	'html/static/img/icons_app/call.png',
 	'html/static/img/icons_app/contacts.png',
@@ -76,5 +56,3 @@ server_script {
 	"server/server.lua",
 	"server/app_tchat.lua",
 }
-
-server_export 'GetNumberServer'

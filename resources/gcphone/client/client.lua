@@ -139,26 +139,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --====================================================================================
 --  Function client | Appels
 --====================================================================================
@@ -166,16 +146,16 @@ local inCall = false
 local aminCall = false
 
 RegisterNetEvent("gcPhone:waitingCall")
-AddEventHandler("gcPhone:waitingCall", function(infoCall)
-  SendNUIMessage({event = 'waitingCall', infoCall = infoCall})
-  if infoCall.transmitter_num == myPhoneNumber then
+AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
+  SendNUIMessage({event = 'waitingCall', infoCall = infoCall, initiator = initiator})
+  if initiator == true then
     aminCall = true
     ePhoneStartCall()
   end
 end)
 
 RegisterNetEvent("gcPhone:acceptCall")
-AddEventHandler("gcPhone:acceptCall", function(infoCall)
+AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
   if inCall == false then
     inCall = true
     NetworkSetVoiceChannel(infoCall.id + 1)
@@ -185,7 +165,11 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall)
     aminCall = true
     ePhoneStartCall()
   end
-  SendNUIMessage({event = 'acceptCall', infoCall = infoCall})
+  if menuIsOpen == false then 
+    TooglePhone()
+    ePhoneStartCall()
+  end
+  SendNUIMessage({event = 'acceptCall', infoCall = infoCall, initiator = initiator})
 end)
 
 RegisterNetEvent("gcPhone:rejectCall")
@@ -208,12 +192,12 @@ AddEventHandler("gcPhone:historiqueCall", function(historique)
   SendNUIMessage({event = 'historiqueCall', historique = historique})
 end)
 
-function startCall (phone_number)
-  TriggerServerEvent('gcPhone:startCall', phone_number)
+function startCall (phone_number, rtcOffer)
+  TriggerServerEvent('gcPhone:startCall', phone_number, rtcOffer)
 end
 
-function acceptCall (infoCall)
-  TriggerServerEvent('gcPhone:acceptCall', infoCall)
+function acceptCall (infoCall, rtcAnswer)
+  TriggerServerEvent('gcPhone:acceptCall', infoCall, rtcAnswer)
 end
 
 function rejectCall(infoCall)
@@ -242,12 +226,12 @@ end
 --====================================================================================
 
 RegisterNUICallback('startCall', function (data, cb)
-  startCall(data.numero)
+  startCall(data.numero, data.rtcOffer)
   cb()
 end)
 
 RegisterNUICallback('acceptCall', function (data, cb)
-  acceptCall(data.infoCall)
+  acceptCall(data.infoCall, data.rtcAnswer)
   cb()
 end)
 
@@ -261,15 +245,7 @@ RegisterNUICallback('ignoreCall', function (data, cb)
   cb()
 end)
 
-RegisterNUICallback('appelsDeleteHistorique', function (data, cb)
-  appelsDeleteHistorique(data.numero)
-  cb()
-end)
 
-RegisterNUICallback('appelsDeleteAllHistorique', function (data, cb)
-  appelsDeleteAllHistorique(data.infoCall)
-  cb()
-end)
 
 
 
@@ -353,7 +329,7 @@ function tprint (t, s)
   end
 end
 RegisterNUICallback('log', function(data, cb)
-  -- print(data)
+  print(data)
   -- tprint(data)
   cb()
 end)
@@ -412,19 +388,15 @@ end)
 RegisterNUICallback('addContact', function(data, cb) 
   TriggerServerEvent('gcPhone:addContact', data.display, data.phoneNumber)
 end)
-
 RegisterNUICallback('updateContact', function(data, cb)
   TriggerServerEvent('gcPhone:updateContact', data.id, data.display, data.phoneNumber)
 end)
-
 RegisterNUICallback('deleteContact', function(data, cb)
   TriggerServerEvent('gcPhone:deleteContact', data.id)
 end)
-
 RegisterNUICallback('getContacts', function(data, cb)
   cb(json.encode(contacts))
 end)
-
 RegisterNUICallback('setGPS', function(data, cb)
   SetNewWaypoint(tonumber(data.x), tonumber(data.y))
   cb()
@@ -437,12 +409,10 @@ RegisterNUICallback('callEvent', function(data, cb)
   end
   cb()
 end)
-
 RegisterNUICallback('deleteALL', function(data, cb)
   TriggerServerEvent('gcPhone:deleteALL')
   cb()
 end)
-
 function TooglePhone() 
   menuIsOpen = not menuIsOpen
   SendNUIMessage({show = menuIsOpen})
@@ -452,14 +422,12 @@ function TooglePhone()
     ePhoneOutAnim()
   end
 end
-
 RegisterNUICallback('takePhoto', function(data, cb)
   menuIsOpen = false
   SendNUIMessage({show = false})
   cb()
   TriggerEvent('camera:open')
 end)
-
 RegisterNUICallback('closePhone', function(data, cb)
   menuIsOpen = false
   SendNUIMessage({show = false})
@@ -467,36 +435,154 @@ RegisterNUICallback('closePhone', function(data, cb)
   cb()
 end)
 
-AddEventHandler('onClientResourceStart', function(res)
-    --ClearPedTasksImmediately(GetPlayerPed(-1))
-    DoScreenFadeIn(300)
-    if res == "gcphone" then
-        TriggerServerEvent('gcPhone:allUpdate')
-    end
-end)
+
 
 
 ----------------------------------
 ---------- GESTION APPEL ---------
 ----------------------------------
 
---- VDK_CALL , maybe
--- RegisterNetEvent('callService')
--- AddEventHandler("callService", function(type)
--- 	local limit = 120
--- 	local defautText = ""
--- 	DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", defautText, "", "", "", limit)
--- 	while (UpdateOnscreenKeyboard() == 0) do
--- 	  DisableAllControlActions(0);
--- 	  Wait(0);
--- 	 end
--- 	if (GetOnscreenKeyboardResult()) then
--- 		local msg = GetOnscreenKeyboardResult()
--- 		local plyPos = GetEntityCoords(GetPlayerPed(-1), true)
--- 		TriggerServerEvent("call:makeCall", type, {
--- 			x = plyPos.x,
--- 			y = plyPos.y,
--- 			z = plyPos.z
--- 		}, msg)
--- 	end
+
+
+
+RegisterNUICallback('appelsDeleteHistorique', function (data, cb)
+  appelsDeleteHistorique(data.numero)
+  cb()
+end)
+RegisterNUICallback('appelsDeleteAllHistorique', function (data, cb)
+  appelsDeleteAllHistorique(data.infoCall)
+  cb()
+end)
+----------------------------------
+---------- GESTION VIA WEBRTC ----
+----------------------------------
+-- local USE_VOICE_RTC = true
+-- if USE_VOICE_RTC == true then
+--   RegisterNUICallback('startCall', function (data, cb)
+--     startCall(data.numero)
+--     cb()
+--   end)
+
+
+-- end
+
+-- SendNUIMessage('ongcPhoneRTC_receive_offer')
+-- SendNUIMessage('ongcPhoneRTC_receive_answer')
+
+-- RegisterNUICallback('gcPhoneRTC_send_offer', function (data)
+
+
 -- end)
+
+
+-- RegisterNUICallback('gcPhoneRTC_send_answer', function (data)
+
+
+-- end)
+
+
+
+
+
+
+AddEventHandler('onClientResourceStart', function(res)
+  DoScreenFadeIn(300)
+  if res == "gcphone" then
+      TriggerServerEvent('gcPhone:allUpdate')
+  end
+end)
+
+
+--[[
+--- VDK_CALL , maybe
+RegisterNetEvent('callService')
+AddEventHandler("callService", function(type)
+	local limit = 120
+	local defautText = ""
+	DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", defautText, "", "", "", limit)
+	while (UpdateOnscreenKeyboard() == 0) do
+	  DisableAllControlActions(0);
+	  Wait(0);
+	 end
+	if (GetOnscreenKeyboardResult()) then
+		local msg = GetOnscreenKeyboardResult()
+		local plyPos = GetEntityCoords(GetPlayerPed(-1), true)
+		TriggerServerEvent("call:makeCall", type, {
+			x = plyPos.x,
+			y = plyPos.y,
+			z = plyPos.z
+		}, msg)
+	end
+end)
+
+Config.json
+{
+  "display": "Ambulance",
+  "backgroundColor": "red",
+  "subMenu": [
+    {
+      "title": "Envoyer un message",
+      "eventName": "callService",
+      "type": "ambulance"
+    }
+  ]
+}
+
+--]]
+
+
+
+--[[
+  Pour fonctionner avec esx_phone
+  Install esx_phone
+
+RegisterNetEvent('gcphone:esx_wrap_service')
+AddEventHandler('gcphone:esx_wrap_service', function(data)
+  local playerPed   = GetPlayerPed(-1)
+  local coords      = GetEntityCoords(playerPed)
+  local number      = data.number
+  local message     = data.message
+  if message == nil then
+    DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", "", "", "", "", 256)
+    while (UpdateOnscreenKeyboard() == 0) do
+      DisableAllControlActions(0);
+      Wait(0);
+    end
+    if (GetOnscreenKeyboardResult()) then
+      message =  GetOnscreenKeyboardResult()
+    end
+  end
+  if message ~= nil and message ~= "" then
+    TriggerServerEvent('esx_phone:send', number, message, false, {
+      x = coords.x,
+      y = coords.y,
+      z = coords.z
+    })
+  else
+    -- Invalide message
+  end
+end)
+
+Config.json
+{
+  "display": "Police",
+  "subMenu": [
+    {
+      "title": "Envoyer un message",
+      "eventName": "gcphone:esx_wrap_service",
+      "type": {
+        "number": "police"
+      }
+    },
+    {
+      "title": "Message Auto - Vols",
+      "eventName": "gcphone:esx_wrap_service",
+      "type": {
+        "number": "police",
+        "message": "vol"
+      }
+    }
+  ]
+}
+-  
+]]

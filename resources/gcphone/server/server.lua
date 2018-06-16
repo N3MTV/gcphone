@@ -327,12 +327,18 @@ AddEventHandler('gcPhone:getHistoriqueCall', function()
     sendHistoriqueCall(sourcePlayer, num)
 end)
 
-RegisterServerEvent('gcPhone:startCall')
-AddEventHandler('gcPhone:startCall', function(phone_number)
+
+RegisterServerEvent('gcPhone:internal_startCall')
+AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtcOffer, extraData)
+    local rtcOffer = rtcOffer
     if phone_number == nil then 
         print('BAD CALL NUMBER IS NIL')
         return
     end
+    print('internal_startCall', phone_number, rtcOffer, json.encode(extraData))
+
+    print('source', source)
+
     local hidden = string.sub(phone_number, 1, 1) == '#'
     if hidden == true then
         phone_number = string.sub(phone_number, 2)
@@ -354,40 +360,55 @@ AddEventHandler('gcPhone:startCall', function(phone_number)
         receiver_num = phone_number,
         is_valid = destPlayer ~= nil,
         is_accepts = false,
-        hidden = hidden
+        hidden = hidden,
+        rtcOffer = rtcOffer,
+        extraData = extraData
     }
+    
 
     if is_valid == true then
         getSourceFromIdentifier(destPlayer, function (srcTo)
             if srcTo ~= nill then
                 AppelsEnCours[indexCall].receiver_src = srcTo
-                TriggerClientEvent('gcPhone:waitingCall', sourcePlayer, AppelsEnCours[indexCall])
-                TriggerClientEvent('gcPhone:waitingCall', srcTo, AppelsEnCours[indexCall])
+                TriggerEvent('gcPhone:addCall', AppelsEnCours[indexCall])
+                TriggerClientEvent('gcPhone:waitingCall', sourcePlayer, AppelsEnCours[indexCall], true)
+                TriggerClientEvent('gcPhone:waitingCall', srcTo, AppelsEnCours[indexCall], false)
             else
-                TriggerClientEvent('gcPhone:waitingCall', sourcePlayer, AppelsEnCours[indexCall])
+                TriggerEvent('gcPhone:addCall', AppelsEnCours[indexCall])
+                TriggerClientEvent('gcPhone:waitingCall', sourcePlayer, AppelsEnCours[indexCall], true)
             end
         end)
     else
-        TriggerClientEvent('gcPhone:waitingCall', sourcePlayer, AppelsEnCours[indexCall])
+        TriggerEvent('gcPhone:addCall', AppelsEnCours[indexCall])
+        TriggerClientEvent('gcPhone:waitingCall', sourcePlayer, AppelsEnCours[indexCall], true)
     end
 
+end)
+
+RegisterServerEvent('gcPhone:startCall')
+AddEventHandler('gcPhone:startCall', function(phone_number, rtcOffer, extraData)
+    TriggerEvent('gcPhone:internal_startCall',source, phone_number, rtcOffer, extraData)
 end)
 
 
 
 
 RegisterServerEvent('gcPhone:acceptCall')
-AddEventHandler('gcPhone:acceptCall', function(infoCall)
+AddEventHandler('gcPhone:acceptCall', function(infoCall, rtcAnswer)
     local id = infoCall.id
     if AppelsEnCours[id] ~= nil then
-        if AppelsEnCours[id].transmitter_src ~= nil and AppelsEnCours[id].receiver_src ~= nil then
+        AppelsEnCours[id].receiver_src = infoCall.receiver_src or AppelsEnCours[id].receiver_src
+        if AppelsEnCours[id].transmitter_src ~= nil and AppelsEnCours[id].receiver_src~= nil then
             AppelsEnCours[id].is_accepts = true
-            TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].transmitter_src, AppelsEnCours[id])
-            TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].receiver_src, AppelsEnCours[id])
+            AppelsEnCours[id].rtcAnswer = rtcAnswer
+            TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].transmitter_src, AppelsEnCours[id], true)
+            TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].receiver_src, AppelsEnCours[id], false)
             saveAppels(AppelsEnCours[id])
         end
     end
 end)
+
+
 
 
 RegisterServerEvent('gcPhone:rejectCall')
@@ -405,6 +426,7 @@ AddEventHandler('gcPhone:rejectCall', function (infoCall)
         if AppelsEnCours[id].is_accepts == false then 
             saveAppels(AppelsEnCours[id])
         end
+        TriggerEvent('gcPhone:removeCall', AppelsEnCours)
         AppelsEnCours[id] = nil
     end
 end)
@@ -541,3 +563,18 @@ end
 --====================================================================================
 --  App ... WIP
 --====================================================================================
+
+
+-- SendNUIMessage('ongcPhoneRTC_receive_offer')
+-- SendNUIMessage('ongcPhoneRTC_receive_answer')
+
+-- RegisterNUICallback('gcPhoneRTC_send_offer', function (data)
+
+
+-- end)
+
+
+-- RegisterNUICallback('gcPhoneRTC_send_answer', function (data)
+
+
+-- end)
