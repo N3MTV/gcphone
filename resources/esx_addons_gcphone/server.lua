@@ -59,7 +59,7 @@ end
 
 
 
-AddEventHandler('esx_addons_gcphone:registerNumber', function(number, type, sharePos, hasDispatch, hideNumber, hidePosIfAnon)
+AddEventHandler('esx_phone:registerNumber', function(number, type, sharePos, hasDispatch, hideNumber, hidePosIfAnon)
   print('==== Enregistrement du telephone ' .. number .. ' => ' .. type)
 	local hideNumber    = hideNumber    or false
 	local hidePosIfAnon = hidePosIfAnon or false
