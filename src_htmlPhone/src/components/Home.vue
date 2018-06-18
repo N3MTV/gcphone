@@ -114,6 +114,7 @@ export default {
 <style>
 .home{
   background-size: cover !important;
+  background-position: center !important;
   position: relative;
   left: 0;
   top: 0;

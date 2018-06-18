@@ -11,8 +11,56 @@ local Keys = {
 }
 
 
-local CurrentInfoCall            = nil
-ESX                              = nil
+local alerts           = {}
+local currentAlert     = 1
+ESX                    = nil
+
+
+-- alerts = {
+--   {
+--     id = 500,
+--     message = 'Help',
+--     coords = { x = 132, y = -42},
+--     phone = '366-888',
+--     isAccept = 0
+--   },
+--   {
+--     id = 45674,
+--     message = 'Help2',
+--     coords = { x = 132, y = -42},
+--     phone = '366-888',
+--     isAccept = 1
+--   },
+--   {
+--     id = 45,
+--     message = 'Help3',
+--     coords = { x = 132, y = -42},
+--     phone = '366-888',
+--     isAccept = 3
+--   }
+-- }
+
+-- Citizen.CreateThread(function ()
+  --   Citizen.Wait(1000)
+  --   TriggerServerEvent('esx_addons_gcphone:startCall', 'police', 'lol', {
+  --     x = 13,
+  --     y = 254,
+  --     z = 0
+  --   })
+  
+  -- end)
+
+function removeAlert (alertId) 
+  for k, v in ipairs(alerts) do
+    if v.id == alertId then
+      if currentAlert >= k then
+        currentAlert = math.max(1, currentAlert - 1)
+      end
+      table.remove(alerts, k)
+      break
+    end
+  end
+end
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -22,15 +70,25 @@ Citizen.CreateThread(function()
 end)
 
 
-RegisterNetEvent('esx_phone:stopDispatch')
-AddEventHandler('esx_phone:stopDispatch', function(callId, reason)
-	if CurrentInfoCall ~= nil and CurrentInfoCall.id == callId  then
-		CurrentInfoCall = nil
-	end
+
+RegisterNetEvent('esx_addons_gcphone:notifyAlert')
+AddEventHandler('esx_addons_gcphone:notifyAlert', function(alert)
+  local find = false
+  for key, calert in ipairs(alerts) do 
+    if alert.id == calert.id then
+      find = true
+      alerts[key] = alert
+      break
+    end
+  end
+  if find == false then
+    table.insert(alerts, alert)
+  end
 end)
 
-RegisterNetEvent('esx_phone:setPhoneNumberSource')
-AddEventHandler('esx_phone:setPhoneNumberSource', function(phoneNumber, source)
+
+RegisterNetEvent('esx_addons_gcphone:setPhoneNumberSource')
+AddEventHandler('esx_addons_gcphone:setPhoneNumberSource', function(phoneNumber, source)
 	if source == -1 then
 		PhoneNumberSources[phoneNumber] = nil
 	else
@@ -52,7 +110,7 @@ RegisterNUICallback('send', function(data)
 		phoneNumber = tonumber(phoneNumber)
 	end
 
-	TriggerServerEvent('esx_phone:send', phoneNumber, data.message, data.anonyme, {
+	TriggerServerEvent('esx_addons_gcphone:send', phoneNumber, data.message, data.anonyme, {
 		x = coords.x,
 		y = coords.y,
 		z = coords.z
@@ -66,34 +124,21 @@ RegisterNUICallback('send', function(data)
 end)
 
 
-RegisterNetEvent('esx_addons_gcphone:alert')
-AddEventHandler('esx_addons_gcphone:alert', function (callInfo)
-  print('CurrentInfoCall', callInfo)
-  print('sx_addons_gcphone:alert', json.encode(callInfo))
-  if CurrentInfoCall == nil then
-    print('set CurrentInfoCall')
-    CurrentInfoCall = callInfo
-  end
+
+RegisterNetEvent('esx_addons_gcphone:showMessage')
+AddEventHandler('esx_addons_gcphone:showMessage', function (message)
+  ESX.ShowNotification(message)
 end)
 
--- CurrentInfoCall = {
---   extraData = {
---     id = 0,
---     message = "Ewemple de message Ewemple de message Ewemple de message Ewemple de message Ewemple de message ",
---     coords = {
---       x = 20.1234564,
---       y = 20.12,
---       z = 564.12
---     }
---   }
--- }
--- Key controls
+
+
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(10)
-		
-		if CurrentInfoCall ~= nil then
+    if #alerts ~= 0 then
+      local alert = alerts[currentAlert]
       DrawRect(0.12, 0.10, 0.2, 0.16, 0, 0, 0, 178)
+
       SetTextFont(0)
       SetTextScale(0.0, 0.35)
       SetTextCentre(true)
@@ -101,8 +146,34 @@ Citizen.CreateThread(function()
       SetTextEdge(0, 0, 0, 0, 0)
       SetTextColour(255, 255, 255, 255)
       SetTextEntry("STRING")
-      AddTextComponentString('~b~Appels en cours')
+      if alert.isAccept == 0 then
+        AddTextComponentString('~o~Appels en cours')
+      else
+        AddTextComponentString('~g~Appels en cours')
+      end
       DrawText(0.12, 0.02)
+
+
+      SetTextFont(0)
+      SetTextScale(0.0, 0.24)
+      SetTextCentre(false)
+      SetTextDropShadow(0, 0, 0, 0, 0)
+      SetTextEdge(0, 0, 0, 0, 0)
+      SetTextColour(255, 255, 255, 255)
+      SetTextEntry("STRING")
+      AddTextComponentString('~r~' .. currentAlert .. ' / ~r~' .. #alerts)
+      DrawText(0.025, 0.02)
+
+
+      SetTextFont(0)
+      SetTextScale(0.0, 0.24)
+      SetTextCentre(false)
+      SetTextDropShadow(0, 0, 0, 0, 0)
+      SetTextEdge(0, 0, 0, 0, 0)
+      SetTextColour(255, 255, 255, 255)
+      SetTextEntry("STRING")
+      AddTextComponentString(alert.isAccept .. ' unité')
+      DrawText(0.195, 0.02)
 
       SetTextFont(0)
       SetTextScale(0.0, 0.24)
@@ -114,8 +185,8 @@ Citizen.CreateThread(function()
       AddTextComponentString('Appuyez sur ~g~X~s~ pour prendre l\'appel ou ~r~N~s~ pour le refuser')
       DrawText(0.025, 0.16)
 
-      if CurrentInfoCall.extraData ~= nill and CurrentInfoCall.extraData.message ~= nil then
-        local message = CurrentInfoCall.extraData.message
+      if alert.message ~= nil then
+        local message = alert.message
         local sh = 0.045
         while #message ~= 0 do
           message2 = string.sub(message, 0, 50)
@@ -144,7 +215,7 @@ Citizen.CreateThread(function()
         DrawText(0.12, 0.08)
       end
 
-      if CurrentInfoCall.extraData ~= nill and CurrentInfoCall.extraData.coords ~= nil then
+      if alert.coords ~= nil then
         SetTextFont(0)
         SetTextScale(0.0, 0.24)
         SetTextCentre(true)
@@ -152,8 +223,8 @@ Citizen.CreateThread(function()
         SetTextEdge(0, 0, 0, 0, 0)
         SetTextColour(255, 255, 255, 255)
         SetTextEntry("STRING")
-        AddTextComponentString('~g~Position: ~b~' .. math.floor(CurrentInfoCall.extraData.coords.x) .. ' ' .. math.floor(CurrentInfoCall.extraData.coords.y))
-        DrawText(0.12, 0.14)
+        AddTextComponentString('~g~Position: ~b~' .. math.floor(alert.coords.x) .. ' ' .. math.floor(alert.coords.y))
+        DrawText(0.07, 0.14)
       else
         SetTextFont(0)
         SetTextScale(0.0, 0.24)
@@ -166,16 +237,41 @@ Citizen.CreateThread(function()
         DrawText(0.12, 0.14)
       end
 
+      if alert.numero ~= nil then
+        SetTextFont(0)
+        SetTextScale(0.0, 0.24)
+        SetTextCentre(true)
+        SetTextDropShadow(0, 0, 0, 0, 0)
+        SetTextEdge(0, 0, 0, 0, 0)
+        SetTextColour(255, 255, 255, 255)
+        SetTextEntry("STRING")
+        AddTextComponentString('~g~Numero: ~b~' .. alert.numero)
+        DrawText(0.17, 0.14)
+      else 
+        SetTextFont(0)
+        SetTextScale(0.0, 0.24)
+        SetTextCentre(true)
+        SetTextDropShadow(0, 0, 0, 0, 0)
+        SetTextEdge(0, 0, 0, 0, 0)
+        SetTextColour(255, 255, 255, 255)
+        SetTextEntry("STRING")
+        AddTextComponentString('~o~Numero inconnu')
+        DrawText(0.17, 0.14)
+      end
+
       if GetLastInputMethod(2) then 
-        if IsControlPressed(0, Keys['X']) then
-          TriggerServerEvent('esx_phone:acceptCall', CurrentInfoCall, nil)
-          TriggerServerEvent('esx_phone:stopDispatch', CurrentInfoCall.id)
-          if CurrentInfoCall.extraData ~= nill and CurrentInfoCall.extraData.coords ~= nil then
-            SetNewWaypoint(CurrentInfoCall.extraData.coords.x,  CurrentInfoCall.extraData.coords.y)
+        if IsControlJustPressed(1, Keys['RIGHT']) then
+          currentAlert = ((currentAlert) % #alerts) + 1
+        elseif IsControlJustPressed(1, Keys['LEFT']) then
+          currentAlert = ((currentAlert + #alerts - 2) % #alerts) + 1
+        elseif IsControlJustPressed(1, Keys['X']) then
+          TriggerServerEvent('esx_addons_gcphone:acceptAlert', alert.type, alert.id)
+          if alert.coords ~= nil then
+            SetNewWaypoint(alert.coords.x, alert.coords.y)
           end
-          CurrentInfoCall = nil
-        elseif IsControlPressed(0, Keys["N"]) then
-          CurrentInfoCall = nil
+        elseif IsControlJustPressed(1, Keys["N"]) then
+          TriggerServerEvent('esx_addons_gcphone:refuseAlert', alert.type, alert.id)
+          removeAlert(alert.id)
         end
 
       end
@@ -188,7 +284,6 @@ end)
 
 RegisterNetEvent('esx_addons_gcphone:call')
 AddEventHandler('esx_addons_gcphone:call', function(data)
-  print('envent:')
   local playerPed   = GetPlayerPed(-1)
   local coords      = GetEntityCoords(playerPed)
   local message     = data.message
@@ -204,11 +299,10 @@ AddEventHandler('esx_addons_gcphone:call', function(data)
     end
   end
   if message ~= nil and message ~= "" then
-    TriggerServerEvent('esx_addons_gcphone:startCall', number, nil, message, {
+    TriggerServerEvent('esx_addons_gcphone:startCall', number, message, {
       x = coords.x,
       y = coords.y,
       z = coords.z
     })
   end
 end)
-

@@ -84,7 +84,7 @@ RegisterNetEvent('banking:updateBalance')
 AddEventHandler('banking:updateBalance', function(bank)
     SendNUIMessage({event = 'updateBankbalance', banking = bank})
 end)
---====================================================================================
+--========Pa============================================================================
 --  Function client | Contacts
 --====================================================================================
 function addContact(display, num) 

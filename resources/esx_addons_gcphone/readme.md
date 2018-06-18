@@ -1,4 +1,4 @@
-Script basé du esx_phone
+Author: Jonathan (Gannon) D
 
-
-Permet de prendre les appels des service esx_xxxjobs
+## ATTENTION ! 
+Placer le lancement de ce script entre es_extend & les script de job.

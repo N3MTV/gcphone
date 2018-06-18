@@ -166,6 +166,10 @@ function getMessages(identifier)
     --return MySQLQueryTimeStamp("SELECT phone_messages.* FROM phone_messages LEFT JOIN users ON users.identifier = @identifier WHERE phone_messages.receiver = users.phone_number", {['@identifier'] = identifier})
 end
 
+RegisterServerEvent('gcPhone:_internalAddMessage')
+AddEventHandler('gcPhone:_internalAddMessage', function(transmitter, receiver, message, owner, cb)
+    cb(_internalAddMessage(transmitter, receiver, message, owner))
+end)
 
 function _internalAddMessage(transmitter, receiver, message, owner)
     local Query = "INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner);"
