@@ -41,14 +41,14 @@ ESX                    = nil
 -- }
 
 -- Citizen.CreateThread(function ()
-  --   Citizen.Wait(1000)
-  --   TriggerServerEvent('esx_addons_gcphone:startCall', 'police', 'lol', {
-  --     x = 13,
-  --     y = 254,
-  --     z = 0
-  --   })
+--     Citizen.Wait(2000)
+--     TriggerServerEvent('esx_addons_gcphone:startCall', 'police', 'lol', {
+--       x = 13,
+--       y = 254,
+--       z = 0
+--     })
   
-  -- end)
+--   end)
 
 function removeAlert (alertId) 
   for k, v in ipairs(alerts) do
@@ -69,6 +69,10 @@ Citizen.CreateThread(function()
 	end
 end)
 
+RegisterNetEvent('esx_addons_gcphone:removeAlert')
+AddEventHandler('esx_addons_gcphone:removeAlert', function(alertid)
+  removeAlert(alertid)
+end)
 
 
 RegisterNetEvent('esx_addons_gcphone:notifyAlert')
@@ -265,11 +269,13 @@ Citizen.CreateThread(function()
         elseif IsControlJustPressed(1, Keys['LEFT']) then
           currentAlert = ((currentAlert + #alerts - 2) % #alerts) + 1
         elseif IsControlJustPressed(1, Keys['X']) then
+          print('PRess X')
           TriggerServerEvent('esx_addons_gcphone:acceptAlert', alert.type, alert.id)
           if alert.coords ~= nil then
             SetNewWaypoint(alert.coords.x, alert.coords.y)
           end
         elseif IsControlJustPressed(1, Keys["N"]) then
+          print('PRess Y')
           TriggerServerEvent('esx_addons_gcphone:refuseAlert', alert.type, alert.id)
           removeAlert(alert.id)
         end

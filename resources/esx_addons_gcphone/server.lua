@@ -9,9 +9,9 @@ local SEND_SMS = true
 
 -- PhoneNumbers = {
 --   police = {
---     type  = "poluce",
+--     type  = "police",
 --     sources = {
---       ['1'] = true
+--       -- ['3'] = true
 --     },
 --     alerts = {}
 --   }
@@ -43,7 +43,7 @@ function notifyAlertSMS (number, alert)
   end
   if PhoneNumbers[number] ~= nil then
     for k,v in pairs(PhoneNumbers[number].sources) do
-      getPhoneNumber(k, function (n)
+      getPhoneNumber(tonumber(k), function (n)
         TriggerEvent('gcPhone:_internalAddMessage', number, n, 'Alert (' .. alert.numero  .. '): ' .. alert.message, 0, function (smsMess)
           TriggerClientEvent("gcPhone:receiveMessage", tonumber(k), smsMess)
         end)
@@ -93,7 +93,6 @@ end)
 
 RegisterServerEvent('esx_addons_gcphone:startCall')
 AddEventHandler('esx_addons_gcphone:startCall', function (number, message, coords)
-
   local source = source
   if PhoneNumbers[number] ~= nil then
     if PhoneNumbers[number].alerts[source] == nil then
@@ -108,8 +107,10 @@ AddEventHandler('esx_addons_gcphone:startCall', function (number, message, coord
           sources = {}
         }
         for k,v in pairs(PhoneNumbers[number].sources) do
+          print('add ' .. k)
           alert.sources[k] = true
         end
+        print('ADD alert to ' .. number)
         PhoneNumbers[number].alerts[source] = alert
         notifyAlert(number, alert)
         notifyAlertSMS(number, alert)
@@ -127,10 +128,14 @@ end)
 
 RegisterServerEvent('esx_addons_gcphone:acceptAlert')
 AddEventHandler('esx_addons_gcphone:acceptAlert', function (type, alertId)
+  print('esx_addons_gcphone:acceptAlert', type, alertId)
   local source = source
   if PhoneNumbers[type] ~= nil then
-    for key, alert in ipairs(PhoneNumbers[type].alerts) do
+    print('esx_addons_gcphone:acceptAlert P1')
+    for key, alert in pairs(PhoneNumbers[type].alerts) do
+      print('alert check', alert.id)
       if alert.id == alertId then
+        print('esx_addons_gcphone:acceptAlert P2')
         PhoneNumbers[type].alerts[key].isAccept = PhoneNumbers[type].alerts[key].isAccept + 1
         TriggerClientEvent('esx_addons_gcphone:showMessage', tonumber(key), 'Une unité de ' .. PhoneNumbers[type].type .. ' arrive')
         notifyAlert(type, PhoneNumbers[type].alerts[key])
@@ -145,20 +150,24 @@ RegisterServerEvent('esx_addons_gcphone:refuseAlert')
 AddEventHandler('esx_addons_gcphone:refuseAlert', function (type, alertId)
   local source = source
   if PhoneNumbers[type] ~= nil then
-    for key, alert in ipairs(PhoneNumbers[type].alerts) do
+    for key, alert in pairs(PhoneNumbers[type].alerts) do
       if alert.id == alertId then
+        print('esx_addons_gcphone:refuseAlert find')
         local allRefuse = true
         for k, src in pairs(PhoneNumbers[type].alerts[key].sources) do 
+          print('source', src)
           if source == tonumber(k) then
-            PhoneNumbers[type].alerts[key].sources = false
+            PhoneNumbers[type].alerts[key].sources[k] = false
           elseif src == true then
             allRefuse = false
           end
         end
         if allRefuse == true then
-          TriggerClientEvent('esx_addons_gcphone:showMessage', tonumber(key), 'Tout les unitee on ignoré l\'appels')
-          for k, src in pairs(PhoneNumbers[type].alerts[key].sources) do 
-            TriggerClientEvent('esx_addons_gcphone:showMessage', tonumber(k), 'Tout les unitee on ignoré l\'appels')
+          if PhoneNumbers[type].alerts[key].isAccept == 0 then
+            TriggerClientEvent('esx_addons_gcphone:showMessage', tonumber(key), 'Tout les unitee on ignoré l\'appels')
+            for k, src in pairs(PhoneNumbers[type].alerts[key].sources) do 
+              TriggerClientEvent('esx_addons_gcphone:showMessage', tonumber(k), 'Tout les unitee on ignoré l\'appels')
+            end
           end
           PhoneNumbers[type].alerts[key] = nil
         end
@@ -189,7 +198,48 @@ AddEventHandler('esx:playerLoaded', function(source)
 end)
 
 
+AddEventHandler('esx:playerDropped', function(source)
+  local source = source
+  local xPlayer = ESX.GetPlayerFromId(source)
+  if PhoneNumbers[xPlayer.job.name] ~= nil then
+    TriggerEvent('esx_phone:removeSource', xPlayer.job.name, source)
+  end
+
+  for number, infoPhone in pairs(PhoneNumbers) do 
+    print('-- num ' .. number)
+    for ka, alerts in pairs(PhoneNumbers[number].alerts) do 
+      if tonumber(ka) == source then
+        print('remove alert user left the game')
+        TriggerClientEvent('esx_addons_gcphone:removeAlert', -1, PhoneNumbers[number].alerts[ka].id)
+        PhoneNumbers[number].alerts[ka] = nil
+      else
+        print('alert ka ' .. ka)
+        PhoneNumbers[number].alerts[ka].sources[source] = nil
+        local allCancel = true
+        for k, src in pairs(PhoneNumbers[number].alerts[ka].sources) do 
+          if src == true then
+            allCancel = false
+            break
+          end
+        end
+        if allCancel == true then
+          print('all cancel auto by disconnect', PhoneNumbers[number].alerts[ka].isAccept)
+          if PhoneNumbers[number].alerts[ka].isAccept == 0 then
+            TriggerClientEvent('esx_addons_gcphone:showMessage', tonumber(key), 'Tout les unitee on ignoré l\'appels')
+            for k, src in pairs(PhoneNumbers[type].alerts[key].sources) do 
+              TriggerClientEvent('esx_addons_gcphone:showMessage', tonumber(k), 'Tout les unitee on ignoré l\'appels')
+            end
+          end
+          PhoneNumbers[number].alerts[ka] = nil
+        end
+      end
+    end
+  end
+end)
+
+
 function getPhoneNumber (source, callback) 
+  print(ESX, source)
   local xPlayer = ESX.GetPlayerFromId(source)
   MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier',{
     ['@identifier'] = xPlayer.identifier

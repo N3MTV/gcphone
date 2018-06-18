@@ -37,6 +37,12 @@ Citizen.CreateThread(function()
   end
 end)
 
+RegisterNetEvent("gcPhone:forceOpenPhone")
+AddEventHandler("gcPhone:forceOpenPhone", function(_myPhoneNumber)
+  if menuIsOpen == false then
+    TooglePhone()
+  end
+end)
  
 --====================================================================================
 --  Events
