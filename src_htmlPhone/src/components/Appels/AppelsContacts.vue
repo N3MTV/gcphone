@@ -1,6 +1,6 @@
 <template>
   <div>
-    <list :list='contactsList' title="" v-on:select="onSelect"></list>
+    <list :list='contactsList' :showHeader="false" v-on:select="onSelect"></list>
   </div>
 </template>
 

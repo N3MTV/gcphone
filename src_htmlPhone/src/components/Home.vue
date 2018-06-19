@@ -82,22 +82,6 @@ export default {
     this.$bus.$on('keyUpArrowUp', this.onUp)
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.onBack)
-    // this.Di = window.setInterval(() => {
-    //   console.log('add')
-    //   const time = new Date().getTime()
-    //   this.setMessages([
-    //     ...this.messages,
-    //     {
-    //       id: time,
-    //       transmitter: '01',
-    //       receiver: '06',
-    //       time: time,
-    //       message: 'Salut sa va ?!!!',
-    //       isRead: 0,
-    //       owner: 0
-    //     }
-    //   ])
-    // }, 2000)
   },
   beforeDestroy () {
     this.$bus.$off('keyUpArrowLeft', this.onLeft)
@@ -106,12 +90,11 @@ export default {
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpEnter', this.onEnter)
     this.$bus.$off('keyUpBackspace', this.onBack)
-    // window.clearInterval(this.Di)
   }
 }
 </script>
 
-<style>
+<style scoped="true">
 .home{
   background-size: cover !important;
   background-position: center !important;
@@ -141,6 +124,7 @@ export default {
 
 .home_buttons{
   display: flex;
+  padding: 0 16px; 
   width: 100%;
   bottom:1px;
   position: absolute;
@@ -155,15 +139,15 @@ button{
   position: relative;
   margin: 0px;
   border: none;
-  width: 58px;
-  height: 65px;
+  width: 80px;
+  height: 110px;
   color: white;
-  background-size: 43px 43px;
-  background-position: 8px 5px;
+  background-size: 64px 64px;
+  background-position: center 6px;
   background-repeat: no-repeat;
   background-color: transparent;
-  font-size: 9px;
-  padding-top: 46px;
+  font-size: 14px;
+  padding-top: 72px;
   font-weight: 700;
   text-shadow: -1px 0 0 rgba(0,0,0, 0.8), 
              1px 0 0 rgba(0,0,0, 0.8),
@@ -171,40 +155,36 @@ button{
              0 1px 0 rgba(0,0,0, 0.8);
   text-align: center;
 }
-.btn_menu_ctn{
-  width: 100%;
-  display: flex;
-  height: 56px;
-  justify-content: center;
-  align-content: center;
-}
-.btn_menu {
-  text-align: center;
-  height: 50px;
-}
+
 
 button .puce{
   position: absolute;
   display: block;
   background-color: #1450b8;
-  font-size: 12px;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
+  font-size: 14px;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
   text-align: center;
   border-radius: 50%;
   border: 1px solid white;
-  top: 28px;
-  left: 36px;
+  bottom: 32px;
+  right: 12px;
 }
 button.select{
   background-color: rgba(255,255,255, 0.7);
   border-radius: 12px;
 }
-button .star{ 
-  position: absolute;
-    width: 16px;
-    top:4px;
-    left: 4px;
+
+.btn_menu_ctn{
+  width: 100%;
+  display: flex;
+  height: 80px;
+  justify-content: center;
+  align-content: center;
 }
+.btn_menu {
+  height: 50px;
+}
+
 </style>

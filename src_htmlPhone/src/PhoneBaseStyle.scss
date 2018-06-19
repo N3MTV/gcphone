@@ -1,0 +1,80 @@
+body {
+  font-size: 20px;
+}
+
+.phone_infoBare {
+  height: 24px;
+}
+
+.phone_app{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.phone_title {
+  padding-left: 24px;
+  padding-top: 6px;
+  height: 64px;
+  line-height: 52px;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+
+
+.phone_content {
+  height: 100%;
+  overflow-y: auto;
+}
+
+
+.phone_wrapper {
+  position: absolute;
+  bottom: 0vh;
+  right: 0vh;
+  width: 500px;
+  height: 1000px;
+  background-size: cover;
+}
+
+.phone_coque{
+  position: absolute;
+  z-index: 0; //999;
+  width: 500px;
+  height: 1000px;
+}
+
+.phone_screen{
+  overflow: hidden;
+  position: absolute;
+  background-color: white;
+  bottom: 100px;
+  left: 50px;
+  right: 50px;
+  top: 100px;
+  display: flex;
+}
+
+
+
+* {
+  font-family: 'Roboto', sans-serif;
+  box-sizing: border-box;
+}
+*::-webkit-scrollbar-track
+{
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+}
+*::-webkit-scrollbar
+{
+    width: 3px;
+    background-color: transparent;
+}
+*::-webkit-scrollbar-thumb
+{
+    background-color: #666;
+}

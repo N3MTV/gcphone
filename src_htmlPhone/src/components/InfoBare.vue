@@ -1,5 +1,5 @@
 <template>
-  <div class='barre-header'>
+  <div class='phone_infoBare barre-header'>
     <span class='reseau'>{{config.reseau}}</span>
     <span class="time">
       <current-time></current-time>
@@ -24,24 +24,23 @@ export default {
 </script>
 <style scoped>
 .barre-header {
-    font-size: 11px;
-    padding: 5px;
-    position: absolute;
+    height: 24px;
+    font-size: 17px;
+    line-height: 24px;
+    padding: 0px 18px;
     width: 100%;
-    top:0px;
     color: white;
-    background-color: rgba(0, 0, 0, 0.6)
+    background-color: rgba(0, 0, 0, 0.3);
+    position: relative;
 }
 .barre-header hr {
     position: absolute;
-    vertical-align: bottom;
     display: inline-block;
-    float: right;
 }
 .barre1 {
     height: 12px;
     width: 3px;
-    right: 58px;
+    right: 88px;
     background-color: rgba(255, 255, 255, 0.6);
     color: rgba(255, 255, 255, 0.6);
     border: none;
@@ -50,7 +49,7 @@ export default {
 .barre2 {
     height: 9px;
     width: 3px;
-    right: 63px;
+    right: 93px;
     background-color: white;
     border: none;
     bottom: 0px;
@@ -58,7 +57,7 @@ export default {
 .barre3 {
     height: 6px;
     width: 3px;
-    right: 68px;
+    right: 98px;
     background-color: white;
     border: none;
     bottom: 0px;
@@ -66,7 +65,7 @@ export default {
 .barre4 {
     height: 3px;
     width: 3px;
-    right: 73px;
+    right: 103px;
     background-color: white;
     border: none;
     bottom: 0px;
@@ -74,35 +73,27 @@ export default {
 .time{
     text-align: right;
     float: right;
-    padding-right: 10px;
+    padding-right: 12px;
 }
-.batterie { 
-    text-align: right;
-    float: right;
-    padding-right: 12px;   
-    }
+
 
 .batterie1 {
-    height: 9px;
-    width: 5px;
-    right: 46px;
+    height: 10px;
+    width: 7px;
+    right: 76px;
     background-color: rgb(255, 255, 255);
     color: rgb(255, 255, 255);
     border-radius: 0.5px;
     border: none;
-    bottom: 1px;
+    bottom: 0px;
 }
 .batterie2 {
-    height: 10.8px;
-    width: 3px;
-    right: 47px;
-    bottom: 1px;
+    height: 13px;
+    width: 5px;
+    right: 77px;
+    bottom: 0px;
     background-color: rgba(255, 255, 255, 0.6);
     border: 0.5px solid white;
     border-radius: 1px;
-}
-.reseau {
-    float: left;
-    padding-left: 10px;
 }
 </style>

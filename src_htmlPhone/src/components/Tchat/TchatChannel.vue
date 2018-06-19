@@ -1,7 +1,6 @@
 <template>
-  <div class="list">
-    <InfoBare class="infobare"/>
-    <div class="title">Tor Chat</div>
+  <div class="phone_app">
+    <PhoneTitle title="Tor Chat" backgroundColor="#090f20" />
     <div class="elements">
         <div class="element" v-for='(elem, key) in tchatChannels' 
           v-bind:key="elem.channel"
@@ -16,10 +15,10 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Modal from '@/components/Modal/index.js'
-import InfoBare from './../InfoBare'
+import PhoneTitle from './../PhoneTitle'
 
 export default {
-  components: { InfoBare },
+  components: { PhoneTitle },
   data: function () {
     return {
       currentSelect: 0,
@@ -128,7 +127,7 @@ export default {
 
 <style scoped>
 .infobare{
-  background-color: #00071c;
+  background-color: ;
 }
 .list{
   height: 100%;
@@ -139,7 +138,7 @@ export default {
   height: 54px;
   line-height: 34px;
   font-weight: 700;
-  background-color: #090f20;
+  background-color: #0;
   color: white;
 }
 
@@ -150,8 +149,8 @@ export default {
   color: #a6a28c
 }
 .element{
-  height: 28px;
-  line-height: 28px;
+  height: 42px;
+  line-height: 42px;
   display: flex;
   align-items: center;
   position: relative;
@@ -159,13 +158,13 @@ export default {
 
 .elem-title{
   margin-left: 6px;
-  font-size: 16px;
+  font-size: 20px;
   text-transform: capitalize;
   transition: .15s;
 }
 .elem-title .diese {
   color: #60ac39;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
   line-height: 40px;
 }

@@ -11,17 +11,94 @@ local KeyToucheCloseEvent = {
   { code = 176, event = 'Enter' },
   { code = 177, event = 'Backspace' },
 }
-local KeyOpenClose = 289
+local KeyOpenClose = 289 -- F2
+local KeyTakeCall = 38 -- E
 local menuIsOpen = false
 local contacts = {}
 local messages = {}
 local myPhoneNumber = ''
 local isDead = false
+
+local PhoneInCall = {
+}
+local currentPlaySound = false
+local soundId = 1485
 --====================================================================================
 --  
 --====================================================================================
+function TakeAppel (infoCall)
+  print('TakeAppel', json.encode(infoCall))
+  TriggerServerEvent('gcPhone:acceptCall', infoCall)
+end
+
+
+RegisterNetEvent("gcPhone:notifyFixePhoneChange")
+AddEventHandler("gcPhone:notifyFixePhoneChange", function(_PhoneInCall)
+  PhoneInCall = _PhoneInCall
+end)
  
+
+Citizen.CreateThread(function ()
+  while true do 
+    local playerPed   = GetPlayerPed(-1)
+    local coords      = GetEntityCoords(playerPed)
+    local inRangeToActivePhone = false
+    for i, _ in pairs(PhoneInCall) do 
+        local dist = GetDistanceBetweenCoords(
+          PhoneInCall[i].coords.x, PhoneInCall[i].coords.y, PhoneInCall[i].coords.z,
+          coords.x, coords.y, coords.z, 0)
+        if (dist <= 5.0) then
+          DrawMarker(1, PhoneInCall[i].coords.x, PhoneInCall[i].coords.y, PhoneInCall[i].coords.z,
+              0,0,0, 0,0,0, 0.1,0.1,0.1, 0,255,0,255, 0,0,0,0,0,0,0)
+          inRangeToActivePhone = true
+          if (dist <= 1.5) then 
+            SetTextComponentFormat("STRING")
+            AddTextComponentString("E prendre l'appels")
+            DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+            if IsControlJustPressed(1, KeyTakeCall) then
+              TakeAppel(PhoneInCall[i])
+              PhoneInCall = {}
+              StopSound(soundId)
+            end
+          end
+        break
+      end
+    end
+
+    if inRangeToActivePhone == true and currentPlaySound == false then
+      print('start')
+      PlaySound(soundId, "Remote_Ring", "Phone_SoundSet_Michael", 0, 0, 1)
+      currentPlaySound = true
+    elseif inRangeToActivePhone == false and currentPlaySound == true then
+      print('stop')
+      currentPlaySound = false
+      StopSound(soundId)
+    end
+    Citizen.Wait(0)
+  end
+end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Citizen.CreateThread(function()
+  
   while true do
     Citizen.Wait(0)
     if IsControlJustPressed(1, KeyOpenClose) then
@@ -450,7 +527,6 @@ end)
 
 
 
-
 RegisterNUICallback('appelsDeleteHistorique', function (data, cb)
   appelsDeleteHistorique(data.numero)
   cb()
@@ -497,6 +573,8 @@ AddEventHandler('onClientResourceStart', function(res)
       TriggerServerEvent('gcPhone:allUpdate')
   end
 end)
+
+
 
 
 --[[
@@ -592,3 +670,10 @@ Config.json
 }
 -  
 ]]
+
+RegisterNetEvent('gcphone:autoCall')
+AddEventHandler('gcphone:autoCall', function(data)
+  if data ~= nil and data.number ~= nil then
+    startCall(data.number)
+  end
+end)

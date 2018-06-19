@@ -1,11 +1,11 @@
 <template>
-   <div class="screen">
-    <div class='title'>Téléphone</div>
+   <div class="phone_app">
+    <PhoneTitle title="Téléphone" />
     <div class="content">
       <component :is="subMenu[currentMenuIndex].Comp" />
     </div>
     <div class="subMenu">
-      <div class="subMenu-elem" :class="{'subMenu-elem-select': currentMenuIndex === i}"
+      <div class="subMenu-elem" :style="getColorItem(i)"
         v-for="(Comp, i) of subMenu" :key="i">
         <i class="subMenu-icon fa" :class="['fa-' + Comp.icon]"></i>
         <span class="subMenu-name">{{Comp.name}}</span>
@@ -15,12 +15,17 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import PhoneTitle from './../PhoneTitle'
 import AppelsFavoris from './AppelsFavoris'
 import AppelsContacts from './AppelsContacts'
 import AppelsRecents from './AppelsRecents'
 
 export default {
-  components: {},
+  components: {
+    PhoneTitle
+  },
   data () {
     return {
       subMenu: [{
@@ -39,7 +44,18 @@ export default {
       currentMenuIndex: 1
     }
   },
+  computed: {
+    ...mapGetters(['themeColor'])
+  },
   methods: {
+    getColorItem (index) {
+      if (this.currentMenuIndex === index) {
+        return {
+          color: this.themeColor
+        }
+      }
+      return {}
+    },
     onLeft () {
       this.currentMenuIndex = Math.max(this.currentMenuIndex - 1, 0)
     },
@@ -88,14 +104,14 @@ export default {
 .subMenu{
   border-top: 1px solid rgba(0,0,0,0.24);
   display: flex;
-  height: 34px;
+  height: 56px;
 }
 .subMenu-elem {
   height: 100%;
   width: 100%;
   text-align: center;
-  line-height: 34px;
-  height: 34px;
+  line-height: 56px;
+  height: 56px;
   display: flex;
   flex-direction: column;
 }
@@ -103,14 +119,14 @@ export default {
   color: #0288D1;
 }
 .subMenu-icon{
-  margin-top: 4px;
-  font-size: 14px;
-  line-height: 14px;
-  height: 14px;
+  margin-top: 6px;
+  font-size: 22px;
+  line-height: 22px;
+  height: 22px;
 }
 .subMenu-name{
   display: block;
-  font-size: 10px;
+  font-size: 14px;
   height: 14px;
   line-height: 14px;
 }

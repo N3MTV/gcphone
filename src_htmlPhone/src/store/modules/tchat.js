@@ -103,4 +103,14 @@ if (process.env.NODE_ENV !== 'production') {
     id: 5000,
     time: new Date().getTime()
   })
+  state.messagesChannel.push({
+    message: 'Message sur plusieur ligne car il faut bien !!! Ok !',
+    id: 5000,
+    time: new Date().getTime()
+  })
+  state.messagesChannel.push({
+    message: 'Message sur plusieur ligne car il faut bien !!! Ok !',
+    id: 5000,
+    time: new Date(4567845).getTime()
+  })
 }

@@ -7,7 +7,6 @@
               v-bind:class="{ select: index === currentSelect}" 
               v-for="(val, index) in choix" :key='index'
               v-bind:style="{color: val.color}">
-               <!-- <div v-if=" val.picto" class="picto" :style="{background: 'url(static/img/' + val.picto + ')'}"></div>-->
                 <i class="fa" :class="val.icons" ></i>{{val.title}}
             </div>
           
@@ -104,10 +103,12 @@ export default {
         border-bottom: 2px solid #42B2DC;
     }
     .modal-choix {
-        height: 42px;
-        line-height: 42px;
+        height: 56px;
+        line-height: 56px;
         color: gray;
         position: relative;
+        font-weight: 400;
+        font-size: 22px;
     }
     .modal-choix .fa {
         font-size: 18px;
@@ -128,73 +129,6 @@ export default {
         color: #42B2DC;
     }
 
-    /*
-    * The following styles are auto-applied to elements with
-    * transition="modal" when their visibility is toggled
-    * by Vue.js.
-    *
-    * You can easily play with the modal transition by editing
-    * these styles.
-    */
 
-    .modal-enter {
-        opacity: 0;
-    }
 
-    .modal-leave-active {
-        opacity: 0;
-    }
-
-    .modal-enter .modal-container,
-    .modal-leave-active .modal-container {
-        -webkit-transform: scale(1.1);
-        transform: scale(1.1);
-    }
-    .barre-header {
-    font-size: 15px;
-    padding: 5px;
-    position: absolute;
-    background-color: rgba(20, 20, 20, 0.6);
-    width: 100%;
-    top:0px;
-   color: white;
-}
-.barre-header hr {
-    position: absolute;
-    vertical-align: bottom;
-    display: inline-block;
-    float: right;
-    bottom: 0px;
-    border: none;
-}
-.barre1 {
-    height: 12px;
-    width: 3px;
-    right: 71px;
-    background-color: rgba(255, 255, 255, 0.6);
-    color: rgba(255, 255, 255, 0.6);
-}
-.barre2 {
-    height: 9px;
-    width: 3px;
-    right: 76px;
-    background-color: white;
-}
-.barre3 {
-    height: 6px;
-    width: 3px;
-    right: 81px;
-    background-color: white;
-}
-.barre4 {
-    height: 3px;
-    width: 3px;
-    right: 86px;
-    background-color: white;
-}
-.time{
-    text-align: right;
-    float: right;
-    /*padding-right: 10px;*/
-}
 </style>

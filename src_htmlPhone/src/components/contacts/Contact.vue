@@ -1,7 +1,8 @@
 <template>
-  <div class="contact">
-    <div class="title">{{contact.display}}</div>
-    <div class='content inputText'>
+  <div class="phone_app">
+    <PhoneTitle :title="contact.display" />  
+    <div class='phone_content content inputText'>
+        
         <div class="group select" data-type="text" data-model='display' data-maxlength = '64'>      
             <input type="text" v-model="contact.display">
             <span class="highlight"></span>
@@ -15,8 +16,7 @@
             <span class="bar"></span>
             <label>Numéro</label>
         </div>
-
-        <div class="group " data-type="button" data-action='save'>      
+        <div style="margin-top: 56px;" class="group " data-type="button" data-action='save'>      
             <input type='button' class="btn btn-green" value='Enregistre' />
         </div>
         <div class="group" data-type="button" data-action='cancel'>      
@@ -31,9 +31,13 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
 
 export default {
+  components: {
+    PhoneTitle
+  },
   data () {
     return {
       id: -1,
@@ -181,7 +185,7 @@ export default {
   margin-top:45px; 
 }
 input 				{
-  font-size:18px;
+  font-size:24px;
   display:block;
   width:100%;
   border:none;
@@ -205,8 +209,8 @@ label 				 {
 
 /* active state */
 input:focus ~ label, input:valid ~ label 		{
-  top:-20px;
-  font-size:14px;
+  top:-24px;
+  font-size:18px;
   color:#5264AE;
 }
 
@@ -257,17 +261,17 @@ input:focus ~ .highlight {
 .group .btn{
     width: 100%;
     padding: 0px 0px;
-    height: 34px;
+    height: 48px;
     color: #fff;
     border: 0 none;
-    font-size: 14px;
+    font-size: 22px;
     font-weight: 500;
     line-height: 34px;
     color: #202129;
     background-color: #edeeee;
 }
 .group.select .btn{
-    border: 3px solid #C0C0C0;
+    border: 6px solid #C0C0C0;
     line-height: 18px;
 }
 

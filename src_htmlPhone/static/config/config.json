@@ -1,5 +1,6 @@
 {
   "reseau": "Gannon",
+  "themeColor": "#303f9f",
   "useFormatNumberFrance": false,
   "background" : {
     "Calvin & Hobbes": "back001.jpg",
@@ -31,6 +32,13 @@
           "eventName": "esx_addons_gcphone:call",
           "type": {
             "number": "police"
+          }
+        },
+        {
+          "title": "Appeler le standard",
+          "eventName": "gcphone:autoCall",
+          "type": {
+            "number": "911"
           }
         }
       ]

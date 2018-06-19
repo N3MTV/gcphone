@@ -1,18 +1,16 @@
 <template>
 <div v-if="show === true" :style="{zoom: zoom}">
-  <div class="phone_content">
-    <div class="phone_wrapper" :style="{backgroundImage: 'url(/html/static/img/coque/' + coque.value + ')'}"></div>
-      
+  <div class="phone_wrapper">
+    <div class="phone_coque" :style="{backgroundImage: 'url(/html/static/img/coque/' + coque.value + ')'}"></div>
     <div id="app" class="phone_screen">
-      <!-- <img class="phone_courbure" src="/html/static/img/courbure.png"> -->
       <router-view></router-view>
     </div>
-
   </div>
 </div>
 </template>
 
 <script>
+import './PhoneBaseStyle.scss'
 import './assets/css/font-awesome.min.css'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -99,53 +97,5 @@ export default {
 }
 </script>
 
-<style >
-    .phone_content{
-        position: absolute;
-        bottom: 0vh;
-        right: 0vh;
-        width: 325px;
-        height: 650px;
-        background-size: cover;
-    }
-    .phone_wrapper{
-        position: absolute;
-        width: 100%;
-        z-index: 999;
-        width: 325px;
-        height: 650px;
-        background-size: cover;
-    }
-    .phone_screen{
-        overflow: hidden;
-        position: absolute;
-        background-color: white;
-        bottom: 65px;
-        left: 32px;
-        right: 32px;
-        top: 65px;
-    }
-    .phone_courbure{
-        position: absolute;
-        z-index: 99;
-        width: 100%;
-    }
-    * {
-      font-family: 'Roboto', sans-serif;
-      box-sizing: border-box;
-    }
-    *::-webkit-scrollbar-track
-    {
-        box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-        background-color: #F5F5F5;
-    }
-    *::-webkit-scrollbar
-    {
-        width: 3px;
-        background-color: transparent;
-    }
-    *::-webkit-scrollbar-thumb
-    {
-        background-color: #666;
-    }
+<style lang="scss">
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <div class="screen">
-    <div class='title'>Bourse</div>
+  <div class="phone_app">
+    <PhoneTitle title="Bourse"/>
     <div class='elements'>
       <div class='element'
           v-for='(elem, key) in bourseInfo' 
@@ -10,20 +10,17 @@
         <div class="elem-libelle">{{elem.libelle}}</div>
         <div class="elem-price" :style="{color: colorBourse(elem)}">{{elem.price}} $ </div>
         <div class="elem-difference" :style="{color: colorBourse(elem)}"> <span v-if="elem.difference > 0">+</span>{{elem.difference}}</div>
-        <!-- <div class="element-content">
-          <span class="element-title" v-bind:style="{color: elem.color}">{{elem.title}}</span>
-          <span v-if="elem.value" class="element-value" v-bind:style="{color: elem.color}">{{elem.value}}</span>
-          <span v-if="elem.price" class="element-price" :class="elem.colorback" v-bind:style="{color: elem.color}" >{{elem.price}}</span>
-        </div> -->
       </div>
     </div>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import PhoneTitle from './../PhoneTitle'
 
 export default {
   components: {
+    PhoneTitle
   },
   data () {
     return {
@@ -103,9 +100,9 @@ export default {
   overflow-y: auto;
 }
 .element{
-  height: 40px;
+  height: 56px;
   width: 100%;
-  line-height: 40px;
+  line-height: 56px;
   display: flex;
   position: relative;
 }
@@ -115,7 +112,7 @@ export default {
     
 .element .fa{
   color: #2e7d32;
-  font-size: 12px;
+  font-size: 18px;
   margin-left: 6px;
 }
 .element .fa-arrow-down{
@@ -128,21 +125,21 @@ export default {
 .elem-libelle{
   padding-left: 6px;
   flex: 1;
-  font-size: 14px;
+  font-size: 22px;
   white-space: nowrap;
 }
 
 .elem-price{
   text-align: center;
-  width: 60px;
-  font-size: 12px;
+  width: 90px;
+  font-size: 18px;
   font-weight: 700;
 }
 
 .elem-difference{
   text-align: center;
-  width: 40px;
-  font-size: 10px;
+  width: 60px;
+  font-size: 14px;
 }
 
 </style>

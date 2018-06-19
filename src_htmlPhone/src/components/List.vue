@@ -1,7 +1,10 @@
 <template>
-  <div class="list">
-    <div v-if="title !== ''" class="title" v-bind:style="styleTitle()">{{title}}</div>
-    <div class="elements">
+  <div class="phone_app">
+    <PhoneTitle :title="title" :showInfoBare="showInfoBare" v-if="showHeader"/>
+    <!-- <InfoBare v-if="showInfoBare"/>
+    <div v-if="title !== ''" class="phone_title" v-bind:style="styleTitle()">{{title}}</div>
+    -->
+    <div class="phone_content elements">
         <div class="element" v-for='(elem, key) in list' 
           v-bind:key="elem[keyDispay]"
           v-bind:class="{ select: key === currentSelect}"
@@ -17,8 +20,13 @@
 </template>
 
 <script>
+import PhoneTitle from './PhoneTitle'
+import InfoBare from './InfoBare'
 export default {
   name: 'hello',
+  components: {
+    PhoneTitle, InfoBare
+  },
   data: function () {
     return {
       currentSelect: 0
@@ -28,6 +36,14 @@ export default {
     title: {
       type: String,
       default: 'Title'
+    },
+    showHeader: {
+      type: Boolean,
+      default: true
+    },
+    showInfoBare: {
+      type: Boolean,
+      default: true
     },
     list: {
       type: Array,
@@ -126,23 +142,18 @@ export default {
 .list{
   height: 100%;
 }
-.title{
-    padding-left: 16px;
-    height: 34px;
-    line-height: 34px;
-    font-weight: 700;
-}
+
 
 .elements{
-  height: calc(100% - 34px);
   overflow-y: auto;
 }
+
 .element{
-    height: 40px;
-    line-height: 40px;
-    display: flex;
-    align-items: center;
-    position: relative;
+  height: 58px;
+  line-height: 58px;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .element.select{
@@ -150,30 +161,30 @@ export default {
 }
 
 .elem-pic{
-    margin-left: 6px;
-    height: 32px;
-    width: 32px;
-    text-align: center;
-    line-height: 32px;
-    font-weight: 700;
+  margin-left: 12px;
+  height: 48px;
+  width: 48px;
+  text-align: center;
+  line-height: 48px;
+  font-weight: 700;
 }
 .elem-puce{
   background-color: red;
   color:white;
-  height: 12px;
-  width: 12px;
-  line-height: 12px;
+  height: 18px;
+  width: 18px;
+  line-height: 18px;
   border-radius: 50%;
   text-align: center;
-  font-size: 8px;
+  font-size: 14px;
   margin: 0px;
   padding: 0px;
   position: absolute;
-  left: 27px;
-  top: 23px;
+  left: 42px;
+  top: 36px;
   z-index: 6;
 }
 .elem-title{
-  margin-left: 6px;
+  margin-left: 12px;
 }
 </style>

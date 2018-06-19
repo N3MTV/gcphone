@@ -1,8 +1,8 @@
 
 
 <template>
-   <div class="screen">
-    <div class='title'>Téléphone</div>
+   <div class="phone_app">
+    <PhoneTitle title="Téléphone" />
     <div class="content">
       <div class="number">
         {{ numeroFormat }}
@@ -31,8 +31,11 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import PhoneTitle from './../PhoneTitle'
 export default {
-  components: {},
+  components: {
+    PhoneTitle
+  },
   data () {
     return {
       numero: '',
@@ -127,32 +130,14 @@ export default {
 </script>
 
 <style scoped>
-.screen{
-  position: relative;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-}
-.title{
-  padding-left: 16px;
-  height: 34px;
-  line-height: 34px;
-  font-weight: 700;
-  color: white;
-  background-color: #2c3e50;
-}
-.content{
-  height: calc(100% - 34px);
-  overflow-y: auto;
-}
+
 
 .number{
   margin-top: 140px;
   width: 100%;
-  height: 36px;
-  font-size: 18px;
-  line-height: 36px;
+  height: 52px;
+  font-size: 26px;
+  line-height: 52px;
   text-align: right;
   padding-right: 8px;
   border-bottom: 1px solid #C0C0C0;
@@ -168,50 +153,50 @@ export default {
   position: relative;
   flex: 1 1 33.33%;
   text-align: center;
-  height: 46px;
+  height: 96px;
 }
 
 .key-select::after {
   content: '';
   position: absolute;
-  top: calc(50% - 25px);
-  left: calc(50% - 25px);
+  top: calc(50% - 45px);
+  left: calc(50% - 45px);
   display: block;
-  width: 50px;
-  height: 50px;
+  width: 90px;
+  height: 90px;
   background: radial-gradient(rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.16));
   border-radius: 50%;
 }
 
 .key-primary {
   display: block;
-  font-size: 22px;
+  font-size: 36px;
   color: blue;
   line-height: 22px;
-  padding-top: 12px;
+  padding-top: 36px;
 }
 .keySpe .key-primary {
   color: #2c3e50;
-  line-height: 46px;
+  line-height: 96px;
   padding: 0;
 }
 
 .key-secondary {
   text-transform: uppercase;
   display: block;
-  font-size: 6px;
+  font-size: 12px;
   color: black;
-  line-height: 8px;
-  padding-top: 1px;
+  line-height: 12px;
+  padding-top: 6px;
 }
 .call {
-  margin-top: 12px;
+  margin-top: 18px;
   display: flex;
   justify-content: center;
 }
 .call-btn {
-  height: 40px;
-  width: 40px;
+  height: 70px;
+  width: 70px;
   border-radius: 50%;
   background-color: rgba(67, 160, 71, 0.7);
 }
@@ -219,9 +204,9 @@ export default {
   background-color: #43a047;
 }
 .call-btn svg {
-  width: 30px;
-  height: 30px;
-  margin: 5px;
+  width: 50px;
+  height: 50px;
+  margin: 10px;
   fill: #EEE;
 }
 </style>

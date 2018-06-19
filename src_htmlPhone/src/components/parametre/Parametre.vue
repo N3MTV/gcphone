@@ -1,7 +1,7 @@
 <template>
-  <div class="screen">
-    <div class='title'>Paramètres</div>
-    <div class='elements'>
+  <div class="phone_app">
+    <PhoneTitle title="Paramètres" />
+    <div class='phone_content elements'>
       <div class='element'
           v-for='(elem, key) in paramList' 
           v-bind:class="{ select: key === currentSelect}"
@@ -19,12 +19,12 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import List from './../List.vue'
+import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
 
 export default {
   components: {
-    List
+    PhoneTitle
   },
   data () {
     return {
@@ -63,12 +63,12 @@ export default {
           onLeft: this.ajustZoom(-1),
           onRight: this.ajustZoom(1),
           values: {
-            '250 %': '250%',
-            '200 %': '200%',
-            '150 %': '150%',
             '125 %': '125%',
             '100 %': '100%',
-            '75 %': '75%'
+            '80 %': '80%',
+            '60 %': '60%',
+            '40 %': '40%',
+            '20 %': '20%'
           }
         },
         {
@@ -180,7 +180,7 @@ export default {
     },
     ajustZoom (inc) {
       return () => {
-        const percent = Math.max(50, (parseInt(this.zoom) || 100) + inc)
+        const percent = Math.max(10, (parseInt(this.zoom) || 100) + inc)
         this.setZoon(`${percent}%`)
       }
     },
@@ -189,7 +189,7 @@ export default {
     },
     ajustVolume (inc) {
       return () => {
-        const newVolume = Math.max(0, Math.min(1, this.volume + inc))
+        const newVolume = Math.max(0, Math.min(1, parseFloat(this.volume) + inc))
         this.setVolume(newVolume)
       }
     },
@@ -227,43 +227,24 @@ export default {
 </script>
 
 <style scoped>
-.screen{
-  position: relative;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-}
-.title{
-  padding-left: 16px;
-  height: 34px;
-  line-height: 34px;
-  font-weight: 700;
-  color: white;
-  background-color: #2c3e50;
-}
-.elements{
-  height: calc(100% - 34px);
-  overflow-y: auto;
-}
 .element{
-    height: 40px;
-    line-height: 40px;
-    display: flex;
-    align-items: center;
-    position: relative;
+  height: 58px;
+  line-height: 58px;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 .element .fa{
   color: #27ae60;
   margin-left: 6px;
-  height: 32px;
-  width: 32px;
+  height: 52px;
+  width: 52px;
   text-align: center;
-  line-height: 32px;
+  line-height: 52px;
 }
 .element-content{
   display: block;
-  height: 40px;
+  height: 58px;
   width: 100%;
   margin-left: 6px;
   display: flex;
@@ -275,13 +256,13 @@ export default {
   margin-top: 4px;
   height: 22px;
   line-height: 22px;
-  font-size: 0.8em;
+  font-size: 20px;
 }
 .element-value{
   display: block;
-  line-height: 8px;
+  line-height: 16px;
   height: 8px;
-  font-size: 0.6em;
+  font-size: 16px;
   color: #808080;
 }
 .element.select{

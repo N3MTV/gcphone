@@ -53,6 +53,7 @@ client_script {
 
 server_script {
 	'@mysql-async/lib/MySQL.lua',
+	"server/config.lua",
 	"server/server.lua",
 	"server/app_tchat.lua",
 }

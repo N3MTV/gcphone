@@ -6,7 +6,7 @@ const state = {
   background: JSON.parse(window.localStorage['gc_background'] || null),
   coque: JSON.parse(window.localStorage['gc_coque'] || null),
   zoom: window.localStorage['gc_zoom'] || '100%',
-  volume: window.localStorage['gc_volume'] || 1,
+  volume: parseFloat(window.localStorage['gc_volume']) || 1,
   config: {
     reseau: 'Gannon',
     useFormatNumberFrance: false
@@ -51,7 +51,8 @@ const getters = {
   coqueLabel: (state, getters) => getters.coque.label,
   zoom: ({ zoom }) => zoom,
   config: ({ config }) => config,
-  useFormatNumberFrance: ({ config }) => config.useFormatNumberFrance
+  useFormatNumberFrance: ({ config }) => config.useFormatNumberFrance,
+  themeColor: ({ config }) => config.themeColor || 'rgb(42, 86, 198)'
 }
 
 const actions = {

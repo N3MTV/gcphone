@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="phone_app">
     <div class="elements">
         <div class="element" :class="{'active': selectIndex === key}" v-for='(histo, key) in historique' :key="key"
           >
@@ -148,12 +148,12 @@ export default {
     overflow-y: auto;
   }
   .element{
-    height: 40px;
-    line-height: 40px;
+    height: 58px;
+    line-height: 58px;
     display: flex;
     align-items: center;
     position: relative;
-    margin: 10px;
+    margin: 14px 10px;
     border-radius: 2px;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
   }
@@ -161,29 +161,29 @@ export default {
     background: radial-gradient(rgba(3, 168, 244, 0.14), rgba(3, 169, 244, 0.26));
   }
   .elem-pic{
-    margin-left: 6px;
-    height: 32px;
-    width: 32px;
+    margin-left: 12px;
+    height: 48px;
+    width: 48px;
     text-align: center;
-    line-height: 32px;
+    line-height: 48px;
     font-weight: 700;
     border-radius: 50%;
     color: white;
   }
 
   .elem-content{
-    padding-left: 8px;
+    margin-left: 12px;
     width: auto;
     flex-grow: 1
   }
 
   .elem-content-p{
-    font-size: 14px;
-    line-height: 14px;
+    font-size: 20px;
+    line-height: 20px;
   }
    .elem-content-s{
-    font-size: 8px;
-    line-height: 14px;
+    font-size: 12px;
+    line-height: 18px;
     width: 100%;
     display: flex;
   }
@@ -192,13 +192,13 @@ export default {
     flex-direction: column;
   }
   .elem-histo-pico svg {
-    width: 10px;
-    height: 10px;
+    width: 16px;
+    height: 16px;
   }
   .lastCall {
     padding-left: 4px;
   }
   .elem-icon{
-    width: 20px;
+    width: 28px;
   }
 </style>

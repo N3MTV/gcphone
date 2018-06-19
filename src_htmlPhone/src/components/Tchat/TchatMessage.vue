@@ -1,31 +1,32 @@
 <template>
-  <div class="list">
-    <InfoBare class="infobare" />
-    <div class="title"># {{ channel }}</div>
-    <div class="elements" ref="elementsDiv">
-        <div class="element" v-for='(elem) in tchatMessages' 
-          v-bind:key="elem.id"
-          >
-          <div class="time">{{formatTime(elem.time)}}</div>
-          <div class="message">
-            {{elem.message}}
+  <div class="phone_app">
+    <PhoneTitle :title="channelName" backgroundColor="#090f20" />
+    <div class="phone_content">
+      <div class="elements" ref="elementsDiv">
+          <div class="element" v-for='(elem) in tchatMessages' 
+            v-bind:key="elem.id"
+            >
+            <div class="time">{{formatTime(elem.time)}}</div>
+            <div class="message">
+              {{elem.message}}
+            </div>
           </div>
-        </div>
-    </div>
+      </div>
 
-    <div class='tchat_write'>
-        <input type="text" placeholder="Envoyer un message">
-        <span class='tchat_send'>></span>
+      <div class='tchat_write'>
+          <input type="text" placeholder="Envoyer un message">
+          <span class='tchat_send'>></span>
+      </div>
     </div>
-
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import InfoBare from './../InfoBare'
+import PhoneTitle from './../PhoneTitle'
+
 export default {
-  components: { InfoBare },
+  components: { PhoneTitle },
   data () {
     return {
       channel: '',
@@ -33,7 +34,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['tchatMessages', 'tchatCurrentChannel'])
+    ...mapGetters(['tchatMessages', 'tchatCurrentChannel']),
+    channelName () {
+      return '# ' + this.channel
+    }
   },
   watch: {
     tchatMessages () {
@@ -102,55 +106,45 @@ export default {
 </script>
 
 <style scoped>
-.list{
-  height: 100%;
-}
-.infobare{
-  background-color: #00071c;
-}
-.title{
-  padding-top: 22px;
-  padding-left: 16px;
-  height: 54px;
-  line-height: 34px;
-  font-weight: 700;
-  background-color: #090f20;
-  color: white;
-}
 
 .elements{
-  height: calc(100% - 54px - 26px);
-  overflow-y: auto;
+  height: calc(100% - 56px);
   background-color: #20201d;
   color: white;
   display: flex;
   flex-direction: column;
   padding-bottom: 12px;
-  /* justify-content: flex-end; */
   overflow-y: auto;
 }
 
 .element{
   color: #a6a28c;
-  margin: 3px 6px;
-  line-height: 12px;
-  font-size: 12px;
-  position: relative;
-  padding-bottom: 6px;
+  flex: 0 0 auto;
+  width: 100%;
   display: flex;
+  /* margin: 9px 12px;
+  line-height: 18px;
+  font-size: 18px;
+  padding-bottom: 6px;
+  
+  flex-direction: row;
+  height: 60px; */
 }
 
 .time{
   padding-right: 6px;
-  font-size: 9px;
+  font-size: 12px;
+
 }
 
 .message{
-    color: #FFC629;
+
+  width: 100%;
+  color: #FFC629;
 }
 
 .tchat_write{
-    height: 26px;
+    height: 56px;
     widows: 100%;
     background: #20201d;
     display: flex;
@@ -162,10 +156,10 @@ export default {
     margin-left: 6%;
     border: none;
     outline: none;
-    font-size: 0.6em;
+    font-size: 16px;
     padding: 3px 5px;
     float: left;
-    height: 18px;
+    height: 36px;
     background-color: #00071c;
     color: white;
 }
@@ -173,29 +167,29 @@ export default {
   color: #ccc;
 }
 .tchat_send{
-    width: 20px;
-    height: 20px;
+    width: 32px;
+    height: 32px;
     float: right;
     border-radius: 50%;
     background-color: #5e0576;
     margin-right: 12px;
     margin-bottom: 2px;
     color: white;
-    line-height: 20px;
+    line-height: 32px;
     text-align: center;
 }
- .elements::-webkit-scrollbar-track
-    {
-        box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-        background-color: #a6a28c;
-    }
-  .elements::-webkit-scrollbar
-    {
-        width: 3px;
-        background-color: transparent;
-    }
-  .elements::-webkit-scrollbar-thumb
-    {
-        background-color: #FFC629;
-    }
+.elements::-webkit-scrollbar-track
+  {
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+      background-color: #a6a28c;
+  }
+.elements::-webkit-scrollbar
+  {
+      width: 3px;
+      background-color: transparent;
+  }
+.elements::-webkit-scrollbar-thumb
+  {
+      background-color: #FFC629;
+  }
 </style>

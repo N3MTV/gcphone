@@ -1,21 +1,25 @@
 <template>
-  <div class="menu">
+  <div class="phone_app">
     <div class="backblur" v-bind:style="{background: 'url(' + backgroundURL +')'}"></div>
-    <div class="menu_content">
-      <InfoBare class="infobare"/>
+    <InfoBare class="infobare"/>
+    <div class="menu">
+      
+      <div class="menu_content">
+        
 
-        <div class='menu_buttons'>
-          <button 
-              v-for="(but, key) of listApps" 
-              v-bind:key="but.name" 
-              v-bind:class="{ select: key === currentSelect}"
-              v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
-            >
-              {{but.name}}
-              <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
-          </button>
-        </div>
-    </div> 
+          <div class='menu_buttons'>
+            <button 
+                v-for="(but, key) of listApps" 
+                v-bind:key="but.name" 
+                v-bind:class="{ select: key === currentSelect}"
+                v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
+              >
+                {{but.name}}
+                <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
+            </button>
+          </div>
+      </div> 
+    </div>
   </div>
 </template>
 
@@ -122,14 +126,14 @@ export default {
   bottom: -6px;
   position: absolute;
   background-size: cover !important;
+  background-position: center !important;
   filter: blur(6px);
 }
 .menu_content {
   display: flex;
+  flex-direction: column;
 }
-.infobare{
-  margin-left: -8px;
-}
+
 .menu_buttons{
   margin-top: 24px;
   display: flex;
@@ -159,15 +163,15 @@ button{
   position: relative;
   margin: 0px;
   border: none;
-  width: 54px;
-  height: 65px;
+  width: 80px;
+  height: 110px;
   color: white;
-  background-size: 43px 43px;
-  background-position: 6px 5px;
+  background-size: 64px 64px;
+  background-position: center 6px;
   background-repeat: no-repeat;
   background-color: transparent;
-  font-size: 9px;
-  padding-top: 46px;
+  font-size: 14px;
+  padding-top: 72px;
   font-weight: 700;
   text-shadow: -1px 0 0 rgba(0,0,0, 0.8), 
              1px 0 0 rgba(0,0,0, 0.8),
@@ -178,15 +182,16 @@ button{
 button .puce{
   position: absolute;
   display: block;
-  background-color: darkorange;
-  width: 16px;
-  height: 16px;
-  line-height: 14px;
+  background-color: #1450b8;
+  font-size: 14px;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
   text-align: center;
   border-radius: 50%;
   border: 1px solid white;
-  top: 38px;
-  left: 38px;
+  bottom: 32px;
+  right: 12px;
 }
 button.select{
   background-color: rgba(255,255,255, 0.7);

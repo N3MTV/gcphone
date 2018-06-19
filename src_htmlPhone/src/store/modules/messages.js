@@ -65,19 +65,20 @@ export default {
 
 if (process.env.NODE_ENV !== 'production') {
   const time = new Date().getTime()
+  const numRandom = '' + Math.floor(Math.random() * 10000000)
   state.messages = [
-    {id: 1, transmitter: '01', receiver: '06', time: time - 160, message: 'Salut sa va ?!!!', isRead: 1, owner: false},
-    {id: 2, transmitter: '01', time, message: 'Tu fait quoi?', isRead: 1, owner: false},
-    {id: 3, transmitter: '01', time, message: 'Oui est toi ?', isRead: 1, owner: true},
-    {id: 4, transmitter: '01', time, message: 'GPS : 244 - 123', isRead: 1, owner: false},
-    {id: 5, transmitter: '01', time, message: 'Tu fait quoi?', isRead: 1, owner: false},
-    {id: 6, transmitter: '01', time, message: 'Oui est toi ?', isRead: 1, owner: true},
-    {id: 7, transmitter: '01', time, message: 'Salut sa va ?', isRead: 1, owner: false},
-    {id: 8, transmitter: '01', time, message: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', isRead: 0, owner: false},
-    {id: 9, transmitter: '01', time, message: 'GPS: -1034.5810546875, -2734.1027832031', isRead: 1, owner: true},
-    {id: 10, transmitter: '02', time, message: 'Salut sa va ?', isRead: 1, owner: false},
-    {id: 11, transmitter: '04', time, message: 'Salut sa va ?', isRead: 1, owner: false},
-    {id: 12, transmitter: '04', time, message: 'Salut sa va ?', isRead: 1, owner: false},
-    {id: 13, transmitter: '09', time, message: 'Tu sais pas !', isRead: 1, owner: false}
+    {id: 1, transmitter: numRandom, receiver: '06', time: time - 160, message: 'Salut sa va ?!!!', isRead: 1, owner: 0},
+    {id: 2, transmitter: numRandom, time, message: 'Tu fait quoi?', isRead: 1, owner: 0},
+    {id: 3, transmitter: numRandom, time, message: 'Oui est toi ?', isRead: 1, owner: 1},
+    {id: 4, transmitter: numRandom, time, message: 'GPS : 244 - 123', isRead: 1, owner: 0},
+    {id: 5, transmitter: '01', time, message: 'Tu fait quoi?', isRead: 1, owner: 1},
+    {id: 6, transmitter: '01', time, message: 'Oui est toi ?', isRead: 1, owner: 1},
+    {id: 7, transmitter: '01', time, message: 'Salut sa va ?', isRead: 1, owner: 0},
+    {id: 8, transmitter: '01', time, message: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', isRead: 0, owner: 1},
+    {id: 9, transmitter: '01', time, message: 'GPS: -1034.5810546875, -2734.1027832031', isRead: 1, owner: 0},
+    {id: 10, transmitter: '02', time, message: 'Salut sa va ?', isRead: 1, owner: 0},
+    {id: 11, transmitter: '04', time, message: 'Salut sa va ?', isRead: 1, owner: 0},
+    {id: 12, transmitter: '04', time, message: 'Salut sa va ?', isRead: 1, owner: 0},
+    {id: 13, transmitter: '09', time, message: 'Tu sais pas !', isRead: 1, owner: 0}
   ]
 }

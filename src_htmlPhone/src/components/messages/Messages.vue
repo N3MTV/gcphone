@@ -1,26 +1,34 @@
 <template>
-  <div class="messages">
-    <div id='sms_contact'>{{display}}</div>
+  <div class="phone_app messages">
+    <PhoneTitle :title="display" :backgroundColor="color"/>
+
 
     <div id='sms_list'>
         <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesList' v-bind:key="mess.id">
             <span class='sms_message sms_me' 
-              v-bind:class="{ sms_other : mess.owner === 0}">
+              v-bind:class="{ sms_other : mess.owner === 0}" :style="colorSmsOwner[mess.owner]">
                 {{mess.message}}
-                <span class="sms_time"><timeago :since='mess.time' :auto-update="20"></timeago></span>
+                <span ><timeago class="sms_time" :since='mess.time' :auto-update="20" :style="colorSmsOwner[mess.owner]"></timeago></span>
             </span>
         </div>
     </div>
 
     <div id='sms_write'>
         <input type="text" placeholder="Envoyer un message">
-        <span class='sms_send'>></span>
+        <div class="sms_send">
+          <svg height="24" viewBox="0 0 24 24" width="24">
+    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+    <path d="M0 0h24v24H0z" fill="none"/>
+</svg>
+        </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import { generateColorForStr, getBestFontColor } from './../../Utils'
+import PhoneTitle from './../PhoneTitle'
 import Modal from '@/components/Modal/index.js'
 
 export default {
@@ -31,6 +39,9 @@ export default {
       display: '',
       phoneNumber: ''
     }
+  },
+  components: {
+    PhoneTitle
   },
   methods: {
     ...mapActions(['setMessageRead', 'sendMessage', 'deleteMessage']),
@@ -142,6 +153,17 @@ export default {
     ...mapGetters(['messages']),
     messagesList () {
       return this.messages.filter(e => e.transmitter === this.phoneNumber)
+    },
+    color () {
+      return generateColorForStr(this.phoneNumber)
+    },
+    colorSmsOwner () {
+      return [
+        {
+          backgroundColor: this.color,
+          color: getBestFontColor(this.color)
+        }, {}
+      ]
     }
   },
   watch: {
@@ -191,23 +213,11 @@ export default {
     padding-bottom: 8px;
 }
 
-.sms_send{
-    width: 20px;
-    height: 20px;
-    float: right;
-    border-radius: 50%;
-    background-color: orange;
-    margin-right: 6px;
-    margin-bottom: 2px;
-    text-align: center;
-    color: white;
-    line-height: 20px;
-}
+
 
 .sms{
   overflow: auto;
   zoom: 1;
-
 }
 
 .sms_me{
@@ -232,7 +242,7 @@ export default {
 
 .sms_time{
     display: block;
-    font-size: 0.5em;
+    font-size: 12px;
 }
 
 .sms_me .sms_time{
@@ -249,35 +259,45 @@ export default {
   height: 100%;
 }
 .sms.select .sms_message{
-  background-color: lightskyblue;
+  background-color: rgb(0, 0, 0) !important;
+  color: #d4d4d4 !important;
 }
+
+.sms.select .sms_message .sms_time {
+  background-color: inherit !important;
+}
+
 .sms_message{
   word-wrap: break-word;
   max-width: 80%;
+  font-size: 24px;
 }
+
 #sms_write{
-    height: 26px;
-    widows: 100%;
+    height: 56px;
+    margin: 10px;
+    width: 380px;
+    background-color: white;
+    border-radius: 56px;
 }
 #sms_write input{
-    width: 78%;
-    margin-left: 6%;
+    height: 56px;
     border: none;
     outline: none;
-    font-size: 0.6em;
-    padding: 3px 5px;
-    float: left;
+    font-size: 18px;
+    margin-left: 14px;
+    padding: 12px 5px;
+    background-color: rgba(236, 236, 241, 0)
 }
+
 .sms_send{
-    width: 20px;
-    height: 20px;
     float: right;
-    border-radius: 50%;
-    background-color: orange;
-    margin-right: 6px;
-    margin-bottom: 2px;
-    text-align: center;
-    color: white;
-    line-height: 20px;
+    margin-right: 10px;
+}
+.sms_send svg{
+    margin: 10px; 
+    width: 36px;
+    height: 36px;
+    fill: #C0C0C0;
 }
 </style>

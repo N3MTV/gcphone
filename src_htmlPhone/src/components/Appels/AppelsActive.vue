@@ -1,5 +1,5 @@
 <template>
-   <div class="screen">
+   <div class="phone_app">
      <div class="backblur" v-bind:style="{background: 'url(' + backgroundURL +')'}"></div>
      <InfoBare />
      <div class="num">{{appelsDisplayNumber}}</div>
@@ -149,13 +149,6 @@ export default {
 </script>
 
 <style scoped>
-.screen{
-  position: relative;
-  left: 0;
-  top: 0px;
-  width: 100%;
-  height: 100%;
-}
 .backblur{
   top: -6px;
   left: -6px;
@@ -173,7 +166,7 @@ export default {
   right: 0;
   color: rgba(255, 255, 255, 0.9);
   text-align: center;
-  font-size: 24px;
+  font-size: 46px;
 }
 .contactName{
   position: absolute;
@@ -183,15 +176,16 @@ export default {
   right: 0;
   color: rgba(255, 255, 255, 0.8);
   text-align: center;
-  font-size: 18px;
+  margin-top: 16px;
+  font-size: 36px;
 }
 
 .time{
   position: relative;
-  top: 190px;
-  left: 75px;
-  width: 91px;
-  height: 91px;
+  top: 280px;
+  left: 125px;
+  width: 150px;
+  height: 150px;
   border-top: 2px solid white;
   border-radius: 50%;
   animation: rond 1.8s infinite linear;
@@ -199,13 +193,13 @@ export default {
 .time-display{
   text-shadow: 0px 0px 15px black, 0px 0px 15px black;
   position: relative;
-  top: 135px;
+  top: 195px;
   line-height: 20px;
-  left: 75px;
-  width: 91px;
+  left: 125px;
+  width: 150px;
   height: 91px;
   color: white;
-  font-size: 20px;
+  font-size: 36px;
   text-align: center
 }
 
@@ -219,8 +213,8 @@ export default {
 }
 
 .action {
-  height: 71px;
-  width: 71px;
+  height: 100px;
+  width: 100px;
   border-radius: 50%;
 }
 
@@ -237,9 +231,9 @@ export default {
 }
 
 .action svg{
-  width: 40px;
-  height: 40px;
-  margin: 15px;
+  width: 60px;
+  height: 60px;
+  margin: 20px;
   fill: #EEE;
 }
 
