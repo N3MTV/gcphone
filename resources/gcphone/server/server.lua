@@ -7,7 +7,7 @@ math.randomseed(os.time())
 
 --- Pour les numero du style XXX-XXXX
 function getPhoneRandomNumber()
-    local numBase0 = math.random(0,999)
+    local numBase0 = math.random(100,999)
     local numBase1 = math.random(0,9999)
     local num = string.format("%03d-%04d", numBase0, numBase1 )
 	return num
@@ -397,7 +397,19 @@ AddEventHandler('gcPhone:startCall', function(phone_number, rtcOffer, extraData)
     TriggerEvent('gcPhone:internal_startCall',source, phone_number, rtcOffer, extraData)
 end)
 
-
+RegisterServerEvent('gcPhone:candidates')
+AddEventHandler('gcPhone:candidates', function (callId, candidates)
+    print('send cadidate', callId, candidates)
+    if AppelsEnCours[callId] ~= nil then
+        local source = source
+        local to = AppelsEnCours[callId].transmitter_src
+        if source == to then 
+            to = AppelsEnCours[callId].receiver_src
+        end
+        print('TO', to)
+        TriggerClientEvent('gcPhone:candidates', to, candidates)
+    end
+end)
 
 
 RegisterServerEvent('gcPhone:acceptCall')

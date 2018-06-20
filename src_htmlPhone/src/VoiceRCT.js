@@ -10,13 +10,15 @@ class VoiceRTC {
     this.phoneAPI = phoneAPI
     this.myPeerConnection = null
     this.candidates = []
+    this.listener = {}
+    this.myCandidates = []
     this.audio = new Audio()
     this.offer = null
     this.answer = null
     this.initiator = null
     this.RTCConfig = {
       iceServers: [{
-        urls: ['turn:51.38.231.119'],
+        urls: ['turn:gannon.ovh'],
         username: 'jojo',
         credential: 'pass'
       }]
@@ -32,11 +34,13 @@ class VoiceRTC {
   newConnection () {
     this.close()
     this.candidates = []
+    this.myCandidates = []
+    this.listener = {}
     this.offer = null
     this.answer = null
     this.initiator = null
     this.myPeerConnection = new RTCPeerConnection(this.RTCConfig)
-    this.myPeerConnection.onaddstream = this.onaddstream
+    this.myPeerConnection.onaddstream = this.onaddstream.bind(this)
   }
 
   close () {
@@ -51,70 +55,87 @@ class VoiceRTC {
     this.newConnection()
     this.initiator = true
     this.myPeerConnection.addStream(this.stream)
-    const promise = new Promise((resolve, reject) => {
-      this.myPeerConnection.onicecandidate = this.onicecandidatePromise(resolve, reject)
-    })
+    this.myPeerConnection.onicecandidate = this.onicecandidate.bind(this)
     this.offer = await this.myPeerConnection.createOffer()
     this.myPeerConnection.setLocalDescription(this.offer)
-    return promise
+    return btoa(JSON.stringify(this.offer))
   }
 
+
   async acceptCall (infoCall) {
-    console.log('acceptCall 1')
-    const data = JSON.parse(atob(infoCall.rtcOffer))
-    console.log('acceptCall 2')
+    console.log('JS acceptCall 1')
+    console.log(infoCall.rtcOffer)
+    const offer = JSON.parse(atob(infoCall.rtcOffer))
+    console.log('JS acceptCall 1')
     this.newConnection()
-    console.log('acceptCall 3')
+    console.log('JS acceptCall 1')
     this.initiator = false
-    console.log('acceptCall 4')
+    console.log('JS acceptCall 1')
     this.stream = await navigator.mediaDevices.getUserMedia(constraints)
-    console.log('acceptCall 5')
+    console.log('JS acceptCall 1')
+    this.myPeerConnection.onicecandidate = this.onicecandidate.bind(this)
+    console.log('JS acceptCall 1')
     this.myPeerConnection.addStream(this.stream)
-    console.log('acceptCall 5')
-    this.offer = new RTCSessionDescription(data.offer)
-    console.log('acceptCall 6')
-    this.candidates = data.candidates
-    console.log('acceptCall 7')
+    console.log('JS acceptCall 1')
+    this.offer = new RTCSessionDescription(offer)
+    console.log('JS acceptCall 1')
     this.myPeerConnection.setRemoteDescription(this.offer)
-    console.log('acceptCall 8')
-    this.candidates.forEach((candidate) => {
-      this.myPeerConnection.addIceCandidate(candidate)
-    })
-    console.log('acceptCall 9')
+    console.log('JS acceptCall 1')
     this.answer = await this.myPeerConnection.createAnswer()
-    console.log('acceptCall 10')
+    console.log('JS acceptCall 1')
     this.myPeerConnection.setLocalDescription(this.answer)
+    console.log('JS acceptCall 1')
     return btoa(JSON.stringify(this.answer))
   }
 
   async onReceiveAnswer (answerData) {
     const answerObj = JSON.parse(atob(answerData))
     this.answer = new RTCSessionDescription(answerObj)
-
     this.myPeerConnection.setRemoteDescription(this.answer)
   }
 
-  onicecandidatePromise (resolve, reject) {
-    return (event) => {
-      if (event.candidate !== undefined) {
-        this.candidates.push(event.candidate)
-        if (this.candidates.length === 1) {
-          resolve(this.getRTCOffer())
+  onicecandidate (event) {
+    if (event.candidate !== undefined) {
+      this.myCandidates.push(event.candidate)
+      if (this.listener['onCandidate'] !== undefined) { 
+        const candidates = this.getAvailableCandidates()
+        for (let func of this.listener['onCandidate']) {
+          func(candidates)
         }
       }
     }
   }
 
-  getRTCOffer () {
-    const dataOffer = JSON.stringify({
-      offer: this.offer,
-      candidates: this.candidates
-    })
-    return btoa(dataOffer)
+  getAvailableCandidates() {
+    const candidates = btoa(JSON.stringify(this.myCandidates))
+    this.myCandidates = []
+    return candidates
+  }
+
+  addIceCandidates (candidatesRaw) {
+    console.log(candidatesRaw)
+    if (this.myPeerConnection !== null) {
+      const candidates = JSON.parse(atob(candidatesRaw))
+      candidates.forEach((candidate) => {
+        if (candidate !== null) {
+          console.log('CA ' + JSON.stringify(candidate))
+          this.myPeerConnection.addIceCandidate(candidate)
+        }
+      })
+    }
+  }
+
+  addEventListener (eventName, callBack) {
+    if (eventName === 'onCandidate') {
+      if (this.listener[eventName] === undefined) {
+        this.listener[eventName] = []
+      }
+      this.listener[eventName].push(callBack)
+      callBack(this.getAvailableCandidates())
+    }
   }
 
   onaddstream (event) {
-    if (this.initiator = true) return
     this.audio.srcObject = event.stream
     this.audio.play()
   }

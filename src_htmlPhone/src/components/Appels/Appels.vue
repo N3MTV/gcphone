@@ -38,7 +38,7 @@ export default {
         icon: 'clock-o'
       }, {
         Comp: AppelsContacts,
-        name: 'Conctats',
+        name: 'Contacts',
         icon: 'user'
       }],
       currentMenuIndex: 1

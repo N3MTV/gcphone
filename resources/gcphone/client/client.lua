@@ -18,24 +18,39 @@ local contacts = {}
 local messages = {}
 local myPhoneNumber = ''
 local isDead = false
+local USE_RTC = true
 
-local PhoneInCall = {
-}
+local PhoneInCall = {}
 local currentPlaySound = false
 local soundId = 1485
 --====================================================================================
---  
+--  Gestion des appels fixe
 --====================================================================================
 function TakeAppel (infoCall)
-  print('TakeAppel', json.encode(infoCall))
-  TriggerServerEvent('gcPhone:acceptCall', infoCall)
+  TriggerEvent('gcphone:autoAcceptCall', infoCall)
 end
-
 
 RegisterNetEvent("gcPhone:notifyFixePhoneChange")
 AddEventHandler("gcPhone:notifyFixePhoneChange", function(_PhoneInCall)
   PhoneInCall = _PhoneInCall
 end)
+
+--[[
+  Affiche les imformations quant le joueurs est proche d'un fixe
+--]]
+function showFixePhoneHelper (coords)
+  for number, data in pairs(FixePhone) do
+    local dist = GetDistanceBetweenCoords(
+      data.coords.x, data.coords.y, data.coords.z,
+      coords.x, coords.y, coords.z, 1)
+    if dist <= 2.0 then
+      SetTextComponentFormat("STRING")
+      AddTextComponentString("~g~" .. data.name .. ' ~o~' .. number)
+      DisplayHelpTextFromStringLabel(0, 0, 0, -1)
+      break
+    end
+  end
+end
  
 
 Citizen.CreateThread(function ()
@@ -46,7 +61,7 @@ Citizen.CreateThread(function ()
     for i, _ in pairs(PhoneInCall) do 
         local dist = GetDistanceBetweenCoords(
           PhoneInCall[i].coords.x, PhoneInCall[i].coords.y, PhoneInCall[i].coords.z,
-          coords.x, coords.y, coords.z, 0)
+          coords.x, coords.y, coords.z, 1)
         if (dist <= 5.0) then
           DrawMarker(1, PhoneInCall[i].coords.x, PhoneInCall[i].coords.y, PhoneInCall[i].coords.z,
               0,0,0, 0,0,0, 0.1,0.1,0.1, 0,255,0,255, 0,0,0,0,0,0,0)
@@ -64,7 +79,9 @@ Citizen.CreateThread(function ()
         break
       end
     end
-
+    if inRangeToActivePhone == false then
+      showFixePhoneHelper(coords)
+    end
     if inRangeToActivePhone == true and currentPlaySound == false then
       print('start')
       PlaySound(soundId, "Remote_Ring", "Phone_SoundSet_Michael", 0, 0, 1)
@@ -90,13 +107,9 @@ end)
 
 
 
-
-
-
-
-
-
-
+--====================================================================================
+--  
+--====================================================================================
 Citizen.CreateThread(function()
   
   while true do
@@ -162,12 +175,21 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
     PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
   end
 end)
-
+--====================================================================================
+--  Function APP BANK
+--====================================================================================
 RegisterNetEvent('banking:updateBalance')
 AddEventHandler('banking:updateBalance', function(bank)
     SendNUIMessage({event = 'updateBankbalance', banking = bank})
 end)
---========Pa============================================================================
+
+RegisterNetEvent('esx:setAccountMoney')
+AddEventHandler('esx:setAccountMoney', function(account)
+  if account.name == 'bank' then
+    SendNUIMessage({event = 'updateBankbalance', banking = account.money})
+  end 
+end)
+--====================================================================================
 --  Function client | Contacts
 --====================================================================================
 function addContact(display, num) 
@@ -239,7 +261,7 @@ end)
 
 RegisterNetEvent("gcPhone:acceptCall")
 AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
-  if inCall == false then
+  if inCall == false and USE_RTC == false then
     inCall = true
     NetworkSetVoiceChannel(infoCall.id + 1)
     NetworkSetTalkerProximity(0.0)
@@ -275,13 +297,6 @@ AddEventHandler("gcPhone:historiqueCall", function(historique)
   SendNUIMessage({event = 'historiqueCall', historique = historique})
 end)
 
-function startCall (phone_number, rtcOffer)
-  TriggerServerEvent('gcPhone:startCall', phone_number, rtcOffer)
-end
-
-function acceptCall (infoCall, rtcAnswer)
-  TriggerServerEvent('gcPhone:acceptCall', infoCall, rtcAnswer)
-end
 
 function rejectCall(infoCall)
   TriggerServerEvent('gcPhone:rejectCall', infoCall)
@@ -305,19 +320,23 @@ end
   
 
 --====================================================================================
---  Event - Appels
+--  Event NUI - Appels
 --====================================================================================
-
+function startCall (phone_number, rtcOffer, extraData)
+  TriggerServerEvent('gcPhone:startCall', phone_number, rtcOffer, extraData)
+end
 RegisterNUICallback('startCall', function (data, cb)
   startCall(data.numero, data.rtcOffer)
   cb()
 end)
 
+function acceptCall (infoCall, rtcAnswer)
+  TriggerServerEvent('gcPhone:acceptCall', infoCall, rtcAnswer)
+end
 RegisterNUICallback('acceptCall', function (data, cb)
   acceptCall(data.infoCall, data.rtcAnswer)
   cb()
 end)
-
 RegisterNUICallback('rejectCall', function (data, cb)
   rejectCall(data.infoCall)
   cb()
@@ -329,7 +348,30 @@ RegisterNUICallback('ignoreCall', function (data, cb)
 end)
 
 
+RegisterNUICallback('onCandidates', function (data, cb)
+  print('LUA GET CADIDIATA', data.candidates)
+  TriggerServerEvent('gcPhone:candidates', data.id, data.candidates)
+  cb()
+end)
 
+RegisterNetEvent("gcPhone:candidates")
+AddEventHandler("gcPhone:candidates", function(candidates)
+  SendNUIMessage({event = 'candidatesAvailable', candidates = candidates})
+end)
+
+
+
+RegisterNetEvent('gcphone:autoCall')
+AddEventHandler('gcphone:autoCall', function(data)
+  if data ~= nil and data.number ~= nil then
+    SendNUIMessage({ event = "autoStartCall", number = data.number})
+  end
+end)
+
+RegisterNetEvent('gcphone:autoAcceptCall')
+AddEventHandler('gcphone:autoAcceptCall', function(infoCall)
+  SendNUIMessage({ event = "autoAcceptCall", infoCall = infoCall})
+end)
 
 
 
@@ -413,7 +455,6 @@ function tprint (t, s)
 end
 RegisterNUICallback('log', function(data, cb)
   print(data)
-  -- tprint(data)
   cb()
 end)
 RegisterNUICallback('focus', function(data, cb)
@@ -496,6 +537,9 @@ RegisterNUICallback('deleteALL', function(data, cb)
   TriggerServerEvent('gcPhone:deleteALL')
   cb()
 end)
+
+
+
 function TooglePhone() 
   menuIsOpen = not menuIsOpen
   SendNUIMessage({show = menuIsOpen})
@@ -524,9 +568,6 @@ end)
 ----------------------------------
 ---------- GESTION APPEL ---------
 ----------------------------------
-
-
-
 RegisterNUICallback('appelsDeleteHistorique', function (data, cb)
   appelsDeleteHistorique(data.numero)
   cb()
@@ -535,6 +576,8 @@ RegisterNUICallback('appelsDeleteAllHistorique', function (data, cb)
   appelsDeleteAllHistorique(data.infoCall)
   cb()
 end)
+
+
 ----------------------------------
 ---------- GESTION VIA WEBRTC ----
 ----------------------------------
@@ -575,105 +618,3 @@ AddEventHandler('onClientResourceStart', function(res)
 end)
 
 
-
-
---[[
---- VDK_CALL , maybe
-RegisterNetEvent('callService')
-AddEventHandler("callService", function(type)
-	local limit = 120
-	local defautText = ""
-	DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", defautText, "", "", "", limit)
-	while (UpdateOnscreenKeyboard() == 0) do
-	  DisableAllControlActions(0);
-	  Wait(0);
-	 end
-	if (GetOnscreenKeyboardResult()) then
-		local msg = GetOnscreenKeyboardResult()
-		local plyPos = GetEntityCoords(GetPlayerPed(-1), true)
-		TriggerServerEvent("call:makeCall", type, {
-			x = plyPos.x,
-			y = plyPos.y,
-			z = plyPos.z
-		}, msg)
-	end
-end)
-
-Config.json
-{
-  "display": "Ambulance",
-  "backgroundColor": "red",
-  "subMenu": [
-    {
-      "title": "Envoyer un message",
-      "eventName": "callService",
-      "type": "ambulance"
-    }
-  ]
-}
-
---]]
-
-
-
---[[
-  Pour fonctionner avec esx_phone
-  Install esx_phone
-
-RegisterNetEvent('gcphone:esx_wrap_service')
-AddEventHandler('gcphone:esx_wrap_service', function(data)
-  local playerPed   = GetPlayerPed(-1)
-  local coords      = GetEntityCoords(playerPed)
-  local number      = data.number
-  local message     = data.message
-  if message == nil then
-    DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "", "", "", "", "", 256)
-    while (UpdateOnscreenKeyboard() == 0) do
-      DisableAllControlActions(0);
-      Wait(0);
-    end
-    if (GetOnscreenKeyboardResult()) then
-      message =  GetOnscreenKeyboardResult()
-    end
-  end
-  if message ~= nil and message ~= "" then
-    TriggerServerEvent('esx_phone:send', number, message, false, {
-      x = coords.x,
-      y = coords.y,
-      z = coords.z
-    })
-  else
-    -- Invalide message
-  end
-end)
-
-Config.json
-{
-  "display": "Police",
-  "subMenu": [
-    {
-      "title": "Envoyer un message",
-      "eventName": "gcphone:esx_wrap_service",
-      "type": {
-        "number": "police"
-      }
-    },
-    {
-      "title": "Message Auto - Vols",
-      "eventName": "gcphone:esx_wrap_service",
-      "type": {
-        "number": "police",
-        "message": "vol"
-      }
-    }
-  ]
-}
--  
-]]
-
-RegisterNetEvent('gcphone:autoCall')
-AddEventHandler('gcphone:autoCall', function(data)
-  if data ~= nil and data.number ~= nil then
-    startCall(data.number)
-  end
-end)

@@ -45,6 +45,7 @@ files {
 }
 
 client_script {
+	"config.lua",
 	"client/client.lua",
 	"client/animation.lua",
 	"client/photo.lua",
@@ -53,7 +54,7 @@ client_script {
 
 server_script {
 	'@mysql-async/lib/MySQL.lua',
-	"server/config.lua",
+	"config.lua",
 	"server/server.lua",
 	"server/app_tchat.lua",
 }

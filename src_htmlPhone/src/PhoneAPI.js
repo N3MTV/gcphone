@@ -1,7 +1,7 @@
 import store from '@/store'
 import VoiceRTC from './VoiceRCT'
 
-const USE_VOICE_RTC = false
+const USE_VOICE_RTC = true
 const BASE_URL = 'http://gcphone/'
 
 /* eslint-disable camelcase */
@@ -62,28 +62,6 @@ class PhoneAPI {
   }
 
   // == Gestion des appels
-  async startCall (numero) {
-    if (USE_VOICE_RTC === true) {
-      const rtcOffer = await this.voiceRTC.prepareCall()
-      console.log('PhneAPI startCall')
-      return this.post('startCall', { numero, rtcOffer })
-    } else {
-      return this.post('startCall', { numero })
-    }
-  }
-  async acceptCall (infoCall) {
-    if (USE_VOICE_RTC === true) {
-      console.log('PhneAPI acceptCall' + JSON.stringify(infoCall))
-      const rtcAnswer = await this.voiceRTC.acceptCall(infoCall.rtcOffer)
-      console.log('PhneAPI acceptCall')
-      return this.post('acceptCall', { infoCall, rtcAnswer })
-    } else {
-      return this.post('acceptCall', { infoCall })
-    }
-  }
-  async rejectCall (infoCall) {
-    return this.post('rejectCall', { infoCall })
-  }
   async appelsDeleteHistorique (numero) {
     return this.post('appelsDeleteHistorique', { numero })
   }
@@ -175,20 +153,54 @@ class PhoneAPI {
   onupdateBourse (data) {
     store.commit('SET_BOURSE_INFO', data.bourse)
   }
+  // Call
+  async startCall (numero) {
+    if (USE_VOICE_RTC === true) {
+      const rtcOffer = await this.voiceRTC.prepareCall()
+      return this.post('startCall', { numero, rtcOffer })
+    } else {
+      return this.post('startCall', { numero })
+    }
+  }
+  async acceptCall (infoCall) {
+    console.log('JS phoneAPI acceptCall')
+    if (USE_VOICE_RTC === true) {
+      const rtcAnswer = await this.voiceRTC.acceptCall(infoCall)
+      return this.post('acceptCall', { infoCall, rtcAnswer })
+    } else {
+      return this.post('acceptCall', { infoCall })
+    }
+  }
+  async rejectCall (infoCall) {
+    return this.post('rejectCall', { infoCall })
+  }
   onwaitingCall (data) {
     store.commit('SET_APPELS_INFO_IF_EMPTY', {
       ...data.infoCall,
       initiator: data.initiator
     })
+    // this.voiceRTC.addEventListener('onCandidate', (candidates) => {
+    //   this.post('onCandidates', { id: data.infoCall.id, candidates })
+    // })
   }
   onacceptCall (data) {
-    console.log('onacceptCall ' + data.initiator)
-    if (data.initiator === true) {
-      this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer)
+    if (USE_VOICE_RTC === true) {
+      if (data.initiator === true) {
+        this.voiceRTC.onReceiveAnswer(data.infoCall.rtcAnswer)
+      }
+      this.voiceRTC.addEventListener('onCandidate', (candidates) => {
+        this.post('onCandidates', { id: data.infoCall.id, candidates })
+      })
     }
     store.commit('SET_APPELS_INFO_IS_ACCEPTS', true)
   }
+  oncandidatesAvailable (data) {
+    this.voiceRTC.addIceCandidates(data.candidates)
+  }
   onrejectCall (data) {
+    if (this.voiceRTC !== null) {
+      this.voiceRTC.close()
+    }
     store.commit('SET_APPELS_INFO', null)
   }
   // Tchat Event
@@ -200,18 +212,12 @@ class PhoneAPI {
   }
 
   // =====================
-  rtcSendOffer (data) {
-    this.voiceRTC.prepareCall()
+  onautoStartCall (data) {
+    this.startCall(data.number)
   }
-  rtcSendAnswer (data) {
-    this.post('gcPhoneRTC_send_answer', data)
-  }
-  ongcPhoneRTC_receive_offer (data) {
-    console.log('')
-  }
-
-  ongcPhoneRTC_receive_answer (data) {
-    console.log('')
+  onautoAcceptCall (data) {
+    store.commit('SET_APPELS_INFO', data.infoCall)
+    this.acceptCall(data.infoCall)
   }
 
 }
