@@ -178,7 +178,7 @@ export default {
 }
 .group { 
   position:relative; 
-  margin-top:16px; 
+  margin-top:24px; 
 }
 .group.inputText { 
   position:relative; 
@@ -218,7 +218,7 @@ input:focus ~ label, input:valid ~ label 		{
 .bar 	{ position:relative; display:block; width:100%; }
 .bar:before, .bar:after 	{
   content:'';
-  height:1px; 
+  height:3px; 
   width:0;
   bottom:1px; 
   position:absolute;
@@ -271,31 +271,46 @@ input:focus ~ .highlight {
     background-color: #edeeee;
 }
 .group.select .btn{
-    border: 6px solid #C0C0C0;
+    /* border: 6px solid #C0C0C0; */
     line-height: 18px;
 }
 
 .group .btn.btn-green{
-    background-color: #2ecc71;
-    color: white;
+  border: 1px solid #2ecc7080;
+  color: #2ecc70;
+  background-color: white;
+  font-weight: 500;
+  border-radius: 10px;
 }
 .group.select .btn.btn-green{
-    border-color:#27ae60;
+  background-color: #2ecc70;
+  color: white;
+  border: none;
 }
 .group .btn.btn-orange{
-    background-color: #e67e22;
-    color: white;
+  border: 1px solid #e67e2280;
+  color: #e67e22;
+  background-color: white;
+  font-weight: 500;
+  border-radius: 10px;
 }
 .group.select .btn.btn-orange{
-    border-color: #d35400;
+  background-color: #e67e22;
+  color: white;
+  border: none;
 }
 
 .group .btn.btn-red{
-    background-color: #e74c3c;
-    color: white;
+  border: 1px solid #e74c3c80;
+  color: #e74c3c;
+  background-color: white;
+  font-weight: 500;
+  border-radius: 10px;
 }
 .group.select .btn.btn-red{
-    border-color: #c0392b;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
 }
 
 /* ANIMATIONS ================ */

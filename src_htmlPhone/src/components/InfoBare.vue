@@ -27,7 +27,7 @@ export default {
     height: 24px;
     font-size: 17px;
     line-height: 24px;
-    padding: 0px 18px;
+    padding: 0px 20px 0px 24px;
     width: 100%;
     color: white;
     background-color: rgba(0, 0, 0, 0.3);
@@ -40,35 +40,35 @@ export default {
 .barre1 {
     height: 12px;
     width: 3px;
-    right: 88px;
+    right: 93px;
     background-color: rgba(255, 255, 255, 0.6);
     color: rgba(255, 255, 255, 0.6);
     border: none;
-    bottom: 0px;
+    bottom: -1px;
 }
 .barre2 {
     height: 9px;
     width: 3px;
-    right: 93px;
+    right: 98px;
     background-color: white;
     border: none;
-    bottom: 0px;
+    bottom: -1px;
 }
 .barre3 {
     height: 6px;
     width: 3px;
-    right: 98px;
+    right: 103px;
     background-color: white;
     border: none;
-    bottom: 0px;
+    bottom: -1px;
 }
 .barre4 {
     height: 3px;
     width: 3px;
-    right: 103px;
+    right: 108px;
     background-color: white;
     border: none;
-    bottom: 0px;
+    bottom: -1px;
 }
 .time{
     text-align: right;
@@ -80,17 +80,17 @@ export default {
 .batterie1 {
     height: 10px;
     width: 7px;
-    right: 76px;
+    right: 78px;
     background-color: rgb(255, 255, 255);
     color: rgb(255, 255, 255);
     border-radius: 0.5px;
     border: none;
-    bottom: 0px;
+    bottom: -1px;
 }
 .batterie2 {
     height: 13px;
     width: 5px;
-    right: 77px;
+    right: 79px;
     bottom: 0px;
     background-color: rgba(255, 255, 255, 0.6);
     border: 0.5px solid white;

@@ -6,8 +6,7 @@ const constraints = {
 /* eslint-disable */
 class VoiceRTC {
 
-  constructor (phoneAPI) {
-    this.phoneAPI = phoneAPI
+  constructor (RTCConfig) {
     this.myPeerConnection = null
     this.candidates = []
     this.listener = {}
@@ -16,13 +15,7 @@ class VoiceRTC {
     this.offer = null
     this.answer = null
     this.initiator = null
-    this.RTCConfig = {
-      iceServers: [{
-        urls: ['turn:gannon.ovh'],
-        username: 'jojo',
-        credential: 'pass'
-      }]
-    }
+    this.RTCConfig = RTCConfig
   }
 
   async init () {

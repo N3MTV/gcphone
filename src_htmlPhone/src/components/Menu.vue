@@ -9,7 +9,7 @@
 
           <div class='menu_buttons'>
             <button 
-                v-for="(but, key) of listApps" 
+                v-for="(but, key) of Apps" 
                 v-bind:key="but.name" 
                 v-bind:class="{ select: key === currentSelect}"
                 v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
@@ -25,7 +25,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Apps from './Apps'
+// import Apps from './Apps'
 import InfoBare from './InfoBare'
 
 export default {
@@ -38,27 +38,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['nbMessagesUnread', 'backgroundURL']),
-    listApps () {
-      return Apps.map(app => {
-        if (app.puceRef !== undefined) {
-          app.puce = this[app.puceRef]
-        }
-        return app
-      })
-    }
+    ...mapGetters(['nbMessagesUnread', 'backgroundURL', 'Apps'])
   },
   methods: {
     ...mapGetters(['closePhone']),
     onLeft: function () {
       const l = Math.floor(this.currentSelect / 4)
       const newS = (this.currentSelect + 4 - 1) % 4 + l * 4
-      this.currentSelect = Math.min(newS, this.listApps.length - 1)
+      this.currentSelect = Math.min(newS, this.Apps.length - 1)
     },
     onRight: function () {
       const l = Math.floor(this.currentSelect / 4)
       let newS = (this.currentSelect + 1) % 4 + l * 4
-      if (newS >= this.listApps.length) {
+      if (newS >= this.Apps.length) {
         newS = l * 4
       }
       this.currentSelect = newS
@@ -67,8 +59,8 @@ export default {
       let newS = this.currentSelect - 4
       if (newS < 0) {
         const r = this.currentSelect % 4
-        newS = Math.floor((this.listApps.length - 1) / 4) * 4
-        this.currentSelect = Math.min(newS + r, this.listApps.length - 1)
+        newS = Math.floor((this.Apps.length - 1) / 4) * 4
+        this.currentSelect = Math.min(newS + r, this.Apps.length - 1)
       } else {
         this.currentSelect = newS
       }
@@ -76,13 +68,13 @@ export default {
     onDown: function () {
       const r = this.currentSelect % 4
       let newS = this.currentSelect + 4
-      if (newS >= this.listApps.length) {
+      if (newS >= this.Apps.length) {
         newS = r
       }
       this.currentSelect = newS
     },
     onEnter: function () {
-      const name = this.listApps[this.currentSelect].routeName
+      const name = this.Apps[this.currentSelect].routeName
       this.$router.push({ name })
     },
     onBack: function () {

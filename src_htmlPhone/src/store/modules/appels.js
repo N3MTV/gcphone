@@ -29,7 +29,7 @@ const getters = {
     if (state.appelsInfo === null) {
       return false
     }
-    return getters.myPhoneNumber === state.appelsInfo.transmitter_num
+    return state.appelsInfo.initiator === true
   }
 }
 

@@ -125,7 +125,7 @@ export default {
   },
 
   mounted () {
-    if (this.myPhoneNumber === this.appelsInfo.transmitter_num) {
+    if (this.appelsInfo.initiator === true) {
       this.status = 1
     }
   },

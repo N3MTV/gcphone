@@ -1,13 +1,49 @@
--- @author https://github.com/EmmanuelVlad/ephone
+--====================================================================================
+-- #Author: Jonathan D @ Gannon
+--====================================================================================
 
-local inAnim = "cellphone_text_in"
-local outAnim = "cellphone_text_out"
-local textToCall = "cellphone_text_to_call"
-local CallToText = "cellphone_call_to_text"
+local myPedId = GetPlayerPed(-1)
 
 local phoneProp = 0
 local phoneModel = "prop_amb_phone"
+
+local currentStatus = 'out'
+local lastDict = nil
 local lastAnim = nil
+local lastIsFreeze = false
+
+local ANIMS = {
+	['cellphone@'] = {
+		['out'] = {
+			['text'] = 'cellphone_text_in',
+			['call'] = 'cellphone_call_listen_base',
+			
+		},
+		['text'] = {
+			['out'] = 'cellphone_text_out',
+			['call'] = 'cellphone_text_to_call',
+		},
+		['call'] = {
+			['out'] = 'cellphone_call_out',
+			['text'] = 'cellphone_call_to_text',
+		}
+	},
+	['anim@cellphone@in_car@ps'] = {
+		['out'] = {
+			['text'] = 'cellphone_text_in',
+			['call'] = 'cellphone_call_in',
+		},
+		['text'] = {
+			['out'] = 'cellphone_text_out',
+			['call'] = 'cellphone_text_to_call',
+		},
+		['call'] = {
+			['out'] = 'cellphone_horizontal_exit',
+			['text'] = 'cellphone_call_to_text',
+		}
+	}
+}
+
 --------------------------------------------------------------------------------
 --
 --								FUNCTIONS
@@ -15,79 +51,82 @@ local lastAnim = nil
 --------------------------------------------------------------------------------
 
 
-function ePhoneInAnim()
-	if IsPlayerDead(PlayerId()) then
-		return
+function newPhoneProp()
+	deletePhone()
+	RequestModel(phoneModel)
+	while not HasModelLoaded(phoneModel) do
+		Citizen.Wait(1)
 	end
-	local bone = GetPedBoneIndex(GetPlayerPed(-1), 28422)
-	local dict = "cellphone@"
-	if IsPedInAnyVehicle(GetPlayerPed(-1), false) then
-		dict = dict .. "in_car@ds"
-	end
-
-	loadAnimDict(dict)
-
-	TaskPlayAnim(GetPlayerPed(-1), dict, inAnim, 4.0, -1, -1, 50, 0, false, false, false)
-	lastAnim = inAnim
-	Citizen.Wait(157)
-	phoneProp = newPhoneProp()
-	AttachEntityToEntity(phoneProp, GetPlayerPed(-1), bone, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 1, 0, 0, 2, 1)
+	phoneProp = CreateObject(phoneModel, 1.0, 1.0, 1.0, 1, 1, 0)
+	local bone = GetPedBoneIndex(myPedId, 28422)
+	AttachEntityToEntity(phoneProp, myPedId, bone, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 1, 0, 0, 2, 1)
 end
 
-
-function ePhoneStartCall () 
-	if lastAnim ~= inAnim and lastAnim ~= CallToText then
-		return
+function deletePhone ()
+	if phoneProp ~= 0 then
+		Citizen.InvokeNative(0xAE3CBE5BF394C9C9 , Citizen.PointerValueIntInitialized(phoneProp))
+		phoneProp = 0
 	end
-	local dict = "cellphone@"
-	if IsPedInAnyVehicle(GetPlayerPed(-1), false) then
-		dict = dict .. "in_car@ds"
-	end
-	loadAnimDict(dict)
-	StopAnimTask(GetPlayerPed(-1), dict, lastAnim, 1.0)
-	TaskPlayAnim(GetPlayerPed(-1), dict, textToCall, 3.0, -1, -1, 50, 0, false, false, false)
-	lastAnim = textToCall
 end
 
-
-function ePhoneStopCall () 
-	if lastAnim ~= textToCall then
+--[[
+	out || text || Call ||
+--]]
+function PhonePlayAnim (status, freeze)
+	if currentStatus == status then
 		return
 	end
+	local freeze = freeze or false
+
 	local dict = "cellphone@"
 	if IsPedInAnyVehicle(GetPlayerPed(-1), false) then
-		dict = dict .. "in_car@ds"
+		dict = "anim@cellphone@in_car@ps"
 	end
 	loadAnimDict(dict)
-	StopAnimTask(GetPlayerPed(-1), dict, lastAnim, 1.0)
-	TaskPlayAnim(GetPlayerPed(-1), dict, CallToText, 3.0, -1, -1, 50, 0, false, false, false)
-	lastAnim = CallToText
-end
 
-
-function ePhoneOutAnim()
-	if IsPlayerDead(PlayerId()) then
-		return
-	end
-	local dict = "cellphone@"
-	if IsPedInAnyVehicle(GetPlayerPed(-1), false) then
-		dict = dict .. "in_car@ds"
+	if status ~= 'out' and currentStatus == 'out' then
+		newPhoneProp()
 	end
 
-	loadAnimDict(dict)
+	local anim = ANIMS[dict][currentStatus][status]
+	if currentStatus ~= 'out' then
+		StopAnimTask(myPedId, lastDict, lastAnim, 1.0)
+	end
+	local flag = 50
+	if freeze == true then
+		flag = 14
+	end
+	TaskPlayAnim(myPedId, dict, anim, 3.0, -1, -1, flag, 0, false, false, false)
+	lastDict = dict
+	lastAnim = anim
+	lastIsFreeze = freeze
+	currentStatus = status
 
-	StopAnimTask(GetPlayerPed(-1), dict, lastAnim, 1.0)
-	TaskPlayAnim(GetPlayerPed(-1), dict, outAnim, 5.0, 1, -1, 50, 0, false, false, false)
-	Citizen.Wait(1000)
+	if status == 'out' then
+		Citizen.Wait(180)
+		deletePhone()
+		StopAnimTask(myPedId, lastDict, lastAnim, 1.0)
+	end
 
-	StopAnimTask(GetPlayerPed(-1), dict, outAnim, 1.0)
-	lastAnim = nil
-
-	-- Workaround to delete entity...
-	Citizen.InvokeNative(0xAE3CBE5BF394C9C9 , Citizen.PointerValueIntInitialized(phoneProp))
 end
 
+function PhonePlayOut ()
+	PhonePlayAnim('out')
+end
 
+function PhonePlayText ()
+	PhonePlayAnim('text')
+end
+
+function PhonePlayCall (freeze)
+	PhonePlayAnim('call', freeze)
+end
+
+function PhonePlayIn () 
+	if currentStatus == 'out' then
+		PhonePlayText()
+	end
+end
 
 function loadAnimDict(dict)
 	RequestAnimDict(dict)
@@ -96,12 +135,16 @@ function loadAnimDict(dict)
 	end
 end
 
-function newPhoneProp()
-	RequestModel(phoneModel)
-	while not HasModelLoaded(phoneModel) do
-		Citizen.Wait(1)
-	end
-	local phoneEntity = CreateObject(phoneModel, 1.0, 1.0, 1.0, 1, 1, 0)
-	SetEntityAsMissionEntity(phoneEntity)
-	return phoneEntity
-end
+-- Citizen.CreateThread(function ()
+-- 	Citizen.Wait(200)
+-- 	PhonePlayCall()
+-- 	Citizen.Wait(2000)
+-- 	PhonePlayOut()
+-- 	Citizen.Wait(2000)
+
+-- 	PhonePlayText()
+-- 	Citizen.Wait(2000)
+-- 	PhonePlayCall()
+-- 	Citizen.Wait(2000)
+-- 	PhonePlayOut()
+-- end)

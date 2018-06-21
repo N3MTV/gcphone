@@ -35,7 +35,7 @@ export default {
         if (this.soundCall !== null) {
           this.soundCall.pause()
         }
-        if (this.myPhoneNumber === this.appelsInfo.transmitter_num) {
+        if (this.appelsInfo.initiator === true) {
           this.soundCall = new Audio('/html/static/sound/Phone_Call_Sound_Effect.ogg')
         } else {
           this.soundCall = new Audio('/html/static/sound/ring.ogg')
@@ -61,7 +61,9 @@ export default {
       } else {
         this.$router.push({name: 'home'})
       }
-      if (this.show === false && this.appelsInfo !== null && this.appelsInfo.is_accepts === true) {
+      if (this.show === false && this.appelsInfo !== null) {
+        // console.log('AUTO REJECT CAUSE HIDE PHONE')
+        // && this.appelsInfo.is_accepts === true
         this.rejectCall()
       }
     }
@@ -79,20 +81,6 @@ export default {
         this.$bus.$emit('keyUp' + event.key)
       }
     })
-    // setTimeout(() => {
-    //   this.$store.commit('SET_APPELS_INFO', {
-    //     id: 1,
-    //     transmitter_src: 5,
-    //     // transmitter_num: '###-####',
-    //     transmitter_num: '336-4557',
-    //     receiver_src: undefined,
-    //     // receiver_num: '336-4557',
-    //     receiver_num: '###-####',
-    //     is_valid: 0,
-    //     is_accepts: 0,
-    //     hidden: 0
-    //   })
-    // }, 1000)
   }
 }
 </script>

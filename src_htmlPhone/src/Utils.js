@@ -1,24 +1,4 @@
-const colors = [
-  '#EF5350',
-  '#EC407A',
-  '#AB47BC',
-  '#7E57C2',
-  '#5C6BC0',
-  '#42A5F5',
-  '#29B6F6',
-  '#26C6DA',
-  '#26A69A',
-  '#66BB6A',
-  '#9CCC65',
-  '#D4E157',
-  // '#FFEE58',
-  '#FFCA28',
-  '#FFA726',
-  '#FF7043',
-  '#8D6E63',
-  // '#BDBDBD',
-  '#78909C'
-]
+import store from '@/store'
 
 function getRGB (colorStr) {
   let match = colorStr.match(/rgba?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/)
@@ -54,7 +34,7 @@ export function generateColorForStr (str) {
   const h = str.split('').reduce((prevHash, currVal) =>
     (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0
   , 0)
-  return colors[Math.abs(h) % colors.length]
+  return store.getters.colors[Math.abs(h) % store.getters.colors.length]
 }
 
 export function getBestFontColor (color) {

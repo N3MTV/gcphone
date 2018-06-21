@@ -294,14 +294,16 @@ function sendHistoriqueCall (src, num)
 end
 
 function saveAppels (appelInfo)
-    MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
-        ['@owner'] = appelInfo.transmitter_num,
-        ['@num'] = appelInfo.receiver_num,
-        ['@incoming'] = 1,
-        ['@accepts'] = appelInfo.is_accepts
-    }, function()
-        notifyNewAppelsHisto(appelInfo.transmitter_src, appelInfo.transmitter_num)
-    end)
+    if appelInfo.extraData == nil or appelInfo.extraData.useNumber == nil then
+        MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
+            ['@owner'] = appelInfo.transmitter_num,
+            ['@num'] = appelInfo.receiver_num,
+            ['@incoming'] = 1,
+            ['@accepts'] = appelInfo.is_accepts
+        }, function()
+            notifyNewAppelsHisto(appelInfo.transmitter_src, appelInfo.transmitter_num)
+        end)
+    end
     if appelInfo.is_valid == true then
         local num = appelInfo.transmitter_num
         if appelInfo.hidden == true then
@@ -341,7 +343,7 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
     end
     
     local rtcOffer = rtcOffer
-    if phone_number == nil then 
+    if phone_number == nil or phone_number == '' then 
         print('BAD CALL NUMBER IS NIL')
         return
     end
@@ -356,7 +358,15 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
 
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(source)
-    local srcPhone = getNumberPhone(srcIdentifier)
+
+    local srcPhone = ''
+    print(json.encode(extraData))
+    if extraData ~= nil and extraData.useNumber ~= nil then
+        srcPhone = extraData.useNumber
+    else
+        srcPhone = getNumberPhone(srcIdentifier)
+    end
+    print('CALL WITH NUMBER ' .. srcPhone)
     local destPlayer = getIdentifierByPhoneNumber(phone_number)
     local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier
     AppelsEnCours[indexCall] = {

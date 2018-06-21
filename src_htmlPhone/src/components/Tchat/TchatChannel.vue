@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle title="Tor Chat" backgroundColor="#090f20" />
+    <PhoneTitle :title="title" backgroundColor="#090f20" />
     <div class="elements">
         <div class="element" v-for='(elem, key) in tchatChannels' 
           v-bind:key="elem.channel"
@@ -31,7 +31,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['tchatChannels'])
+    ...mapGetters(['tchatChannels', 'Apps']),
+    title () {
+      const App = this.Apps.find(a => a.routeName === 'tchat')
+      if (App === undefined) {
+        return 'Tor Chat'
+      }
+      return App.name
+    }
+    // title: () => (this.Apps.find(a => a.routeName === 'tchat') || { name: 'Tor Chat' }).name
   },
   methods: {
     ...mapActions(['tchatAddChannel', 'tchatRemoveChannel']),

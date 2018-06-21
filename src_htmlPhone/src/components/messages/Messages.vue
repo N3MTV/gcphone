@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app messages">
-    <PhoneTitle :title="display" :backgroundColor="color"/>
+    <PhoneTitle :title="displayContact" :backgroundColor="color"/>
 
 
     <div id='sms_list'>
@@ -97,6 +97,7 @@ export default {
     onActionMessage: function () {
       let message = this.messagesList[this.selectMessage]
       let isGPS = /^GPS: -?\d*(\.\d+), -?\d*(\.\d+)/.test(message.message)
+      let hasNumber = /#([0-9]+)/.test(message.message)
       let choix = [{
         title: 'Effacer',
         icons: 'fa-circle-o'
@@ -110,6 +111,14 @@ export default {
           icons: 'fa-location-arrow'
         }, ...choix]
       }
+      if (hasNumber === true) {
+        const num = message.message.match(/#([0-9-]*)/)[1]
+        choix = [{
+          title: `SMS ${num}`,
+          number: num,
+          icons: 'fa-location-arrow'
+        }, ...choix]
+      }
       this.ignoreControls = true
       Modal.CreateModal({choix}).then(data => {
         if (data.title === 'Effacer') {
@@ -117,6 +126,9 @@ export default {
         } else if (data.title === 'Position GPS') {
           let val = message.message.match(/((-?)\d+(\.\d+))/g)
           this.$phoneAPI.setGPS(val[0], val[1])
+        } else if (data.number !== undefined) {
+          this.phoneNumber = data.number
+          this.display = undefined
         }
         this.ignoreControls = false
         this.selectMessage = -1
@@ -150,9 +162,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['messages']),
+    ...mapGetters(['messages', 'contacts']),
     messagesList () {
       return this.messages.filter(e => e.transmitter === this.phoneNumber)
+    },
+    displayContact () {
+      if (this.display !== undefined) {
+        return this.display
+      }
+      const c = this.contacts.find(c => c.number === this.phoneNumber)
+      if (c !== undefined) {
+        return c.display
+      }
+      return this.phoneNumber
     },
     color () {
       return generateColorForStr(this.phoneNumber)

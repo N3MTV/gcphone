@@ -4,7 +4,7 @@
     <span class="warningMess" v-if="messages.length >= 220">Saturation mémoires !<br>{{messages.length}} / 250</span>
     <div class='home_buttons'>
       <button 
-          v-for="(but, key) of listApps" 
+          v-for="(but, key) of AppsHome" 
           v-bind:key="but.name" 
           v-bind:class="{ select: key === currentSelect}"
           v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
@@ -15,7 +15,7 @@
       <div class="btn_menu_ctn">
         <button 
           class="btn_menu"
-            :class="{ select: listApps.length === currentSelect}"
+            :class="{ select: AppsHome.length === currentSelect}"
             v-bind:style="{backgroundImage: 'url(' + '/html/static/img/icons_app/menu.png' +')'}"
           >
         </button>
@@ -27,7 +27,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import InfoBare from './InfoBare'
-import Apps from './Apps'
+// import Apps from './Apps'
 
 export default {
   components: {
@@ -39,35 +39,35 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['nbMessagesUnread', 'backgroundURL', 'messages']),
-    listApps () {
-      return Apps.filter(e => e.inHomePage === true).map(app => {
-        if (app.puceRef !== undefined) {
-          app.puce = this[app.puceRef]
-        }
-        return app
-      })
-    }
+    ...mapGetters(['nbMessagesUnread', 'backgroundURL', 'messages', 'AppsHome'])
+    // AppsHome () {
+    //   return this.config.Apps.filter(e => e.inHomePage === true).map(app => {
+    //     if (app.puceRef !== undefined) {
+    //       app.puce = this[app.puceRef]
+    //     }
+    //     return app
+    //   })
+    // }
   },
   methods: {
     ...mapActions(['closePhone', 'setMessages']),
     onLeft () {
-      this.currentSelect = (this.currentSelect + this.listApps.length) % (this.listApps.length + 1)
+      this.currentSelect = (this.currentSelect + this.AppsHome.length) % (this.AppsHome.length + 1)
     },
     onRight () {
-      this.currentSelect = (this.currentSelect + 1) % (this.listApps.length + 1)
+      this.currentSelect = (this.currentSelect + 1) % (this.AppsHome.length + 1)
     },
     onUp () {
       this.currentSelect = Math.max(this.currentSelect - 4, 0)
     },
     onDown () {
-      this.currentSelect = Math.min(this.currentSelect + 4, this.listApps.length)
+      this.currentSelect = Math.min(this.currentSelect + 4, this.AppsHome.length)
     },
     onEnter () {
-      if (this.currentSelect === this.listApps.length) {
+      if (this.currentSelect === this.AppsHome.length) {
         this.$router.push({ name: 'menu' })
       } else {
-        const name = this.listApps[this.currentSelect].routeName
+        const name = this.AppsHome[this.currentSelect].routeName
         this.$router.push({ name })
       }
     },

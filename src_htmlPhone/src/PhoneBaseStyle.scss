@@ -13,7 +13,6 @@ body {
   flex-direction: column;
 }
 
-
 .phone_title {
   padding-left: 24px;
   padding-top: 6px;
@@ -23,13 +22,10 @@ body {
   font-weight: 500;
 }
 
-
-
 .phone_content {
   height: 100%;
   overflow-y: auto;
 }
-
 
 .phone_wrapper {
   position: absolute;
@@ -57,8 +53,6 @@ body {
   top: 100px;
   display: flex;
 }
-
-
 
 * {
   font-family: 'Roboto', sans-serif;

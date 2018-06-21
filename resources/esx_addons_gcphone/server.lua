@@ -2,14 +2,14 @@
 ESX                       = nil
 local PhoneNumbers        = {}
 
--- PhoneNumbers = {
---   police = {
---     type  = "police",
---     sources = {
---        ['2'] = true
---     }
---   }
--- }
+PhoneNumbers = {
+  police = {
+    type  = "police",
+    sources = {
+       ['3'] = true
+    }
+  }
+}
 
 TriggerEvent('esx:getSharedObject', function(obj)
   ESX = obj
@@ -20,13 +20,15 @@ function notifyAlertSMS (number, alert, listSrc)
   if PhoneNumbers[number] ~= nil then
     for k, _ in pairs(listSrc) do
       getPhoneNumber(tonumber(k), function (n)
-        TriggerEvent('gcPhone:_internalAddMessage', number, n, 'Alert (' .. alert.numero  .. '): ' .. alert.message, 0, function (smsMess)
-          TriggerClientEvent("gcPhone:receiveMessage", tonumber(k), smsMess)
-        end)
-        if alert.coords ~= nil then
-          TriggerEvent('gcPhone:_internalAddMessage', number, n, 'GPS: ' .. alert.coords.x .. ', ' .. alert.coords.y, 0, function (smsMess)
+        if n ~= nil then
+          TriggerEvent('gcPhone:_internalAddMessage', number, n, 'De #' .. alert.numero  .. ' : ' .. alert.message, 0, function (smsMess)
             TriggerClientEvent("gcPhone:receiveMessage", tonumber(k), smsMess)
           end)
+          if alert.coords ~= nil then
+            TriggerEvent('gcPhone:_internalAddMessage', number, n, 'GPS: ' .. alert.coords.x .. ', ' .. alert.coords.y, 0, function (smsMess)
+              TriggerClientEvent("gcPhone:receiveMessage", tonumber(k), smsMess)
+            end)
+          end
         end
       end)
     end
@@ -107,13 +109,18 @@ AddEventHandler('esx:playerDropped', function(source)
   local source = source
   local xPlayer = ESX.GetPlayerFromId(source)
   if PhoneNumbers[xPlayer.job.name] ~= nil then
-    TriggerEvent('esx_phone:removeSource', xPlayer.job.name, source)
+    TriggerEvent('esx_addons_gcphone:removeSource', xPlayer.job.name, source)
   end
 end)
 
 
 function getPhoneNumber (source, callback) 
+  print('get phone to ' .. source)
   local xPlayer = ESX.GetPlayerFromId(source)
+  if xPlayer == nil then
+    print('esx_addons_gcphone. source null ???')
+    callback(nil)
+  end
   MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier',{
     ['@identifier'] = xPlayer.identifier
   }, function(result)

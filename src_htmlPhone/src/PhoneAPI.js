@@ -1,7 +1,7 @@
 import store from '@/store'
 import VoiceRTC from './VoiceRCT'
 
-const USE_VOICE_RTC = true
+let USE_VOICE_RTC = false
 const BASE_URL = 'http://gcphone/'
 
 /* eslint-disable camelcase */
@@ -16,7 +16,7 @@ class PhoneAPI {
       }
     })
     this.config = null
-    this.voiceRTC = new VoiceRTC()
+    this.voiceRTC = null
   }
 
   async post (method, data) {
@@ -115,8 +115,12 @@ class PhoneAPI {
       } else {
         this.config = response
       }
-      this.voiceRTC = new VoiceRTC(this)
-      window.VR = this.voiceRTC
+      if (this.config.useWebRTCVocal === true) {
+        this.voiceRTC = new VoiceRTC(this.config.RTCConfig)
+        USE_VOICE_RTC = true
+      }
+      console.log('JS USE RTC', this.config.useWebRTCVocal)
+      this.notififyUseRTC(this.config.useWebRTCVocal)
     }
     return this.config
   }
@@ -154,16 +158,15 @@ class PhoneAPI {
     store.commit('SET_BOURSE_INFO', data.bourse)
   }
   // Call
-  async startCall (numero) {
+  async startCall (numero, extraData = undefined) {
     if (USE_VOICE_RTC === true) {
       const rtcOffer = await this.voiceRTC.prepareCall()
-      return this.post('startCall', { numero, rtcOffer })
+      return this.post('startCall', { numero, rtcOffer, extraData })
     } else {
-      return this.post('startCall', { numero })
+      return this.post('startCall', { numero, extraData })
     }
   }
   async acceptCall (infoCall) {
-    console.log('JS phoneAPI acceptCall')
     if (USE_VOICE_RTC === true) {
       const rtcAnswer = await this.voiceRTC.acceptCall(infoCall)
       return this.post('acceptCall', { infoCall, rtcAnswer })
@@ -174,6 +177,11 @@ class PhoneAPI {
   async rejectCall (infoCall) {
     return this.post('rejectCall', { infoCall })
   }
+
+  async notififyUseRTC (use) {
+    return this.post('notififyUseRTC', use)
+  }
+
   onwaitingCall (data) {
     store.commit('SET_APPELS_INFO_IF_EMPTY', {
       ...data.infoCall,
@@ -213,7 +221,7 @@ class PhoneAPI {
 
   // =====================
   onautoStartCall (data) {
-    this.startCall(data.number)
+    this.startCall(data.number, data.extraData)
   }
   onautoAcceptCall (data) {
     store.commit('SET_APPELS_INFO', data.infoCall)

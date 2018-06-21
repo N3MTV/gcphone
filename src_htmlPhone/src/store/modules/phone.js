@@ -9,7 +9,10 @@ const state = {
   volume: parseFloat(window.localStorage['gc_volume']) || 1,
   config: {
     reseau: 'Gannon',
-    useFormatNumberFrance: false
+    useFormatNumberFrance: false,
+    apps: [],
+    themeColor: '#2A56C6',
+    colors: ['#2A56C6']
   }
 }
 
@@ -52,7 +55,18 @@ const getters = {
   zoom: ({ zoom }) => zoom,
   config: ({ config }) => config,
   useFormatNumberFrance: ({ config }) => config.useFormatNumberFrance,
-  themeColor: ({ config }) => config.themeColor || 'rgb(42, 86, 198)'
+  themeColor: ({ config }) => config.themeColor,
+  colors: ({ config }) => config.colors,
+  Apps: ({ config }, getters) => config.apps
+    .filter(app => app.enabled !== false)
+    .map(app => {
+      if (app.puceRef !== undefined) {
+        app.puce = getters[app.puceRef]
+      }
+      return app
+    }),
+  AppsHome: (state, getters) => getters.Apps.filter(app => app.inHomePage === true)
+
 }
 
 const actions = {

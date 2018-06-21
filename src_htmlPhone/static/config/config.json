@@ -1,17 +1,51 @@
 {
   "reseau": "Gannon",
+  
   "themeColor": "#303f9f",
+  "colors": [
+    "#EF5350",
+    "#EC407A",
+    "#AB47BC",
+    "#7E57C2",
+    "#5C6BC0",
+    "#42A5F5",
+    "#29B6F6",
+    "#26C6DA",
+    "#26A69A",
+    "#66BB6A",
+    "#9CCC65",
+    "#D4E157",
+    "#FFCA28",
+    "#FFA726",
+    "#FF7043",
+    "#8D6E63",
+    "#78909C"
+  ],
+
   "useFormatNumberFrance": false,
+
+  "useWebRTCVocal": true,
+  "RTCConfig": {
+    "iceServers": [{
+      "urls": ["turn:gannon.ovh"],
+      "username": "jojo",
+      "credential": "pass"
+    }]
+  },
+
+
   "background" : {
     "Calvin & Hobbes": "back001.jpg",
     "Destiny": "back002.jpg",
     "Stormtrooper": "back003.jpg",
-    "Custom": "URL"
+    "Custom URL": "URL"
   },
   "background_default": {
     "label": "Calvin & Hobbes",
     "value": "back001.jpg"
   },
+
+
   "coque": {
     "Sansumg S8": "s8.png",
     "Iphone X": "iphonex.png",
@@ -22,6 +56,8 @@
     "label": "Sansumg S8",
     "value": "s8.png"
   },
+
+
   "serviceCall": [
     {
       "display": "Police",
@@ -36,7 +72,7 @@
         },
         {
           "title": "Appeler le standard",
-          "eventName": "gcphone:autoCall",
+          "eventName": "gcphone:autoCallNumber",
           "type": {
             "number": "911"
           }
@@ -49,42 +85,62 @@
       "subMenu": [
         {
           "title": "Envoyer un message",
-          "eventName": "callService",
-          "type": "ambulance"
+          "eventName": "esx_addons_gcphone:call",
+          "type": {
+            "number": "ambulance"
+          }
         }
       ]
+    }
+  ],
+
+  "apps": [
+    {
+      "name": "Téléphone",
+      "icons": "/html/static/img/icons_app/call.png",
+      "routeName": "appels",
+      "inHomePage": true
     },
     {
-      "display": "Taxi",
-      "subMenu": [
-        {
-          "title": "Envoyer un message",
-          "eventName": "callService",
-          "type": "taxi"
-        }
-      ]
+      "name": "Messages",
+      "icons": "/html/static/img/icons_app/sms.png",
+      "routeName": "messages",
+      "inHomePage": true,
+      "puceRef": "nbMessagesUnread"
     },
     {
-      "display": "Mecano",
-      "subMenu": [
-        {
-          "title": "Envoyer un message",
-          "eventName": "callService",
-          "type": "mecano"
-        }
-      ]
+      "name": "Contacts",
+      "icons": "/html/static/img/icons_app/contacts.png",
+      "routeName": "contacts",
+      "inHomePage": true
     },
     {
-      "display": "Journaliste",
-      "backgroundColor": "#303F9F",
-      "subMenu": [
-        {
-          "title": "Envoyer un message",
-          "eventName": "callService",
-          "type": "journaliste",
-          "color": "#303F9F"
-        }
-      ]
+      "name": "Paramètres",
+      "icons": "/html/static/img/icons_app/settings.png",
+      "routeName": "parametre",
+      "inHomePage": true
+    },
+    {
+      "name": "Bank",
+      "icons": "/html/static/img/icons_app/bank.png",
+      "routeName": "bank",
+      "inHomePage": false
+    },
+    {
+      "name": "Bourse",
+      "icons": "/html/static/img/icons_app/bourse.png",
+      "routeName": "bourse",
+      "enabled": true
+    },
+    {
+      "name": "Photo",
+      "icons": "/html/static/img/icons_app/photo.png",
+      "routeName": "photo"
+    },
+    {
+      "name": "Dark Chat",
+      "icons": "/html/static/img/icons_app/tchat.png",
+      "routeName": "tchat"
     }
   ]
 }

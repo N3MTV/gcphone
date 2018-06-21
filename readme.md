@@ -10,8 +10,10 @@
   - Application Bourse
   - Coque / Fond ecran customisable
 
-## Info
-#Changer le nom du réseau
+
+# Configuration
+
+* Changer le nom du réseau
 ```
 * Modifier la clef 'reseau' dans le fichier /html/static/config/config.json
 ```
@@ -21,6 +23,7 @@ Pour ajouter / modifier les coques & fond d'écrans
 * Coque => Modifier les images dans le dossier /html/static/img/coque
 * Fond d'écran => Modifier les images dans le dossier /html/static/img/background
 * Mettre à jour le fichier /html/static/config/config.json
+* Ajouter les images dans __ressource.lua
 ```
 
 Customiser les appels services
