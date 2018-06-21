@@ -2,7 +2,7 @@
 -- #Author: Jonathan D @ Gannon
 --====================================================================================
 
-local myPedId = GetPlayerPed(-1)
+local myPedId = nil
 
 local phoneProp = 0
 local phoneModel = "prop_amb_phone"
@@ -76,6 +76,7 @@ function PhonePlayAnim (status, freeze)
 	if currentStatus == status then
 		return
 	end
+	myPedId = GetPlayerPed(-1)
 	local freeze = freeze or false
 
 	local dict = "cellphone@"
