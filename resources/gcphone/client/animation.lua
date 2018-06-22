@@ -6,6 +6,9 @@ local myPedId = nil
 
 local phoneProp = 0
 local phoneModel = "prop_amb_phone"
+-- OR "prop_npc_phone"
+-- OR "prop_npc_phone_02"
+-- OR "prop_cs_phone_01"
 
 local currentStatus = 'out'
 local lastDict = nil
@@ -44,13 +47,6 @@ local ANIMS = {
 	}
 }
 
---------------------------------------------------------------------------------
---
---								FUNCTIONS
---
---------------------------------------------------------------------------------
-
-
 function newPhoneProp()
 	deletePhone()
 	RequestModel(phoneModel)
@@ -85,10 +81,6 @@ function PhonePlayAnim (status, freeze)
 	end
 	loadAnimDict(dict)
 
-	if status ~= 'out' and currentStatus == 'out' then
-		newPhoneProp()
-	end
-
 	local anim = ANIMS[dict][currentStatus][status]
 	if currentStatus ~= 'out' then
 		StopAnimTask(myPedId, lastDict, lastAnim, 1.0)
@@ -98,6 +90,12 @@ function PhonePlayAnim (status, freeze)
 		flag = 14
 	end
 	TaskPlayAnim(myPedId, dict, anim, 3.0, -1, -1, flag, 0, false, false, false)
+
+	if status ~= 'out' and currentStatus == 'out' then
+		Citizen.Wait(380)
+		newPhoneProp()
+	end
+
 	lastDict = dict
 	lastAnim = anim
 	lastIsFreeze = freeze
