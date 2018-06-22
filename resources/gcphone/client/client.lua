@@ -38,7 +38,6 @@ function startFixeCall (fixeNumber)
     number =  GetOnscreenKeyboardResult()
   end
   if number ~= '' then
-    print('stat', number)
     TriggerEvent('gcphone:autoCall', number, {
       useNumber = fixeNumber
     })
@@ -94,13 +93,14 @@ Citizen.CreateThread(function ()
             AddTextComponentString("~INPUT_PICKUP~ Décrocher")
             DisplayHelpTextFromStringLabel(0, 0, 1, -1)
             if IsControlJustPressed(1, KeyTakeCall) then
+              PhonePlayCall(true)
               TakeAppel(PhoneInCall[i])
               PhoneInCall = {}
               StopSound(soundId)
             end
           end
-        break
-      end
+          break
+        end
     end
     if inRangeToActivePhone == false then
       showFixePhoneHelper(coords)
