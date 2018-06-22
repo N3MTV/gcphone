@@ -153,14 +153,18 @@ export default {
         })
       }
     },
-    onChangeBackground: function (param, data) {
+    async onChangeBackground (param, data) {
       let val = data.value
       if (val === 'URL') {
-        this.$phoneAPI.getReponseText().then(valueText => {
-          this.setBackground({
-            label: 'Custom',
-            value: valueText.text
-          })
+        this.$phoneAPI.getReponseText({
+          text: 'https://i.imgur.com/'
+        }).then(valueText => {
+          if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
+            this.setBackground({
+              label: 'Custom',
+              value: valueText.text
+            })
+          }
         })
       } else {
         this.setBackground({
