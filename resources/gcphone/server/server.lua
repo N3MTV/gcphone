@@ -627,7 +627,14 @@ function onCallFixePhone (source, phone_number, rtcOffer, extraData)
     end
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(source)
-    local srcPhone = getNumberPhone(srcIdentifier)
+
+    local srcPhone = ''
+    if extraData ~= nil and extraData.useNumber ~= nil then
+        srcPhone = extraData.useNumber
+    else
+        srcPhone = getNumberPhone(srcIdentifier)
+    end
+
     AppelsEnCours[indexCall] = {
         id = indexCall,
         transmitter_src = sourcePlayer,
