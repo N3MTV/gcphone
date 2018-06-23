@@ -1,5 +1,5 @@
 const state = {
-  bankAmont: 0
+  bankAmont: '0'
 }
 
 const getters = {

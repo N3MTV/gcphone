@@ -76,7 +76,7 @@ function PhonePlayAnim (status, freeze)
 	local freeze = freeze or false
 
 	local dict = "cellphone@"
-	if IsPedInAnyVehicle(GetPlayerPed(-1), false) then
+	if IsPedInAnyVehicle(myPedId, false) then
 		dict = "anim@cellphone@in_car@ps"
 	end
 	loadAnimDict(dict)

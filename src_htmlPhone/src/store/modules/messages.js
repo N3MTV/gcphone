@@ -76,6 +76,7 @@ if (process.env.NODE_ENV !== 'production') {
     {id: 7, transmitter: '01', time, message: 'Salut sa va ?', isRead: 1, owner: 0},
     {id: 8, transmitter: '01', time, message: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', isRead: 0, owner: 1},
     {id: 9, transmitter: '01', time, message: 'GPS: -1034.5810546875, -2734.1027832031', isRead: 1, owner: 0},
+    {id: 44, transmitter: '01', time, message: 'https://i.imgur.com/gthahbs.png', isRead: 1, owner: 0},
     {id: 10, transmitter: '02', time, message: 'Salut sa va ?', isRead: 1, owner: 0},
     {id: 11, transmitter: '04', time, message: 'Salut sa va ?', isRead: 1, owner: 0},
     {id: 12, transmitter: '04', time, message: 'Salut sa va ?', isRead: 1, owner: 0},

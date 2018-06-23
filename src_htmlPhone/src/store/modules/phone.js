@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import PhoneAPI from './../../PhoneAPI'
 
 const state = {
@@ -74,6 +75,9 @@ const actions = {
     const config = await PhoneAPI.getConfig()
     commit('SET_CONFIG', config)
   },
+  setEnableApp ({ commit, state }, { appName, enable = true }) {
+    commit('SET_APP_ENABLE', { appName, enable })
+  },
   setVisibility ({ commit }, show) {
     commit('SET_PHONE_VISIBILITY', show)
   },
@@ -107,6 +111,12 @@ const actions = {
 const mutations = {
   SET_CONFIG (state, config) {
     state.config = config
+  },
+  SET_APP_ENABLE (state, {appName, enable}) {
+    const appIndex = state.config.apps.findIndex(app => app.name === appName)
+    if (appIndex !== -1) {
+      Vue.set(state.config.apps[appIndex], 'enabled', enable)
+    }
   },
   SET_PHONE_VISIBILITY (state, show) {
     state.show = show

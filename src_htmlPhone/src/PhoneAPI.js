@@ -125,6 +125,10 @@ class PhoneAPI {
     return this.config
   }
 
+  onsetEnableApp (data) {
+    store.dispatch('setEnableApp', data)
+  }
+
   // === App Tchat
   async tchatGetMessagesChannel (channel) {
     this.post('tchat_getChannel', { channel })

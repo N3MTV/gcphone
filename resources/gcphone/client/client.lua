@@ -24,6 +24,20 @@ local PhoneInCall = {}
 local currentPlaySound = false
 local soundId = 1485
 
+
+
+--====================================================================================
+--  Active ou Deactive une application (appName => config.json)
+--====================================================================================
+RegisterNetEvent('gcPhone:setEnableApp')
+AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
+  SendNUIMessage({event = 'setEnableApp', appName = appName, enable = enable })
+end)
+
+
+
+
+
 --====================================================================================
 --  Gestion des appels fixe
 --====================================================================================

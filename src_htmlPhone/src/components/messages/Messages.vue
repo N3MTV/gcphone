@@ -1,13 +1,17 @@
 <template>
   <div class="phone_app messages">
     <PhoneTitle :title="displayContact" :backgroundColor="color"/>
-
-
+    <div class="img-fullscreen" v-if="imgZoom !== undefined" >
+      <img :src="imgZoom" />
+    </div>
+    
     <div id='sms_list'>
         <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesList' v-bind:key="mess.id">
             <span class='sms_message sms_me' 
               v-bind:class="{ sms_other : mess.owner === 0}" :style="colorSmsOwner[mess.owner]">
-                {{mess.message}}
+              <img v-if="isSMSImage(mess)" class="sms-img" :src="mess.message">
+              <span v-else>{{mess.message}}</span>
+                
                 <span ><timeago class="sms_time" :since='mess.time' :auto-update="20" :style="colorSmsOwner[mess.owner]"></timeago></span>
             </span>
         </div>
@@ -37,7 +41,8 @@ export default {
       ignoreControls: false,
       selectMessage: -1,
       display: '',
-      phoneNumber: ''
+      phoneNumber: '',
+      imgZoom: undefined
     }
   },
   components: {
@@ -45,14 +50,14 @@ export default {
   },
   methods: {
     ...mapActions(['setMessageRead', 'sendMessage', 'deleteMessage']),
-    resetScroll: function () {
+    resetScroll () {
       this.$nextTick(() => {
         let elem = document.querySelector('#sms_list')
         elem.scrollTop = elem.scrollHeight
         this.selectMessage = -1
       })
     },
-    scrollIntoViewIfNeeded: function () {
+    scrollIntoViewIfNeeded () {
       this.$nextTick(() => {
         const elem = this.$el.querySelector('.select')
         if (elem !== null) {
@@ -69,16 +74,16 @@ export default {
       }
       this.scrollIntoViewIfNeeded()
     },
-    onDown: function () {
+    onDown () {
       if (this.ignoreControls === true) return
       if (this.selectMessage === -1) {
-        this.selectMessage = this.messages.length - 1
+        this.selectMessage = this.messagesList.length - 1
       } else {
         this.selectMessage = this.selectMessage === this.messagesList.length - 1 ? this.selectMessage : this.selectMessage + 1
       }
       this.scrollIntoViewIfNeeded()
     },
-    onEnter: function () {
+    onEnter () {
       if (this.ignoreControls === true) return
       if (this.selectMessage !== -1) {
         this.onActionMessage()
@@ -94,10 +99,14 @@ export default {
         })
       }
     },
-    onActionMessage: function () {
+    isSMSImage (mess) {
+      return /^https?:\/\/.*\.(png|jpg|jpeg|gif)/.test(mess.message)
+    },
+    onActionMessage () {
       let message = this.messagesList[this.selectMessage]
       let isGPS = /^GPS: -?\d*(\.\d+), -?\d*(\.\d+)/.test(message.message)
       let hasNumber = /#([0-9]+)/.test(message.message)
+      let isSMSImage = this.isSMSImage(message)
       let choix = [{
         title: 'Effacer',
         icons: 'fa-circle-o'
@@ -116,7 +125,13 @@ export default {
         choix = [{
           title: `SMS ${num}`,
           number: num,
-          icons: 'fa-location-arrow'
+          icons: 'fa-phone'
+        }, ...choix]
+      }
+      if (isSMSImage === true) {
+        choix = [{
+          title: 'Zoom',
+          icons: 'fa-search'
         }, ...choix]
       }
       this.ignoreControls = true
@@ -129,12 +144,19 @@ export default {
         } else if (data.number !== undefined) {
           this.phoneNumber = data.number
           this.display = undefined
+        } else if (data.title === 'Zoom') {
+          this.imgZoom = message.message
         }
         this.ignoreControls = false
         this.selectMessage = -1
       })
     },
-    onBackspace: function () {
+    onBackspace () {
+      console.log(this, this.messagesList, this.selectMessage, this.messagesList[this.selectMessage])
+      if (this.imgZoom !== undefined) {
+        this.imgZoom = undefined
+        return
+      }
       if (this.ignoreControls === true) return
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
@@ -164,7 +186,7 @@ export default {
   computed: {
     ...mapGetters(['messages', 'contacts']),
     messagesList () {
-      return this.messages.filter(e => e.transmitter === this.phoneNumber)
+      return this.messages.filter(e => e.transmitter === this.phoneNumber).sort((a, b) => a.time - b.time)
     },
     displayContact () {
       if (this.display !== undefined) {
@@ -242,13 +264,35 @@ export default {
   zoom: 1;
 }
 
+.sms-img{
+  width: 100%;
+  height: auto;
+}
+.img-fullscreen {
+  position: fixed;
+  z-index: 999999;
+  background-color: rgba(20, 20, 20, 0.8);
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.img-fullscreen img {
+  display: flex;
+  max-width: 90vw;
+  max-height: 95vh;
+}
+
 .sms_me{
-    float: right;
-    background-color: white;
-    padding: 5px 10px;
-    max-width: 90%;
-    margin-right: 5%;
-    margin-top: 10px;
+  float: right;
+  background-color: white;
+  padding: 5px 10px;
+  max-width: 90%;
+  margin-right: 5%;
+  margin-top: 10px;
 }
 
 .sms_other{
