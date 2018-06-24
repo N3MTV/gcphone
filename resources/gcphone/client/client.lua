@@ -200,16 +200,15 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
   -- SendNUIMessage({event = 'updateMessages', messages = messages})
   SendNUIMessage({event = 'newMessage', message = message})
   if message.owner == 0 then
-    if ShowNumberNotification then
-      local text = '~o~Nouveau message du ~y~'..message.transmitter
+    local text = '~o~ Nouveau message'
+    if ShowNumberNotification == true then
+      local text = '~o~Nouveau message du ~y~'.. message.transmitter
       for _,contact in pairs(contacts) do
         if contact.number == message.transmitter then
-          text = '~o~Nouveau message de ~g~'..contact.display
+          text = '~o~Nouveau message de ~g~'.. contact.display
           break
         end
       end
-    else
-      text = '~o~ Nouveau message'
     end
     SetNotificationTextEntry("STRING")
     AddTextComponentString(text)
