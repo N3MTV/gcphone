@@ -199,9 +199,16 @@ RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
   -- SendNUIMessage({event = 'updateMessages', messages = messages})
   SendNUIMessage({event = 'newMessage', message = message})
-  if message.owner == 0 then 
+  if message.owner == 0 then
+    local text = '~o~Nouveau message du ~y~'..message.transmitter
+    for _,contact in pairs(contacts) do
+      if contact.number == message.transmitter then
+        text = '~o~Nouveau message de ~g~'..contact.display
+        break
+      end
+    end
     SetNotificationTextEntry("STRING")
-    AddTextComponentString('~o~Nouveau message')
+    AddTextComponentString(text)
     DrawNotification(false, false)
     PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
     Citizen.Wait(300)
