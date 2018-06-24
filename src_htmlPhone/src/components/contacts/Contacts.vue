@@ -1,6 +1,6 @@
 <template>
   <div class="contact">
-    <list :list='lcontacts' title="Contacts" v-on:select="onSelect"></list>
+    <list :list='lcontacts' :disable="disableList" title="Contacts" @select='onSelect' @option='onOption'></list>
   </div>
 </template>
 
@@ -8,6 +8,7 @@
 import { mapGetters } from 'vuex'
 import { generateColorForStr } from '@/Utils'
 import List from './../List.vue'
+import Modal from '@/components/Modal/index.js'
 
 export default {
   components: {
@@ -15,6 +16,7 @@ export default {
   },
   data () {
     return {
+      disableList: false
     }
   },
   computed: {
@@ -29,9 +31,24 @@ export default {
   },
   methods: {
     onSelect: function (contact) {
-      this.$router.push({path: '/contact/' + contact.id})
+      this.$router.push({path: '/messages/' + contact.number + '/' + contact.display})
+    },
+    onOption: function (contact) {
+      this.disableList = true
+      Modal.CreateModal({
+        choix: [
+          {id: 1, title: 'Modifier le contact', icons: 'fa-circle-o', color: 'orange'},
+          {id: 3, title: 'Annuler', icons: 'fa-undo'}
+        ]
+      }).then(rep => {
+        if (rep.id === 1) {
+          this.$router.push({path: 'contact/' + contact.id})
+        }
+        this.disableList = false
+      })
     },
     back: function () {
+      if (this.disableList === true) return
       this.$router.push({ name: 'home' })
     }
   },
