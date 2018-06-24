@@ -13,7 +13,9 @@
               {{elem.letter || elem[keyDispay][0]}}
             </div>
             <div v-if="elem.puce !== undefined && elem.puce !== 0" class="elem-puce">{{elem.puce}}</div>
-            <div class="elem-title">{{elem[keyDispay]}}</div>
+            <div v-if="elem.keyDesc === undefined || elem.keyDesc === ''" class="elem-title">{{elem[keyDispay]}}</div>
+            <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-title-has-desc">{{elem[keyDispay]}}</div>
+            <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{elem.keyDesc}}</div>
         </div>
     </div>
   </div>
@@ -106,12 +108,12 @@ export default {
     },
     onUp: function () {
       if (this.disable === true) return
-      this.currentSelect = this.currentSelect === 0 ? 0 : this.currentSelect - 1
+      this.currentSelect = this.currentSelect === 0 ? this.list.length - 1 : this.currentSelect - 1
       this.scrollIntoViewIfNeeded()
     },
     onDown: function () {
       if (this.disable === true) return
-      this.currentSelect = this.currentSelect === this.list.length - 1 ? this.currentSelect : this.currentSelect + 1
+      this.currentSelect = this.currentSelect === this.list.length - 1 ? 0 : this.currentSelect + 1
       this.scrollIntoViewIfNeeded()
     },
     onRight: function () {
@@ -186,5 +188,20 @@ export default {
 }
 .elem-title{
   margin-left: 12px;
+}
+.elem-title-has-desc {
+  margin-top:-15px;
+  margin-left: 12px;
+}
+.elem-description{
+  text-align:left;
+  color:grey;
+  position:absolute;
+  display:block;
+  width:100%;
+  left:73px;
+  top:12px;
+  font-size:13.5px;
+  font-style:italic;
 }
 </style>
