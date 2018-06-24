@@ -198,10 +198,13 @@ export default {
   color:grey;
   position:absolute;
   display:block;
-  width:100%;
+  width:75%;
   left:73px;
   top:12px;
   font-size:13.5px;
   font-style:italic;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
 }
 </style>
