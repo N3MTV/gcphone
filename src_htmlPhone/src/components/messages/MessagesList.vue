@@ -61,12 +61,15 @@ export default {
         if (rv[x['transmitter']] === undefined) {
           let contact = contacts.find(e => e.number === x.transmitter)
           let display = contact !== undefined ? contact.display : x.transmitter
-          rv[x['transmitter']] = {noRead: 0, display}
+          rv[x['transmitter']] = {noRead: 0, display, lastMessage: 0}
         }
         if (x.isRead === 0) {
           rv[x['transmitter']].noRead += 1
         }
-        rv[x['transmitter']].lastMessage = Math.max(x.time, rv[x['transmitter']].lastMessage || 0)
+        if (x.time >= rv[x['transmitter']].lastMessage) {
+          rv[x['transmitter']].lastMessage = x.time
+          rv[x['transmitter']].keyDesc = x.message
+        }
         return rv
       }, {})
       let mess = []
@@ -76,6 +79,7 @@ export default {
           puce: messGroup[key].noRead,
           number: key,
           lastMessage: messGroup[key].lastMessage,
+          keyDesc: messGroup[key].keyDesc,
           backgroundColor: generateColorForStr(key)
         })
       })
