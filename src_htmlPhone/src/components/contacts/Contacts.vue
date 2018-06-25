@@ -31,7 +31,11 @@ export default {
   },
   methods: {
     onSelect: function (contact) {
-      this.$router.push({path: '/messages/' + contact.number + '/' + contact.display})
+      if (contact.id === -1) {
+        this.$router.push({ name: 'contacts.view', params: { id: contact.id } })
+      } else {
+        this.$router.push({ name: 'messages.view', params: { number: contact.number, display: contact.display } })
+      }
     },
     onOption: function (contact) {
       this.disableList = true
