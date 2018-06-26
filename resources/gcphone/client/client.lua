@@ -141,7 +141,13 @@ end)
 
 
 
-
+RegisterNetEvent("gcphone:isDead")
+AddEventHandler("gcphone:isDead", function(status)
+  IsDead = status
+  if status and menuIsOpen then
+    TooglePhone()
+  end
+end)
 --====================================================================================
 --  
 --====================================================================================
@@ -149,7 +155,7 @@ Citizen.CreateThread(function()
   
   while true do
     Citizen.Wait(0)
-    if IsControlJustPressed(1, KeyOpenClose) then
+    if IsControlJustPressed(1, KeyOpenClose) and not IsDead then
       TooglePhone()
     end
     if menuIsOpen == true then

@@ -127,3 +127,8 @@ function getPhoneNumber (source, callback)
     callback(result[1].phone_number)
   end)
 end
+
+RegisterNetEvent("esx_ambulancejob:setDeathStatus")
+AddEventHandler("esx_ambulancejob:setDeathStatus", function(dead)
+  TriggerClientEvent("gcphone:isDead", source, dead)
+end)
