@@ -208,10 +208,10 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
   if message.owner == 0 then
     local text = '~o~ Nouveau message'
     if ShowNumberNotification == true then
-      local text = '~o~Nouveau message du ~y~'.. message.transmitter
+      local text = text .. ' du ~y~' .. message.transmitter
       for _,contact in pairs(contacts) do
         if contact.number == message.transmitter then
-          text = '~o~Nouveau message de ~g~'.. contact.display
+          text = text .. ' de ~g~' .. contact.display
           break
         end
       end
