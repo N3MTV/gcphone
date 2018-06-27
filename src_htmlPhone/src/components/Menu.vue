@@ -132,7 +132,7 @@ export default {
   width: 100%;
   align-items: flex-start;
   align-content: flex-start;
-  justify-content: space-around;
+  /* justify-content: space-around; */
   flex-flow: row;
   flex-wrap: wrap;
   margin-bottom: 0px;
@@ -157,6 +157,7 @@ button{
   border: none;
   width: 80px;
   height: 110px;
+  margin: 8px;
   color: white;
   background-size: 64px 64px;
   background-position: center 6px;
