@@ -30,6 +30,7 @@ files {
 	'html/static/img/icons_app/tchat.png',
 	'html/static/img/icons_app/photo.png',
 	'html/static/img/icons_app/bank.png',
+	'html/static/img/icons_app/9gag.png',
 	
 	'html/static/img/app_bank/logo_mazebank.jpg',
 

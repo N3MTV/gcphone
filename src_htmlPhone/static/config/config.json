@@ -141,6 +141,11 @@
       "name": "Dark Chat",
       "icons": "/html/static/img/icons_app/tchat.png",
       "routeName": "tchat"
+    },
+    {
+      "name": "9GAG",
+      "icons": "/html/static/img/icons_app/9gag.png",
+      "routeName": "9gag"
     }
   ]
 }
