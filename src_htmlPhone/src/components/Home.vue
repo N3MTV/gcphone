@@ -1,7 +1,13 @@
 <template>
   <div class="home" v-bind:style="{background: 'url(' + backgroundURL +')'}">
     <InfoBare />
-    <span class="warningMess" v-if="messages.length >= 220">Saturation mémoires !<br>{{messages.length}} / 250</span>
+    <span class="warningMess" v-if="messages.length >= warningMessageCount">
+      <div class="warningMess_icon"><i class="fa fa-warning"></i></div>
+      <span class="warningMess_content">
+        <span class="warningMess_title">Saturation mémoires !</span><br>
+        <span class="warningMess_mess">{{messages.length}} / {{warningMessageCount}} messages</span>
+      </span>
+    </span>
     <div class='home_buttons'>
       <button 
           v-for="(but, key) of AppsHome" 
@@ -39,7 +45,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['nbMessagesUnread', 'backgroundURL', 'messages', 'AppsHome'])
+    ...mapGetters(['nbMessagesUnread', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
     // AppsHome () {
     //   return this.config.Apps.filter(e => e.inHomePage === true).map(app => {
     //     if (app.puceRef !== undefined) {
@@ -106,20 +112,42 @@ export default {
   display: flex;
   align-content: center;
   justify-content: center;
+  color: gray;
 }
 .warningMess{
-  display: block;
+  background-color: white;
   position: absolute;
-  left: 0;
-  right: 0;
-  color: red;
+  left: 12px;
+  right: 12px;
+  top: 34px;
+  min-height: 64px;
+  display: flex;
+  padding: 12px;
+  border-radius: 4px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+.warningMess .warningMess_icon{
+  display: flex;
+  width: 16%;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  height: 42px;
+  width: 42px;
+  border-radius: 50%;
+}
+.warningMess .warningMess_icon .fa {
   text-align: center;
-  top: 150px;
-  font-size: 1.4em;
-  text-shadow: -1px 0 0 rgba(0,0,0, 0.8), 
-            1px 0 0 rgba(0,0,0, 0.8),
-            0 -1px 0 rgba(0,0,0, 0.8),
-            0 1px 0 rgba(0,0,0, 0.8);
+  color: #F94B42;
+}
+.warningMess .warningMess_content{
+  padding-left: 12px;
+}
+.warningMess_title {
+  font-size: 20px;
+}
+.warningMess_mess {
+  font-size: 16px;
 }
 
 .home_buttons{

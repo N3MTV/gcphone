@@ -38,6 +38,7 @@ export default {
       }
     },
     onOption: function (contact) {
+      if (contact.id === -1) return
       this.disableList = true
       Modal.CreateModal({
         choix: [

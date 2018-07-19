@@ -1,6 +1,6 @@
 {
   "reseau": "Gannon",
-  
+  "warningMessageCount": 250,
   "themeColor": "#303f9f",
   "colors": [
     "#EF5350",

@@ -55,6 +55,7 @@ const getters = {
   coqueLabel: (state, getters) => getters.coque.label,
   zoom: ({ zoom }) => zoom,
   config: ({ config }) => config,
+  warningMessageCount: ({ config }) => config.warningMessageCount || 250,
   useFormatNumberFrance: ({ config }) => config.useFormatNumberFrance,
   themeColor: ({ config }) => config.themeColor,
   colors: ({ config }) => config.colors,
