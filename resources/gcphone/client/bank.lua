@@ -22,7 +22,6 @@ end)
 
 RegisterNetEvent('esx:setAccountMoney')
 AddEventHandler('esx:setAccountMoney', function(account)
-      print('esx:setAccountMoney')
       if account.name == 'bank' then
             SendNUIMessage({event = 'updateBankbalance', banking = account.money})
       end
