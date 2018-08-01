@@ -1,4 +1,5 @@
 -- @author ??? Maybe Charli FeverRP
+-- actually, majority of code here is made by me! (Xinerki)
 
 phone = false
 phoneId = 0
