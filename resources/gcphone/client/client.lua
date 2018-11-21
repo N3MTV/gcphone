@@ -119,11 +119,11 @@ Citizen.CreateThread(function ()
     if inRangeToActivePhone == false then
       showFixePhoneHelper(coords)
     end
-    if inRangeToActivePhone == true and currentPlaySound == false then
+    if inRangeToActivePhone == true and currentPlaySound == true then
       PlaySound(soundId, "Remote_Ring", "Phone_SoundSet_Michael", 0, 0, 1)
-      currentPlaySound = true
-    elseif inRangeToActivePhone == false and currentPlaySound == true then
       currentPlaySound = false
+    elseif inRangeToActivePhone == false and currentPlaySound == true then
+      currentPlaySound = true
       StopSound(soundId)
     end
     Citizen.Wait(0)
