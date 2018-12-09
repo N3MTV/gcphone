@@ -171,16 +171,19 @@ AddEventHandler('gcPhone:_internalAddMessage', function(transmitter, receiver, m
 end)
 
 function _internalAddMessage(transmitter, receiver, message, owner)
-    local Query = "INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner);"
-    local Query2 = 'SELECT * from phone_messages WHERE `id` = (SELECT LAST_INSERT_ID());'
-	local Parameters = {
+    local id = MySQL.Sync.insert("INSERT INTO phone_messages (`transmitter`, `receiver`, `message`, `isRead`, `owner`) VALUES (@transmitter, @receiver, @message, @isRead, @owner)", {
         ['@transmitter'] = transmitter,
         ['@receiver'] = receiver,
         ['@message'] = message,
         ['@isRead'] = owner,
         ['@owner'] = owner
-    }
-	return MySQL.Sync.fetchAll(Query .. Query2, Parameters)[1]
+    })
+
+    local result = MySQL.Sync.fetchAll('SELECT * FROM phone_messages WHERE `id` = @id', {
+        ['@id'] = id
+    })
+
+    return result[1]
 end
 
 function addMessage(source, identifier, phone_number, message)
