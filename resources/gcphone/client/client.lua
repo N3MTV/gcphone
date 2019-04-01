@@ -30,9 +30,9 @@ local soundId = 1485
 --  Return true or false
 --====================================================================================
 function hasPhone (cb)
-  cb(true)
+  cb(true) --
   --[[
-    Exemple avec ESX
+    Exemple avec ESX -- Proposé par HalCroves sur https://forum.fivem.net/t/tutorial-for-gcphone-with-call-and-job-message-other/177904
     ESX.TriggerServerCallback('gcphone:getItemAmount', function(qtty)
       cb(qtty > 0)
     end, 'phone')
@@ -44,7 +44,7 @@ end
 --====================================================================================
 function ShowNoPhoneWarning () 
   --[[
-    Exemple avec ESX
+    Exemple avec ESX -- Proposé par HalCroves sur https://forum.fivem.net/t/tutorial-for-gcphone-with-call-and-job-message-other/177904
     ESX.ShowNotification("Vous n'avez pas de ~r~téléphone~s~")
   --]]
 end
