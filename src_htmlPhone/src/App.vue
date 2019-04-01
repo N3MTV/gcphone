@@ -62,8 +62,6 @@ export default {
         this.$router.push({name: 'home'})
       }
       if (this.show === false && this.appelsInfo !== null) {
-        // console.log('AUTO REJECT CAUSE HIDE PHONE')
-        // && this.appelsInfo.is_accepts === true
         this.rejectCall()
       }
     }

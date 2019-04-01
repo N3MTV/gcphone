@@ -25,7 +25,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-// import Apps from './Apps'
 import InfoBare from './InfoBare'
 
 export default {

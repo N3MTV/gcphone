@@ -20,7 +20,6 @@
 
 <script>
 import PhoneTitle from './../PhoneTitle'
-// https://img-9gag-fun.9cache.com/photo/aLjrQ8A_460svvp9.webm
 export default {
   components: {
     PhoneTitle
@@ -35,10 +34,8 @@ export default {
   methods: {
     async loadItems () {
       let url = 'https://9gag.com/v1/group-posts/group/default/type/hot?' + this.nextCursor
-      console.log(url)
       const request = await fetch(url)
       const data = await request.json()
-      console.log(data)
       this.posts.push(...data.data.posts)
       this.nextCursor = data.data.nextCursor
     },
@@ -68,7 +65,6 @@ export default {
   computed: {
     currentPost () {
       if (this.posts && this.posts.length > this.currentSelectPost) {
-        console.log(this.posts[this.currentSelectPost])
         return this.posts[this.currentSelectPost]
       }
       this.loadItems()

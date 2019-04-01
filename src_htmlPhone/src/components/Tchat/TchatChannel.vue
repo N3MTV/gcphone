@@ -37,7 +37,6 @@ export default {
     ...mapActions(['tchatAddChannel', 'tchatRemoveChannel']),
     scrollIntoViewIfNeeded () {
       this.$nextTick(() => {
-        console.log(this.$el)
         window.DDD = this.$el
         const $select = this.$el.querySelector('.select')
         if ($select !== null) {

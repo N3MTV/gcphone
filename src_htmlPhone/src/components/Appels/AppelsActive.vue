@@ -83,9 +83,6 @@ export default {
     },
     onAcceptCall () {
       this.acceptCall()
-      // this.status = 1
-      // this.time = 0
-      // this.intervalNum = window.setInterval(this.updateTime, 1000)
     },
     onIgnoreCall () {
       this.ignoreCall()

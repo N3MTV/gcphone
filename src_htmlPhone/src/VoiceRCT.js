@@ -56,28 +56,16 @@ class VoiceRTC {
 
 
   async acceptCall (infoCall) {
-    console.log('JS acceptCall 1')
-    console.log(infoCall.rtcOffer)
     const offer = JSON.parse(atob(infoCall.rtcOffer))
-    console.log('JS acceptCall 1')
     this.newConnection()
-    console.log('JS acceptCall 1')
     this.initiator = false
-    console.log('JS acceptCall 1')
     this.stream = await navigator.mediaDevices.getUserMedia(constraints)
-    console.log('JS acceptCall 1')
     this.myPeerConnection.onicecandidate = this.onicecandidate.bind(this)
-    console.log('JS acceptCall 1')
     this.myPeerConnection.addStream(this.stream)
-    console.log('JS acceptCall 1')
     this.offer = new RTCSessionDescription(offer)
-    console.log('JS acceptCall 1')
     this.myPeerConnection.setRemoteDescription(this.offer)
-    console.log('JS acceptCall 1')
     this.answer = await this.myPeerConnection.createAnswer()
-    console.log('JS acceptCall 1')
     this.myPeerConnection.setLocalDescription(this.answer)
-    console.log('JS acceptCall 1')
     return btoa(JSON.stringify(this.answer))
   }
 
@@ -106,12 +94,10 @@ class VoiceRTC {
   }
 
   addIceCandidates (candidatesRaw) {
-    console.log(candidatesRaw)
     if (this.myPeerConnection !== null) {
       const candidates = JSON.parse(atob(candidatesRaw))
       candidates.forEach((candidate) => {
         if (candidate !== null) {
-          console.log('CA ' + JSON.stringify(candidate))
           this.myPeerConnection.addIceCandidate(candidate)
         }
       })

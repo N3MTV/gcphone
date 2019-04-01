@@ -91,21 +91,13 @@ class PhoneAPI {
   }
   async deleteALL () {
     localStorage.clear()
-    console.log('tchatReset')
     store.dispatch('tchatReset')
-    console.log('resetPhone')
     store.dispatch('resetPhone')
-    console.log('resetMessage')
     store.dispatch('resetMessage')
-    console.log('resetContact')
     store.dispatch('resetContact')
-    console.log('resetBourse')
     store.dispatch('resetBourse')
-    console.log('resetAppels')
     store.dispatch('resetAppels')
-    console.log('event: deleteALL')
     return this.post('deleteALL')
-    // store.dispatch('resetbank') //
   }
   async getConfig () {
     if (this.config === null) {
@@ -191,9 +183,6 @@ class PhoneAPI {
       ...data.infoCall,
       initiator: data.initiator
     })
-    // this.voiceRTC.addEventListener('onCandidate', (candidates) => {
-    //   this.post('onCandidates', { id: data.infoCall.id, candidates })
-    // })
   }
   onacceptCall (data) {
     if (USE_VOICE_RTC === true) {

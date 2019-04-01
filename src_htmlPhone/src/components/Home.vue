@@ -33,7 +33,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import InfoBare from './InfoBare'
-// import Apps from './Apps'
 
 export default {
   components: {

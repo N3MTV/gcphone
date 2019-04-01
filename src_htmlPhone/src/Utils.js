@@ -42,7 +42,6 @@ export function getBestFontColor (color) {
   if (rgb === undefined) {
     return '#000000'
   } else {
-    console.log(rgb)
     if (rgb.red * 0.299 + rgb.green * 0.587 + rgb.blue * 0.114 > 186) {
       return 'rgba(0, 0, 0, 0.87)'
     } else {

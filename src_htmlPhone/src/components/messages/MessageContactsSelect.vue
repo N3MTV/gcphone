@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     onSelect: function (contact) {
-      if (contact.num === -1) { //
+      if (contact.num === -1) {
         this.$phoneAPI.getReponseText({
           limit: 10
         }).then(data => {
