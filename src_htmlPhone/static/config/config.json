@@ -177,6 +177,9 @@
       "APP_CONFIG_LANGUAGE": "Langue",
       "APP_CONFIG_RESET": "Formater",
       "APP_CONFIG_RESET_CONFIRM": "TOUT SUPPRIMER",
+      "APP_PHONE_CALL": "Appeler",
+      "APP_PHONE_DELETE": "Effacer",
+      "APP_PHONE_DELETE_ALL": "Effacer TOUT.",
 
       "APP_PHONE_TITLE": "Téléphone",
       "APP_PHONE_MENU_FAVORITES": "Favoris",
@@ -214,9 +217,19 @@
       "APP_DARKTCHAT_NEW_CHANNEL": "Ajouter un channel",
       "APP_DARKTCHAT_DELETE_CHANNEL": "Effacer le channel",
       "APP_DARKTCHAT_CANCEL": "Annuler",
-      "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Entrer un message"
-    
-    
+      "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Entrer un message",
+
+      "TIMEAGO": [
+        "à l'instant",
+        ["il y a %s seconde", "il y a %s secondes"],
+        ["il y a %s minute",  "il y a %s minutes"],
+        ["il y a %s heure",   "il y a %s heures"],
+        ["il y a %s jour",    "il y a %s jours"],
+        ["il y a %s semaine", "il y a %s semaines"],
+        ["il y a %s mois",    "il y a %s mois"],
+        ["il y a %s an",      "il y a %s ans"]
+      ]
+
     },
     "en_US": {
       "NAME": "English",
@@ -242,6 +255,9 @@
       "APP_PHONE_MENU_RECENTS": "Recents",
       "APP_PHONE_MENU_CONTACTS": "Contacts",
       "APP_PHONE_ENTER_NUMBER": "Enter a Number",
+      "APP_PHONE_CALL": "Call",
+      "APP_PHONE_DELETE": "Erase",
+      "APP_PHONE_DELETE_ALL": "Erase ALL.",
 
       "APP_BANK_TITLE": "Bank",
 
@@ -273,8 +289,18 @@
       "APP_DARKTCHAT_NEW_CHANNEL": "Add channel",
       "APP_DARKTCHAT_DELETE_CHANNEL": "Delete channel",
       "APP_DARKTCHAT_CANCEL": "Cancel",
-      "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Enter a message"
-    
+      "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Enter a message",
+      
+      "TIMEAGO": [
+        "just now",
+        ["%s second ago", "%s seconds ago"],
+        ["%s minute ago", "%s minutes ago"],
+        ["%s hour ago", "%s hours ago"],
+        ["%s day ago", "%s days ago"],
+        ["%s week ago", "%s weeks ago"],
+        ["%s month ago", "%s months ago"],
+        ["%s year ago", "%s years ago"]
+      ]
     },
     "ja_JP": {
       "NAME": "日本"

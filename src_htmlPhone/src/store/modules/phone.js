@@ -91,8 +91,16 @@ const getters = {
 }
 
 const actions = {
-  async loadConfig ({ commit }) {
+  async loadConfig ({ commit, state }) {
     const config = await PhoneAPI.getConfig()
+    const keyLang = Object.keys(config.language)
+    for (const key of keyLang) {
+      const timeAgoConf = config.language[key].TIMEAGO
+      if (timeAgoConf !== undefined) {
+        Vue.prototype.$timeago.addLocale(key, timeAgoConf)
+      }
+    }
+    Vue.prototype.$timeago.setCurrentLocale(state.lang)
     commit('SET_CONFIG', config)
   },
   setEnableApp ({ commit, state }, { appName, enable = true }) {
@@ -119,6 +127,7 @@ const actions = {
   },
   setLanguage ({ commit }, lang) {
     window.localStorage['gc_language'] = lang
+    Vue.prototype.$timeago.setCurrentLocale(lang)
     commit('SET_LANGUAGE', lang)
   },
   closePhone () {

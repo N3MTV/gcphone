@@ -78,12 +78,12 @@ export default {
       const isValid = numero.startsWith('#') === false
       this.ignoreControls = true
       let choix = [
-        {id: 1, title: 'Effacer', icons: 'fa-circle-o', color: 'orange'},
-        {id: 2, title: 'Effacer TOUT.', icons: 'fa-circle-o', color: 'red'},
-        {id: 3, title: 'Retour', icons: 'fa-undo'}
+        {id: 1, title: this.IntlString('APP_PHONE_DELETE'), icons: 'fa-circle-o', color: 'orange'},
+        {id: 2, title: this.IntlString('APP_PHONE_DELETE_ALL'), icons: 'fa-circle-o', color: 'red'},
+        {id: 3, title: this.IntlString('CANCEL'), icons: 'fa-undo'}
       ]
       if (isValid === true) {
-        choix = [{id: 0, title: 'Appeler', icons: 'fa-call-o'}, ...choix]
+        choix = [{id: 0, title: this.IntlString('APP_PHONE_CALL'), icons: 'fa-call-o'}, ...choix]
       }
       const rep = await Modal.CreateModal({ choix })
       this.ignoreControls = true
@@ -100,7 +100,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['appelsHistorique', 'contacts']),
+    ...mapGetters(['IntlString', 'appelsHistorique', 'contacts']),
     historique () {
       let grpHist = groupBy(this.appelsHistorique, 'num')
       let hist = []
