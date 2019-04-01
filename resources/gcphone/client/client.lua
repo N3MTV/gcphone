@@ -25,6 +25,30 @@ local currentPlaySound = false
 local soundId = 1485
 
 
+--====================================================================================
+--  Check si le joueurs poséde un téléphone
+--  Return true or false
+--====================================================================================
+function hasPhone (cb)
+  cb(true)
+  --[[
+    Exemple avec ESX
+    ESX.TriggerServerCallback('gcphone:getItemAmount', function(qtty)
+      cb(qtty > 0)
+    end, 'phone')
+  --]]
+end
+
+--====================================================================================
+--  Que faire si le joueurs veut ouvrir sont téléphone n'est qu'il en a pas ?
+--====================================================================================
+function ShowNoPhoneWarning () 
+  --[[
+    Exemple avec ESX
+    ESX.ShowNotification("Vous n'avez pas de ~r~téléphone~s~")
+  --]]
+end
+
 
 --====================================================================================
 --  Active ou Deactive une application (appName => config.json)
@@ -33,10 +57,6 @@ RegisterNetEvent('gcPhone:setEnableApp')
 AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
   SendNUIMessage({event = 'setEnableApp', appName = appName, enable = enable })
 end)
-
-
-
-
 
 --====================================================================================
 --  Gestion des appels fixe
@@ -150,7 +170,14 @@ Citizen.CreateThread(function()
   while true do
     Citizen.Wait(0)
     if IsControlJustPressed(1, KeyOpenClose) then
-      TooglePhone()
+      hasPhone(function (hasPhone)
+        if hasPhone == true then
+          TooglePhone()
+        else
+          ShowNoPhoneWarning()
+        end
+      end)
+      
     end
     if menuIsOpen == true then
       for _, value in ipairs(KeyToucheCloseEvent) do
