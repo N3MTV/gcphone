@@ -6,13 +6,15 @@ end
 
 function TchatAddMessage (channel, message)
   local Query = "INSERT INTO phone_app_chat (`channel`, `message`) VALUES(@channel, @message);"
-  local Query2 = 'SELECT * from phone_app_chat WHERE `id` = (SELECT LAST_INSERT_ID());'
+  local Query2 = 'SELECT * from phone_app_chat WHERE `id` = @id;'
   local Parameters = {
     ['@channel'] = channel,
     ['@message'] = message
   }
-  MySQL.Async.fetchAll(Query .. Query2, Parameters, function (reponse)
-    TriggerClientEvent('gcPhone:tchat_receive', -1, reponse[1])
+  MySQL.Async.insert(Query, Parameters, function (id)
+    MySQL.Async.fetchAll(Query2, { ['@id'] = id }, function (reponse)
+      TriggerClientEvent('gcPhone:tchat_receive', -1, reponse[1])
+    end)
   end)
 end
 

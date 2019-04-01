@@ -172,7 +172,7 @@ end)
 
 function _internalAddMessage(transmitter, receiver, message, owner)
     local Query = "INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner);"
-    local Query2 = 'SELECT * from phone_messages WHERE `id` = (SELECT LAST_INSERT_ID());'
+    local Query2 = 'SELECT * from phone_messages WHERE `id` = @id;'
 	local Parameters = {
         ['@transmitter'] = transmitter,
         ['@receiver'] = receiver,
@@ -180,7 +180,10 @@ function _internalAddMessage(transmitter, receiver, message, owner)
         ['@isRead'] = owner,
         ['@owner'] = owner
     }
-	return MySQL.Sync.fetchAll(Query .. Query2, Parameters)[1]
+    local id = MySQL.Sync.insert(Query, Parameters)
+    return MySQL.Sync.fetchAll(Query2, {
+        ['@id'] = id
+    })
 end
 
 function addMessage(source, identifier, phone_number, message)
