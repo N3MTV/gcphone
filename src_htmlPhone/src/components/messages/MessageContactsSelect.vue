@@ -1,6 +1,6 @@
 <template>
   <div class="contact">
-    <list :list='lcontacts' title="Contacts" v-on:select="onSelect"></list>
+    <list :list='lcontacts' :title="IntlString('APP_MESSAGE_CONTACT_TITLE')" v-on:select="onSelect"></list>
   </div>
 </template>
 
@@ -17,9 +17,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['contacts']),
+    ...mapGetters(['IntlString', 'contacts']),
     lcontacts: function () {
-      let addContact = {display: 'Enter un numero', letter: '+', backgroundColor: 'orange', num: -1}
+      let addContact = {
+        display: this.IntlString('APP_MESSAGE_CONTRACT_ENTER_NUMBER'),
+        letter: '+',
+        backgroundColor: 'orange',
+        num: -1
+      }
       return [addContact, ...this.contacts]
     }
   },

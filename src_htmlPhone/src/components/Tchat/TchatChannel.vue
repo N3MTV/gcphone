@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="title" backgroundColor="#090f20" />
+    <PhoneTitle :title="IntlString('APP_DARKTCHAT_TITLE')" backgroundColor="#090f20" />
     <div class="elements">
         <div class="element" v-for='(elem, key) in tchatChannels' 
           v-bind:key="elem.channel"
@@ -31,21 +31,18 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['tchatChannels', 'Apps']),
-    title () {
-      const App = this.Apps.find(a => a.routeName === 'tchat')
-      if (App === undefined) {
-        return 'Tor Chat'
-      }
-      return App.name
-    }
-    // title: () => (this.Apps.find(a => a.routeName === 'tchat') || { name: 'Tor Chat' }).name
+    ...mapGetters(['IntlString', 'tchatChannels', 'Apps'])
   },
   methods: {
     ...mapActions(['tchatAddChannel', 'tchatRemoveChannel']),
     scrollIntoViewIfNeeded () {
       this.$nextTick(() => {
-        this.$el.querySelector('.select').scrollIntoViewIfNeeded()
+        console.log(this.$el)
+        window.DDD = this.$el
+        const $select = this.$el.querySelector('.select')
+        if ($select !== null) {
+          $select.scrollIntoViewIfNeeded()
+        }
       })
     },
     onUp () {
@@ -62,9 +59,9 @@ export default {
       if (this.ignoreControls === true) return
       this.ignoreControls = true
       let choix = [
-        {id: 1, title: 'Ajouter un channel.', icons: 'fa-plus', color: 'green'},
-        {id: 2, title: 'Effacer', icons: 'fa-circle-o', color: 'orange'},
-        {id: 3, title: 'Retour', icons: 'fa-undo'}
+        {id: 1, title: this.IntlString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
+        {id: 2, title: this.IntlString('APP_DARKTCHAT_DELETE_CHANNEL'), icons: 'fa-circle-o', color: 'orange'},
+        {id: 3, title: this.IntlString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo'}
       ]
       if (this.tchatChannels.length === 0) {
         choix.splice(1, 1)
@@ -86,8 +83,8 @@ export default {
       if (this.tchatChannels.length === 0) {
         this.ignoreControls = true
         let choix = [
-          {id: 1, title: 'Ajouter un channel.', icons: 'fa-plus', color: 'green'},
-          {id: 3, title: 'Retour', icons: 'fa-undo'}
+          {id: 1, title: this.IntlString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
+          {id: 3, title: this.IntlString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo'}
         ]
         const rep = await Modal.CreateModal({ choix })
         this.ignoreControls = false
@@ -108,11 +105,13 @@ export default {
       let channel = (rep || {}).text || ''
       channel = channel.toLowerCase().replace(/[^a-z]/g, '')
       if (channel.length > 0) {
+        this.currentSelect = 0
         this.tchatAddChannel({ channel })
       }
     },
     async removeChannelOption () {
       const channel = this.tchatChannels[this.currentSelect].channel
+      this.currentSelect = 0
       this.tchatRemoveChannel({ channel })
     }
   },

@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle title="Paramètres" />
+    <PhoneTitle :title="IntlString('APP_CONFIG_TITLE')" />
     <div class='phone_content elements'>
       <div class='element'
           v-for='(elem, key) in paramList' 
@@ -33,31 +33,37 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['myPhoneNumber', 'backgroundLabel', 'coqueLabel', 'zoom', 'config', 'volume']),
+    ...mapGetters(['IntlString', 'myPhoneNumber', 'backgroundLabel', 'coqueLabel', 'zoom', 'config', 'volume', 'availableLanguages']),
     paramList () {
+      const cancelStr = this.IntlString('CANCEL')
+      const confirmResetStr = this.IntlString('APP_CONFIG_RESET_CONFIRM')
+      const cancelOption = {}
+      const confirmReset = {}
+      cancelOption[cancelStr] = 'cancel'
+      confirmReset[confirmResetStr] = 'accept'
       return [
         {
           icons: 'fa-phone',
-          title: 'Mon numéro',
+          title: this.IntlString('APP_CONFIG_MY_MUNBER'),
           value: this.myPhoneNumber
         },
         {
           icons: 'fa-picture-o',
-          title: 'Fond d\'écran',
+          title: this.IntlString('APP_CONFIG_WALLPAPER'),
           value: this.backgroundLabel,
           onValid: 'onChangeBackground',
           values: this.config.background
         },
         {
           icons: 'fa-mobile',
-          title: 'Coque telephone',
+          title: this.IntlString('APP_CONFIG_CASE'),
           value: this.coqueLabel,
           onValid: 'onChangeCoque',
           values: this.config.coque
         },
         {
           icons: 'fa-search',
-          title: 'Zoom',
+          title: this.IntlString('APP_CONFIG_ZOOM'),
           value: this.zoom,
           onValid: 'setZoom',
           onLeft: this.ajustZoom(-1),
@@ -73,7 +79,7 @@ export default {
         },
         {
           icons: 'fa-volume-down',
-          title: 'Volume',
+          title: this.IntlString('APP_CONFIG_VOLUME'),
           value: this.valumeDisplay,
           onValid: 'setPhoneVolume',
           onLeft: this.ajustVolume(-0.01),
@@ -88,13 +94,22 @@ export default {
           }
         },
         {
+          icons: 'fa-globe',
+          title: this.IntlString('APP_CONFIG_LANGUAGE'),
+          onValid: 'onChangeLanguages',
+          values: {
+            ...this.availableLanguages,
+            ...cancelOption
+          }
+        },
+        {
           icons: 'fa-exclamation-triangle',
           color: '#c0392b',
-          title: 'Formater',
+          title: this.IntlString('APP_CONFIG_RESET'),
           onValid: 'resetPhone',
           values: {
-            'TOUT SUPPRIMER': 'accept',
-            'Annuler': 'cancel'
+            ...confirmReset,
+            ...cancelOption
           }
         }
       ]
@@ -104,7 +119,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setZoon', 'setBackground', 'setCoque', 'setVolume']),
+    ...mapActions(['getIntlString', 'setZoon', 'setBackground', 'setCoque', 'setVolume', 'setLanguage']),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
         document.querySelector('.select').scrollIntoViewIfNeeded()
@@ -197,13 +212,20 @@ export default {
         this.setVolume(newVolume)
       }
     },
+    onChangeLanguages (param, data) {
+      if (data.value !== 'cancel') {
+        this.setLanguage(data.value)
+      }
+    },
     resetPhone: function (param, data) {
-      if (data.title !== 'Annuler') {
+      if (data.value !== 'cancel') {
         this.ignoreControls = true
-        let choix = [{title: 'Annuler'}, {title: 'Annuler'}, {title: 'EFFACER', color: 'red'}, {title: 'Annuler'}, {title: 'Annuler'}]
+        const cancelStr = this.IntlString('CANCEL')
+        const confirmResetStr = this.IntlString('APP_CONFIG_RESET_CONFIRM')
+        let choix = [{title: cancelStr}, {title: cancelStr}, {title: confirmResetStr, color: 'red', reset: true}, {title: cancelStr}, {title: cancelStr}]
         Modal.CreateModal({choix}).then(reponse => {
           this.ignoreControls = false
-          if (reponse.title === 'EFFACER') {
+          if (reponse.reset === true) {
             this.$phoneAPI.deleteALL()
           }
         })

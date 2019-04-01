@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle title="Bourse"/>
+    <PhoneTitle :title="IntlString('APP_BOURSE_TITLE')"/>
     <div class='elements'>
       <div class='element'
           v-for='(elem, key) in bourseInfo' 
@@ -28,7 +28,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['bourseInfo'])
+    ...mapGetters(['IntlString', 'bourseInfo'])
   },
   methods: {
     scrollIntoViewIfNeeded: function () {

@@ -4,8 +4,8 @@
     <span class="warningMess" v-if="messages.length >= warningMessageCount">
       <div class="warningMess_icon"><i class="fa fa-warning"></i></div>
       <span class="warningMess_content">
-        <span class="warningMess_title">Saturation mémoires !</span><br>
-        <span class="warningMess_mess">{{messages.length}} / {{warningMessageCount}} messages</span>
+        <span class="warningMess_title">{{ IntlString('PHONE_WARNING_MESSAGE') }}</span><br>
+        <span class="warningMess_mess">{{messages.length}} / {{warningMessageCount}} {{IntlString('PHONE_WARNING_MESSAGE_MESS')}}</span>
       </span>
     </span>
     <div class='home_buttons'>
@@ -15,7 +15,7 @@
           v-bind:class="{ select: key === currentSelect}"
           v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
          >
-          {{but.name}}
+          {{but.intlName}}
           <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
       </button>
       <div class="btn_menu_ctn">
@@ -45,15 +45,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['nbMessagesUnread', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
-    // AppsHome () {
-    //   return this.config.Apps.filter(e => e.inHomePage === true).map(app => {
-    //     if (app.puceRef !== undefined) {
-    //       app.puce = this[app.puceRef]
-    //     }
-    //     return app
-    //   })
-    // }
+    ...mapGetters(['IntlString', 'nbMessagesUnread', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
   },
   methods: {
     ...mapActions(['closePhone', 'setMessages']),

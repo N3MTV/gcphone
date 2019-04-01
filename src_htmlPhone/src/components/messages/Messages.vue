@@ -18,7 +18,7 @@
     </div>
 
     <div id='sms_write'>
-        <input type="text" placeholder="Envoyer un message">
+        <input type="text" :placeholder="IntlString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')">
         <div class="sms_send">
           <svg height="24" viewBox="0 0 24 24" width="24">
     <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -108,43 +108,48 @@ export default {
       let hasNumber = /#([0-9]+)/.test(message.message)
       let isSMSImage = this.isSMSImage(message)
       let choix = [{
-        title: 'Effacer',
+        id: 'delete',
+        title: this.IntlString('APP_MESSAGE_DELETE'),
         icons: 'fa-circle-o'
       }, {
-        title: 'Annuler',
+        id: -1,
+        title: this.IntlString('CANCEL'),
         icons: 'fa-undo'
       }]
       if (isGPS === true) {
         choix = [{
-          title: 'Position GPS',
+          id: 'gps',
+          title: this.IntlString('APP_MESSAGE_SET_GPS'),
           icons: 'fa-location-arrow'
         }, ...choix]
       }
       if (hasNumber === true) {
         const num = message.message.match(/#([0-9-]*)/)[1]
         choix = [{
-          title: `SMS ${num}`,
+          id: 'num',
+          title: `${this.IntlString('APP_MESSAGE_SMS')} ${num}`,
           number: num,
           icons: 'fa-phone'
         }, ...choix]
       }
       if (isSMSImage === true) {
         choix = [{
-          title: 'Zoom',
+          id: 'zoom',
+          title: this.IntlString('APP_MESSAGE_ZOOM_IMG'),
           icons: 'fa-search'
         }, ...choix]
       }
       this.ignoreControls = true
       Modal.CreateModal({choix}).then(data => {
-        if (data.title === 'Effacer') {
+        if (data.id === 'delete') {
           this.deleteMessage({ id: message.id })
-        } else if (data.title === 'Position GPS') {
+        } else if (data.id === 'gps') {
           let val = message.message.match(/((-?)\d+(\.\d+))/g)
           this.$phoneAPI.setGPS(val[0], val[1])
-        } else if (data.number !== undefined) {
+        } else if (data.id === 'num') {
           this.phoneNumber = data.number
           this.display = undefined
-        } else if (data.title === 'Zoom') {
+        } else if (data.id === 'zoom') {
           this.imgZoom = message.message
         }
         this.ignoreControls = false
@@ -152,7 +157,6 @@ export default {
       })
     },
     onBackspace () {
-      console.log(this, this.messagesList, this.selectMessage, this.messagesList[this.selectMessage])
       if (this.imgZoom !== undefined) {
         this.imgZoom = undefined
         return
@@ -169,10 +173,10 @@ export default {
       if (this.selectMessage === -1) {
         this.ignoreControls = true
         Modal.CreateModal({choix: [
-          {title: 'Envoyer Coord GPS', icons: 'fa-location-arrow'},
-          {title: 'Annuler', icons: 'fa-undo'}
+          {id: 1, title: this.IntlString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
+          {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo'}
         ]}).then(data => {
-          if (data.title === 'Envoyer Coord GPS') {
+          if (data.id === 1) {
             this.sendMessage({
               phoneNumber: this.phoneNumber,
               message: '%pos%'
@@ -184,7 +188,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['messages', 'contacts']),
+    ...mapGetters(['IntlString', 'messages', 'contacts']),
     messagesList () {
       return this.messages.filter(e => e.transmitter === this.phoneNumber).sort((a, b) => a.time - b.time)
     },

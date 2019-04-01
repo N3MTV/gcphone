@@ -14,7 +14,7 @@
                 v-bind:class="{ select: key === currentSelect}"
                 v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
               >
-                {{but.name}}
+                {{but.intlName}}
                 <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
             </button>
           </div>

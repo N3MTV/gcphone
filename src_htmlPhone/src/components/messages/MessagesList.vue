@@ -1,6 +1,6 @@
 <template>
   <div class="screen">
-    <list :list='messagesData' :disable="disableList" title="Messages" @select="onSelect" @option='onOption'></list>
+    <list :list='messagesData' :disable="disableList" :title="IntlString('APP_MESSAGE_TITLE')" @select="onSelect" @option='onOption'></list>
   </div>
 </template>
 
@@ -16,7 +16,6 @@ export default {
   },
   data () {
     return {
-      nouveauMessage: {backgroundColor: '#C0C0C0', display: 'Nouveau message', letter: '+', id: -1},
       disableList: false
     }
   },
@@ -34,9 +33,9 @@ export default {
       this.disableList = true
       Modal.CreateModal({
         choix: [
-          {id: 1, title: 'Effacer la conversation', icons: 'fa-circle-o', color: 'orange'},
-          {id: 2, title: 'Effacer toutes conv.', icons: 'fa-circle-o', color: 'red'},
-          {id: 3, title: 'Annuler', icons: 'fa-undo'}
+          {id: 1, title: this.IntlString('APP_MESSAGE_ERASE_CONVERSATION'), icons: 'fa-circle-o', color: 'orange'},
+          {id: 2, title: this.IntlString('APP_MESSAGE_ERASE_ALL_CONVERSATIONS'), icons: 'fa-circle-o', color: 'red'},
+          {id: 3, title: this.IntlString('CANCEL'), icons: 'fa-undo'}
         ]
       }).then(rep => {
         if (rep.id === 1) {
@@ -53,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['contacts', 'messages']),
+    ...mapGetters(['IntlString', 'contacts', 'messages']),
     messagesData: function () {
       let messages = this.messages
       let contacts = this.contacts
@@ -84,7 +83,15 @@ export default {
         })
       })
       mess.sort((a, b) => b.lastMessage - a.lastMessage)
-      return [this.nouveauMessage, ...mess]
+      return [this.newMessageOption, ...mess]
+    },
+    newMessageOption () {
+      return {
+        backgroundColor: '#C0C0C0',
+        display: this.IntlString('APP_MESSAGE_NEW_MESSAGE'),
+        letter: '+',
+        id: -1
+      }
     }
   },
   created: function () {

@@ -53,7 +53,10 @@ export default {
     ...mapActions(['tchatSetChannel', 'tchatSendMessage']),
     scrollIntoViewIfNeeded () {
       this.$nextTick(() => {
-        this.$el.querySelector('.select').scrollIntoViewIfNeeded()
+        const $select = this.$el.querySelector('.select')
+        if ($select !== null) {
+          $select.scrollIntoViewIfNeeded()
+        }
       })
     },
     onUp () {

@@ -2,7 +2,7 @@
 
 <template>
    <div class="phone_app">
-    <PhoneTitle title="Téléphone" />
+    <PhoneTitle :title="IntlString('APP_PHONE_TITLE')" />
     <div class="content">
       <div class="number">
         {{ numeroFormat }}
@@ -96,7 +96,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['useFormatNumberFrance']),
+    ...mapGetters(['IntlString', 'useFormatNumberFrance']),
     numeroFormat () {
       if (this.useFormatNumberFrance === true) {
         return this.numero

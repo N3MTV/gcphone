@@ -97,6 +97,8 @@
   "apps": [
     {
       "name": "Téléphone",
+      "fr_FR__name": "Téléphone",
+      "en_US__name": "Phone",
       "icons": "/html/static/img/icons_app/call.png",
       "routeName": "appels",
       "inHomePage": true
@@ -116,24 +118,32 @@
     },
     {
       "name": "Paramètres",
+      "fr_FR__name": "Paramètres",
+      "en_US__name": "System",
       "icons": "/html/static/img/icons_app/settings.png",
       "routeName": "parametre",
       "inHomePage": true
     },
     {
       "name": "Bank",
+      "fr_FR__name": "Banque",
+      "en_US__name": "Bank",
       "icons": "/html/static/img/icons_app/bank.png",
       "routeName": "bank",
       "inHomePage": false
     },
     {
       "name": "Bourse",
+      "fr_FR__name": "Bourse",
+      "en_US__name": "Stock Market",
       "icons": "/html/static/img/icons_app/bourse.png",
       "routeName": "bourse",
       "enabled": true
     },
     {
       "name": "Photo",
+      "fr_FR__name": "Photo",
+      "en_US__name": "Camera",
       "icons": "/html/static/img/icons_app/photo.png",
       "routeName": "photo"
     },
@@ -147,5 +157,127 @@
       "icons": "/html/static/img/icons_app/9gag.png",
       "routeName": "9gag"
     }
-  ]
+  ],
+  "language": {
+    "fr_FR": {
+      "NAME": "Français",
+
+      "PHONE_WARNING_MESSAGE": "Saturation mémoires !",
+      "PHONE_WARNING_MESSAGE_MESS": "messages",
+
+      "CONFIRM": "Accepter",
+      "CANCEL": "Annuler",
+
+      "APP_CONFIG_TITLE": "Paramètres",
+      "APP_CONFIG_MY_MUNBER": "Mon numéro",
+      "APP_CONFIG_WALLPAPER": "Fond d'écran",
+      "APP_CONFIG_CASE": "Coque téléhone",
+      "APP_CONFIG_ZOOM": "Zoom",
+      "APP_CONFIG_VOLUME": "Volume",
+      "APP_CONFIG_LANGUAGE": "Langue",
+      "APP_CONFIG_RESET": "Formater",
+      "APP_CONFIG_RESET_CONFIRM": "TOUT SUPPRIMER",
+
+      "APP_PHONE_TITLE": "Téléphone",
+      "APP_PHONE_MENU_FAVORITES": "Favoris",
+      "APP_PHONE_MENU_RECENTS": "Récents",
+      "APP_PHONE_MENU_CONTACTS": "Contacts",
+      "APP_PHONE_ENTER_NUMBER": "Entrer un numero",
+
+      "APP_BANK_TITLE": "Banque",
+
+      "APP_BOURSE_TITLE": "Bourse",
+
+      "APP_CONTACT_TITLE": "Contact",
+      "APP_CONTACT_NEW": "Nouveau Contact",
+      "APP_CONTACT_EDIT": "Modifier le contact",
+      "APP_CONTACT_SAVE": "Enregistrer",
+      "APP_CONTACT_CANCEL": "Annuler",
+      "APP_CONTACT_DELETE": "Supprimer",
+      "APP_CONTACT_LABEL_NAME": "Prénom - Nom",
+      "APP_CONTACT_LABEL_NUMBER": "Numéro",
+
+      "APP_MESSAGE_TITLE": "Messages",
+      "APP_MESSAGE_NEW_MESSAGE": "Nouveau Message",
+      "APP_MESSAGE_ERASE_CONVERSATION": "Effacer la conversation",
+      "APP_MESSAGE_ERASE_ALL_CONVERSATIONS": "Effacer toutes les conv.",
+      "APP_MESSAGE_SEND_GPS": "Envoyer Coord GPS",
+      "APP_MESSAGE_SET_GPS": "Position GPS",
+      "APP_MESSAGE_ZOOM_IMG": "Zoom",
+      "APP_MESSAGE_DELETE": "Effacer",
+      "APP_MESSAGE_SMS": "SMS",
+      "APP_MESSAGE_CONTACT_TITLE": "Contacts",
+      "APP_MESSAGE_CONTRACT_ENTER_NUMBER": "Enter un numero",
+      "APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE": "Envoyer un message",
+      
+      "APP_DARKTCHAT_TITLE": "Dark Tchat",
+      "APP_DARKTCHAT_NEW_CHANNEL": "Ajouter un channel",
+      "APP_DARKTCHAT_DELETE_CHANNEL": "Effacer le channel",
+      "APP_DARKTCHAT_CANCEL": "Annuler",
+      "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Entrer un message"
+    
+    
+    },
+    "en_US": {
+      "NAME": "English",
+
+      "PHONE_WARNING_MESSAGE": "...",
+      "PHONE_WARNING_MESSAGE_MESS": "messages",
+
+      "CONFIRM": "Confirm",
+      "CANCEL": "Cancel",
+
+      "APP_CONFIG_TITLE": "System",
+      "APP_CONFIG_MY_MUNBER": "My number",
+      "APP_CONFIG_WALLPAPER": "Wallpapers",
+      "APP_CONFIG_CASE": "Phone Case",
+      "APP_CONFIG_ZOOM": "Zoom",
+      "APP_CONFIG_VOLUME": "Volume",
+      "APP_CONFIG_LANGUAGE": "Language",
+      "APP_CONFIG_RESET": "Reset Divice",
+      "APP_CONFIG_RESET_CONFIRM": "ERASE ALL DATA",
+
+      "APP_PHONE_TITLE": "Phone",
+      "APP_PHONE_MENU_FAVORITES": "Favorites",
+      "APP_PHONE_MENU_RECENTS": "Recents",
+      "APP_PHONE_MENU_CONTACTS": "Contacts",
+      "APP_PHONE_ENTER_NUMBER": "Enter a Number",
+
+      "APP_BANK_TITLE": "Bank",
+
+      "APP_BOURSE_TITLE": "Stock Market",
+
+      "APP_CONTACT_TITLE": "Contact",
+      "APP_CONTACT_NEW": "New Contact",
+      "APP_CONTACT_EDIT": "Modify Contact",
+      "APP_CONTACT_SAVE": "Save",
+      "APP_CONTACT_CANCEL": "Cancel",
+      "APP_CONTACT_DELETE": "Remove",
+      "APP_CONTACT_LABEL_NAME": "Contact Name",
+      "APP_CONTACT_LABEL_NUMBER": "Number",
+
+      "APP_MESSAGE_TITLE": "Messages",
+      "APP_MESSAGE_NEW_MESSAGE": "New Message",
+      "APP_MESSAGE_ERASE_CONVERSATION": "ERASE the conversation",
+      "APP_MESSAGE_ERASE_ALL_CONVERSATIONS": "ERASE all conversations",
+      "APP_MESSAGE_SEND_GPS": "Send GPS Coordinates",
+      "APP_MESSAGE_SET_GPS": "SET GPS",
+      "APP_MESSAGE_ZOOM_IMG": "Zoom",
+      "APP_MESSAGE_DELETE": "Erase",
+      "APP_MESSAGE_SMS": "SMS",
+      "APP_MESSAGE_CONTACT_TITLE": "Contacts",
+      "APP_MESSAGE_CONTRACT_ENTER_NUMBER": "Enter a Number",
+      "APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE": "Enter a message",
+      
+      "APP_DARKTCHAT_TITLE": "Dark Tchat",
+      "APP_DARKTCHAT_NEW_CHANNEL": "Add channel",
+      "APP_DARKTCHAT_DELETE_CHANNEL": "Delete channel",
+      "APP_DARKTCHAT_CANCEL": "Cancel",
+      "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Enter a message"
+    
+    },
+    "ja_JP": {
+      "NAME": "日本"
+    }
+  }
 }

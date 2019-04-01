@@ -29,10 +29,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['contacts']),
+    ...mapGetters(['IntlString', 'contacts']),
     contactsList () {
       return [{
-        display: 'Entre un numero',
+        display: this.IntlString('APP_PHONE_ENTER_NUMBER'),
         letter: '#',
         backgroundColor: '#D32F2F',
         custom: true

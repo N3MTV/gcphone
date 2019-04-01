@@ -1,6 +1,6 @@
 <template>
    <div class="phone_app">
-    <PhoneTitle title="Téléphone" />
+    <PhoneTitle :title="IntlString('APP_PHONE_TITLE')" />
     <div class="content">
       <component :is="subMenu[currentMenuIndex].Comp" />
     </div>
@@ -28,24 +28,26 @@ export default {
   },
   data () {
     return {
-      subMenu: [{
-        Comp: AppelsFavoris,
-        name: 'Favoris',
-        icon: 'star'
-      }, {
-        Comp: AppelsRecents,
-        name: 'Récents',
-        icon: 'clock-o'
-      }, {
-        Comp: AppelsContacts,
-        name: 'Contacts',
-        icon: 'user'
-      }],
       currentMenuIndex: 1
     }
   },
   computed: {
-    ...mapGetters(['themeColor'])
+    ...mapGetters(['IntlString', 'themeColor']),
+    subMenu () {
+      return [{
+        Comp: AppelsFavoris,
+        name: this.IntlString('APP_PHONE_MENU_FAVORITES'),
+        icon: 'star'
+      }, {
+        Comp: AppelsRecents,
+        name: this.IntlString('APP_PHONE_MENU_RECENTS'),
+        icon: 'clock-o'
+      }, {
+        Comp: AppelsContacts,
+        name: this.IntlString('APP_PHONE_MENU_CONTACTS'),
+        icon: 'user'
+      }]
+    }
   },
   methods: {
     getColorItem (index) {

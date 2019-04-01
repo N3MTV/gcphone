@@ -7,23 +7,23 @@
             <input type="text" v-model="contact.display">
             <span class="highlight"></span>
             <span class="bar"></span>
-            <label>Nom - Prenom</label>
+            <label>{{ IntlString('APP_CONTACT_LABEL_NAME') }}</label>
         </div>
         
         <div class="group inputText" data-type="text" data-model='number' data-maxlength='10'>      
             <input type="text" v-model="contact.number">
             <span class="highlight"></span>
             <span class="bar"></span>
-            <label>Numéro</label>
+            <label>{{ IntlString('APP_CONTACT_LABEL_NUMBER') }}</label>
         </div>
         <div style="margin-top: 56px;" class="group " data-type="button" data-action='save'>      
-            <input type='button' class="btn btn-green" value='Enregistre' />
+            <input type='button' class="btn btn-green" :value="IntlString('APP_CONTACT_SAVE')" />
         </div>
         <div class="group" data-type="button" data-action='cancel'>      
-            <input type='button' class="btn btn-orange" value='Annuler' />
+            <input type='button' class="btn btn-orange" :value="IntlString('APP_CONTACT_CANCEL')" />
         </div>
         <div class="group" data-type="button" data-action='delete'>      
-            <input type='button' class="btn btn-red" value='Supprimer' />
+            <input type='button' class="btn btn-red" :value="IntlString('APP_CONTACT_DELETE')" />
         </div>
     </div>
   </div>
@@ -44,7 +44,7 @@ export default {
       currentSelect: 0,
       ignoreControls: false,
       contact: {
-        display: 'Nouveau Contact',
+        display: '',
         number: '',
         id: -1
       }
@@ -132,7 +132,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['contacts'])
+    ...mapGetters(['IntlString', 'contacts'])
   },
   created: function () {
     this.$bus.$on('keyUpArrowDown', this.onDown)
@@ -140,6 +140,7 @@ export default {
     this.$bus.$on('keyUpEnter', this.onEnter)
     this.$bus.$on('keyUpBackspace', this.cancel)
     this.id = parseInt(this.$route.params.id)
+    this.contact.display = this.IntlString('APP_CONTACT_NEW')
     if (this.id !== -1) {
       const c = this.contacts.find(e => e.id === this.id)
       if (c !== undefined) {

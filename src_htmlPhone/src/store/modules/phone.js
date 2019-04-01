@@ -8,6 +8,7 @@ const state = {
   coque: JSON.parse(window.localStorage['gc_coque'] || null),
   zoom: window.localStorage['gc_zoom'] || '100%',
   volume: parseFloat(window.localStorage['gc_volume']) || 1,
+  lang: window.localStorage['gc_language'] || 'fr_FR',
   config: {
     reseau: 'Gannon',
     useFormatNumberFrance: false,
@@ -59,15 +60,33 @@ const getters = {
   useFormatNumberFrance: ({ config }) => config.useFormatNumberFrance,
   themeColor: ({ config }) => config.themeColor,
   colors: ({ config }) => config.colors,
-  Apps: ({ config }, getters) => config.apps
+  Apps: ({ config, lang }, getters) => config.apps
     .filter(app => app.enabled !== false)
     .map(app => {
       if (app.puceRef !== undefined) {
         app.puce = getters[app.puceRef]
       }
+      const keyName = `${lang}__name`
+      app.intlName = app[keyName] || app.name
       return app
     }),
-  AppsHome: (state, getters) => getters.Apps.filter(app => app.inHomePage === true)
+  AppsHome: (state, getters) => getters.Apps.filter(app => app.inHomePage === true),
+  availableLanguages ({ config }) {
+    const langKey = Object.keys(config.language)
+    const AvailableLanguage = {}
+    for (const key of langKey) {
+      AvailableLanguage[config.language[key].NAME] = key
+    }
+    return AvailableLanguage
+  },
+  IntlString ({ config, lang }) {
+    if (config.language[lang] === undefined) {
+      return (LABEL) => LABEL
+    }
+    return (LABEL) => {
+      return config.language[lang][LABEL] || LABEL
+    }
+  }
 
 }
 
@@ -98,6 +117,10 @@ const actions = {
     window.localStorage['gc_volume'] = volume
     commit('SET_VOLUME', volume)
   },
+  setLanguage ({ commit }, lang) {
+    window.localStorage['gc_language'] = lang
+    commit('SET_LANGUAGE', lang)
+  },
   closePhone () {
     PhoneAPI.closePhone()
   },
@@ -106,6 +129,7 @@ const actions = {
     dispatch('setVolume', 1)
     dispatch('setBackground', getters.config.background_default)
     dispatch('setCoque', getters.config.coque_default)
+    dispatch('setLanguage', 'fr_FR')
   }
 }
 
@@ -136,6 +160,9 @@ const mutations = {
   },
   SET_VOLUME (state, volume) {
     state.volume = volume
+  },
+  SET_LANGUAGE (state, lang) {
+    state.lang = lang
   }
 }
 

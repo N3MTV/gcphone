@@ -1,6 +1,6 @@
 <template>
   <div class="contact">
-    <list :list='lcontacts' :disable="disableList" title="Contacts" @select='onSelect' @option='onOption'></list>
+    <list :list='lcontacts' :disable="disableList" :title="IntlString('APP_CONTACT_TITLE')" @select='onSelect' @option='onOption'></list>
   </div>
 </template>
 
@@ -20,9 +20,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['contacts']),
+    ...mapGetters(['IntlString', 'contacts']),
     lcontacts: function () {
-      let addContact = {display: 'Ajouter un contact', letter: '+', num: '', id: -1}
+      let addContact = {display: this.IntlString('APP_CONTACT_NEW'), letter: '+', num: '', id: -1}
       return [addContact, ...this.contacts.map(e => {
         e.backgroundColor = generateColorForStr(e.number)
         return e
@@ -42,7 +42,7 @@ export default {
       this.disableList = true
       Modal.CreateModal({
         choix: [
-          {id: 1, title: 'Modifier le contact', icons: 'fa-circle-o', color: 'orange'},
+          {id: 1, title: this.IntlString('APP_CONTACT_EDIT'), icons: 'fa-circle-o', color: 'orange'},
           {id: 3, title: 'Annuler', icons: 'fa-undo'}
         ]
       }).then(rep => {
