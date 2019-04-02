@@ -58,9 +58,21 @@ export default {
       let contacts = this.contacts
       let messGroup = messages.reduce((rv, x) => {
         if (rv[x['transmitter']] === undefined) {
+          const data = {
+            noRead: 0,
+            lastMessage: 0,
+            display: x.transmitter
+          }
           let contact = contacts.find(e => e.number === x.transmitter)
-          let display = contact !== undefined ? contact.display : x.transmitter
-          rv[x['transmitter']] = {noRead: 0, display, lastMessage: 0}
+          if (contact !== undefined) {
+            data.display = contact.display
+            data.backgroundColor = contact.backgroundColor || generateColorForStr(x.transmitter)
+            data.letter = contact.letter
+            data.icon = contact.icon
+          } else {
+            data.backgroundColor = generateColorForStr(x.transmitter)
+          }
+          rv[x['transmitter']] = data
         }
         if (x.isRead === 0) {
           rv[x['transmitter']].noRead += 1
@@ -79,7 +91,9 @@ export default {
           number: key,
           lastMessage: messGroup[key].lastMessage,
           keyDesc: messGroup[key].keyDesc,
-          backgroundColor: generateColorForStr(key)
+          backgroundColor: messGroup[key].backgroundColor,
+          icon: messGroup[key].icon,
+          letter: messGroup[key].letter
         })
       })
       mess.sort((a, b) => b.lastMessage - a.lastMessage)

@@ -94,6 +94,11 @@
     }
   ],
 
+  "defaultContacts": [
+    { "number": "ambulance" , "display": "AABBUULLAANNCCEE", "icon": "/html/static/img/icons_app/bank.png" },
+    { "number": "police" , "display": "Police", "backgroundColor": "blue", "letter": "J" }
+  ],
+
   "apps": [
     {
       "name": "Téléphone",

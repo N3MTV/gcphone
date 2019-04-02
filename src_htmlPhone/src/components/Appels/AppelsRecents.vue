@@ -3,7 +3,7 @@
     <div class="elements">
         <div class="element" :class="{'active': selectIndex === key}" v-for='(histo, key) in historique' :key="key"
           >
-            <div class="elem-pic" :style="{backgroundColor: histo.color}">{{histo.letter}}</div>
+            <div class="elem-pic" :style="stylePuce(histo)">{{histo.letter}}</div>
             <div class="elem-content">
               <div class="elem-content-p">{{histo.display}}</div>
               <div class="elem-content-s">
@@ -53,9 +53,9 @@ export default {
   },
   methods: {
     ...mapActions(['startCall', 'appelsDeleteHistorique', 'appelsDeleteAllHistorique']),
-    getUser (num) {
+    getContact (num) {
       const find = this.contacts.find(e => e.number === num)
-      return find === undefined ? undefined : find.display
+      return find
     },
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
@@ -97,6 +97,21 @@ export default {
         case 2 :
           this.appelsDeleteAllHistorique()
       }
+    },
+    stylePuce (data) {
+      data = data || {}
+      if (data.icon !== undefined) {
+        return {
+          backgroundImage: `url(${data.icon})`,
+          backgroundSize: 'cover',
+          color: 'rgba(0,0,0,0)'
+        }
+      }
+      return {
+        color: data.color || this.color,
+        backgroundColor: data.backgroundColor || this.backgroundColor,
+        borderRadius: '50%'
+      }
     }
   },
   computed: {
@@ -112,13 +127,14 @@ export default {
         }).sort((a, b) => {
           return b.date - a.date
         }).slice(0, 6)
-        const display = this.getUser(key)
+        const contact = this.getContact(key) || { letter: '#' }
         hist.push({
           num: key,
-          display: display || key,
+          display: contact.display || key,
           lastCall: histoByDate,
-          letter: display === undefined ? '#' : display[0],
-          color: generateColorForStr(key)
+          letter: contact.letter || contact.display[0],
+          backgroundColor: contact.backgroundColor || generateColorForStr(key),
+          icon: contact.icon
         })
       }
       hist.sort((a, b) => {

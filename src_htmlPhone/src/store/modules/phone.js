@@ -101,6 +101,9 @@ const actions = {
       }
     }
     Vue.prototype.$timeago.setCurrentLocale(state.lang)
+    if (config.defaultContacts !== undefined) {
+      commit('SET_DEFAULT_CONTACTS', config.defaultContacts)
+    }
     commit('SET_CONFIG', config)
   },
   setEnableApp ({ commit, state }, { appName, enable = true }) {

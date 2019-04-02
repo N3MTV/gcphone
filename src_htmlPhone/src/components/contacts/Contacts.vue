@@ -24,7 +24,7 @@ export default {
     lcontacts: function () {
       let addContact = {display: this.IntlString('APP_CONTACT_NEW'), letter: '+', num: '', id: -1}
       return [addContact, ...this.contacts.map(e => {
-        e.backgroundColor = generateColorForStr(e.number)
+        e.backgroundColor = e.backgroundColor || generateColorForStr(e.number)
         return e
       })]
     }
@@ -38,7 +38,7 @@ export default {
       }
     },
     onOption: function (contact) {
-      if (contact.id === -1) return
+      if (contact.id === -1 || contact.id === undefined) return
       this.disableList = true
       Modal.CreateModal({
         choix: [

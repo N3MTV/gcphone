@@ -1,11 +1,12 @@
 import PhoneAPI from './../../PhoneAPI'
 
 const state = {
-  contacts: []
+  contacts: [],
+  defaultContacts: []
 }
 
 const getters = {
-  contacts: ({ contacts }) => contacts
+  contacts: ({ contacts, defaultContacts }) => [...contacts, ...defaultContacts]
 }
 
 const actions = {
@@ -26,6 +27,9 @@ const actions = {
 const mutations = {
   SET_CONTACTS (state, contacts) {
     state.contacts = contacts.sort((a, b) => a.display.localeCompare(b.display))
+  },
+  SET_DEFAULT_CONTACTS (state, contacts) {
+    state.defaultContacts = contacts
   }
 }
 
@@ -44,69 +48,6 @@ if (process.env.NODE_ENV !== 'production') {
     display: 'John doe'
   },
   {
-    id: 4,
-    number: '336-4553',
-    display: 'Nop user'
-  },
-  {
-    id: 2,
-    number: '336-4557',
-    display: 'John doe'
-  }, {
-    id: 4,
-    number: '336-4553',
-    display: 'Nop user'
-  },
-  {
-    id: 2,
-    number: '336-4557',
-    display: 'John doe'
-  }, {
-    id: 4,
-    number: '336-4553',
-    display: 'Nop user'
-  },
-  {
-    id: 2,
-    number: '336-4557',
-    display: 'John doe'
-  }, {
-    id: 4,
-    number: '336-4553',
-    display: 'Nop user'
-  },
-  {
-    id: 2,
-    number: '336-4557',
-    display: 'John doe'
-  }, {
-    id: 4,
-    number: '336-4553',
-    display: 'Nop user'
-  },
-  {
-    id: 2,
-    number: '336-4557',
-    display: 'John doe'
-  }, {
-    id: 4,
-    number: '336-4553',
-    display: 'Nop user'
-  },
-  {
-    id: 2,
-    number: '336-4557',
-    display: 'John doe'
-  }, {
-    id: 4,
-    number: '336-4553',
-    display: 'Nop user'
-  },
-  {
-    id: 2,
-    number: '336-4557',
-    display: 'John doe'
-  }, {
     id: 4,
     number: '336-4553',
     display: 'Nop user'
