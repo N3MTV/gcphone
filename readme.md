@@ -8,7 +8,6 @@
 ![Image of gcphone4](https://i.imgur.com/rzWdDMy.png)
 ![Image of gcphone5](https://i.imgur.com/9h7eiI8.png)
 
-
 ## Fonctionalitées
   - List des conctacts
   - Envoie de sms
@@ -147,6 +146,12 @@
       ]
     }
   ],
+  
+  "//": "Ajouter des contact par defaut",
+  "defaultContacts": [
+    { "number": "ambulance" , "display": "AABBUULLAANNCCEE", "icon": "/html/static/img/icons_app/bank.png" },
+    { "number": "police" , "display": "Police", "backgroundColor": "blue", "letter": "J" }
+  ],
 
   "//": "Configuration des applications",
   "apps": [
@@ -209,7 +214,20 @@
       "icons": "/html/static/img/icons_app/tchat.png",
       "routeName": "tchat"
     }
-  ]
+  ],
+  
+  "//": "Configuration des langue du telephone",
+  "language": {
+    "fr_FR": {
+      "NAME": "Français",
+      "KEY": "VALUE"
+    },
+    "en_US": {
+      "NAME": "English",
+      "//": "..."
+    },
+    "//": "Autre Langue"
+  }
 }
 
 ```
@@ -235,7 +253,26 @@ FixePhone = {
 ```
 
 
+## A propos de esx_addons_gcphone
+Permet de faire la liason entre le téléphone et les métier esx
+Veuilliez mettre esx_addons_gcphone & gcphone avec les jobs.
+Exemple :
+```yml
+  # ...
 
+  start mysql-async
+  start essentialmode
+  start esplugin_mysql
+  start es_extended
+
+  start esx_addons_gcphone
+  start gcphone
+
+  start esx_mecanojob
+  start esx_job2
+  start esx_job3
+  # ...
+```
 
 ## License
 [GNU v3](https://opensource.org/licenses/gpl-3.0.html)
