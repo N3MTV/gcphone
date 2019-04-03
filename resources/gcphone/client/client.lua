@@ -27,27 +27,42 @@ local soundId = 1485
 
 --====================================================================================
 --  Check si le joueurs poséde un téléphone
---  Return true or false
+--  Callback true or false
 --====================================================================================
 function hasPhone (cb)
-  cb(true) --
-  --[[
-    Exemple avec ESX -- Proposé par HalCroves sur https://forum.fivem.net/t/tutorial-for-gcphone-with-call-and-job-message-other/177904
-    ESX.TriggerServerCallback('gcphone:getItemAmount', function(qtty)
-      cb(qtty > 0)
-    end, 'phone')
-  --]]
+  cb(true)
 end
-
 --====================================================================================
 --  Que faire si le joueurs veut ouvrir sont téléphone n'est qu'il en a pas ?
 --====================================================================================
-function ShowNoPhoneWarning () 
-  --[[
-    Exemple avec ESX -- Proposé par HalCroves sur https://forum.fivem.net/t/tutorial-for-gcphone-with-call-and-job-message-other/177904
-    ESX.ShowNotification("Vous n'avez pas de ~r~téléphone~s~")
-  --]]
+function ShowNoPhoneWarning ()
 end
+
+--[[
+  Ouverture du téphone lié a un item
+  Un solution ESC basé sur la solution donnée par HalCroves
+  https://forum.fivem.net/t/tutorial-for-gcphone-with-call-and-job-message-other/177904
+--]]
+--[[
+ESX = nil
+Citizen.CreateThread(function()
+	while ESX == nil do
+		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		Citizen.Wait(0)
+  end
+end)
+
+function hasPhone (cb)
+  if (ESX == nil) then return cb(0) end
+  ESX.TriggerServerCallback('gcphone:getItemAmount', function(qtty)
+    cb(qtty > 0)
+  end, 'phone')
+end
+function ShowNoPhoneWarning () 
+  if (ESX == nil) then return end
+  ESX.ShowNotification("Vous n'avez pas de ~r~téléphone~s~")
+end
+--]]
 
 
 --====================================================================================
