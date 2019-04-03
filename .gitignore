@@ -60,3 +60,5 @@ typings/
 resources/gcphone/html
 **/node_modules/
 **/package-lock.json
+
+gcphone.zip
