@@ -256,7 +256,7 @@ FixePhone = {
 ## A propos de esx_addons_gcphone
 Permet de faire la liaison entre le téléphone et les métiers esx.
 
-Veuillez mettre esx_addons_gcphone & gcphone avec les jobs.
+Veuillez mettre esx_addons_gcphone & gcphone avant les jobs.
 Exemple :
 ```yml
   # ...
