@@ -8,9 +8,9 @@
 ![Image of gcphone4](https://i.imgur.com/rzWdDMy.png)
 ![Image of gcphone5](https://i.imgur.com/9h7eiI8.png)
 
-## Fonctionalitées
-  - List des conctacts
-  - Envoie de sms
+## Fonctionnalités 
+  - Liste des contacts
+  - Envoi de sms
   - Appel vocal
   - Appel anonyme
   - Application Banque
@@ -26,13 +26,13 @@
 ### Modifier le fichier /html/static/config/config.json
 ```json
 {
-  "//": "Nom du reseau situé dans bare du téléphone",
+  "//": "Nom du reseau situé dans la barre du téléphone",
   "reseau": "Gannon",
   
   "//": "Couleur de base du téléphone",
   "themeColor": "#303f9f",
 
-  "//": "List des couleurs pour les conctacts",
+  "//": "Liste des couleurs pour les conctacts",
   "colors": [
     "#EF5350",
     "#EC407A",
@@ -70,20 +70,20 @@
   },
 
 
-  "//": "List des fonds d'ecran disponible, location => /html/static/img/background",
+  "//": "Liste des fonds d'ecran disponibles, location => /html/static/img/background",
   "background" : {
     "Calvin & Hobbes": "back001.jpg",
     "Destiny": "back002.jpg",
     "Stormtrooper": "back003.jpg",
     "Custom URL": "URL"
   },
-  "//": "Fonds d'ecran par default",
+  "//": "Fond d'ecran par default",
   "background_default": {
     "label": "Calvin & Hobbes",
     "value": "back001.jpg"
   },
 
-  "//": "List des coque disponible, location => /html/static/img/coque",
+  "//": "Liste des coque disponible, location => /html/static/img/coque",
   "coque": {
     "Sansumg S8": "s8.png",
     "Iphone X": "iphonex.png",
@@ -109,7 +109,7 @@
       "//": "Optionnel: Image de la puce",
       "icon": "/html/static/img/icons_app/bank.png",
 
-      "//": "List des actions disponible",
+      "//": "Liste des actions disponible",
       "subMenu": [
         {
           "//": "Titre de l'action",
@@ -216,7 +216,7 @@
     }
   ],
   
-  "//": "Configuration des langue du telephone",
+  "//": "Configuration des langues du telephone",
   "language": {
     "fr_FR": {
       "NAME": "Français",
@@ -231,17 +231,17 @@
 }
 
 ```
-*N'oublier pas de rajoute les nouveaux fichier dans le __ressource.lua*
+*N'oubliez pas de rajouter les nouveaux fichiers dans le __ressource.lua*
 
 
 * Vous pouvez modifier les sons dans \html\static\sound
-* Les coques doivent etre de 1000x500 px, La zone ecran est center de taille 800*400
-* Les application Banque & Bourse sont à configuré selon vos script
+* Les coques doivent être au format 1000x500 px, La zone ecran est centrée de taille 800*400
+* Les applications Banque & Bourse sont à configurer selon vos scripts
 
-### Les poste fixe sont configurable dans gcphone/config.lua
+### Les postes fixes sont configurables dans gcphone/config.lua
 ```LUA
 --[[
-  Faite attention à ne pas utilisé un numéro qui entre en conflic avec un joueur
+  Faites attention à ne pas utiliser un numéro qui entre en conflit avec un joueur
 --]]
 FixePhone = {
   -- Poste de police
@@ -254,9 +254,9 @@ FixePhone = {
 
 
 ## A propos de esx_addons_gcphone
-Permet de faire la liason entre le téléphone et les métier esx.
+Permet de faire la liaison entre le téléphone et les métiers esx.
 
-Veuilliez mettre esx_addons_gcphone & gcphone avec les jobs.
+Veuillez mettre esx_addons_gcphone & gcphone avec les jobs.
 Exemple :
 ```yml
   # ...
