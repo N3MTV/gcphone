@@ -19,6 +19,9 @@ import TchatSplashScreen from '@/components/Tchat/TchatSplashScreen'
 import TchatChannel from '@/components/Tchat/TchatChannel'
 import TchatMessage from '@/components/Tchat/TchatMessage'
 
+import TwitterSpashScreen from '@/components/twitter/TwitterSpashScreen'
+import TwitterScreen from '@/components/twitter/TwitterScreen'
+
 import Parametre from '@/components/parametre/Parametre'
 import Bank from '@/components/Bank/Bank'
 import Bourse from '@/components/Bourse/Bourse'
@@ -104,6 +107,14 @@ export default new Router({
       path: '/tchat/:channel',
       name: 'tchat.channel.show',
       component: TchatMessage
+    }, {
+      path: '/twitter/splash',
+      name: 'twitter.splash',
+      component: TwitterSpashScreen
+    }, {
+      path: '/twitter/view',
+      name: 'twitter.screen',
+      component: TwitterScreen
     }, {
       path: '/9gag',
       name: '9gag',

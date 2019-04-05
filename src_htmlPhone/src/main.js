@@ -4,8 +4,10 @@ import router from './router'
 import store from './store'
 import VueTimeago from './TimeAgo'
 import PhoneAPI from './PhoneAPI'
+import Notification from './Notification'
 
 Vue.use(VueTimeago)
+Vue.use(Notification)
 Vue.config.productionTip = false
 
 Vue.prototype.$bus = new Vue()

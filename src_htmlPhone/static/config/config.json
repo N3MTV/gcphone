@@ -101,6 +101,14 @@
 
   "apps": [
     {
+      "name": "Twitter",
+      "fr_FR__name": "Twitter",
+      "en_US__name": "Twitter",
+      "icons": "/html/static/img/icons_app/twitter.png",
+      "routeName": "twitter.splash",
+      "inHomePage": true
+    },
+    {
       "name": "Téléphone",
       "fr_FR__name": "Téléphone",
       "en_US__name": "Phone",
@@ -223,6 +231,10 @@
       "APP_DARKTCHAT_DELETE_CHANNEL": "Effacer le channel",
       "APP_DARKTCHAT_CANCEL": "Annuler",
       "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Entrer un message",
+
+      "APP_TWITER_ACCOUNT_USERNAME": "Nom utilisateur",
+      "APP_TWITER_ACCOUNT_PASSWORD": "Mot de passe",
+      "APP_TWITER_ACCOUNT_AVATAR": "Changer d'avatar",
 
       "TIMEAGO": [
         "à l'instant",

@@ -221,6 +221,41 @@ class PhoneAPI {
     this.acceptCall(data.infoCall)
   }
 
+  // === Twitter
+  twitter_postTweet (username, password, message) {
+    this.post('twitter_postTweet', { username, password, message })
+  }
+  twitter_postTweetImg (username, password, img) {
+    this.post('twitter_postTweetImg', { username, password, img })
+  }
+  twitter_toggleLikeTweet (username, password, tweetId) {
+    this.post('twitter_toggleLikeTweet', { username, password, tweetId })
+  }
+  twitter_setAvatar (username, password, avatarUrl) {
+    this.post('twitter_setAvatarUrl', { username, password, avatarUrl })
+  }
+  twitter_getTweets () {
+    this.post('twitter_getTweets')
+  }
+  getFavoriteTweets () {
+    this.post('twitter_getFavoriteTweets')
+  }
+  ontwitter_tweets (data) {
+    store.commit('SET_TWEETS', data)
+  }
+  ontwitter_favoritetweets (data) {
+    store.commit('SET_FAVORITE_TWEETS', data)
+  }
+  ontwitter_newTweet (data) {
+    store.dispatch('addTweet', data.tweet)
+  }
+  ontwitter_setAvatarUrl (data) {
+    store.dispatch('setInfoAccount', data)
+  }
+  ontwitter_updateTweetLikes (data) {
+    store.commit('UPDATE_TWEET_LIKE', data)
+  }
+
 }
 
 const instance = new PhoneAPI()
