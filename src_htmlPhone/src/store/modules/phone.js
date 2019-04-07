@@ -83,8 +83,8 @@ const getters = {
     if (config.language[lang] === undefined) {
       return (LABEL) => LABEL
     }
-    return (LABEL) => {
-      return config.language[lang][LABEL] || LABEL
+    return (LABEL, defaultValue) => {
+      return config.language[lang][LABEL] || defaultValue || LABEL
     }
   }
 

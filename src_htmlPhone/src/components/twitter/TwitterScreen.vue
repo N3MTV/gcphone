@@ -83,6 +83,7 @@ export default {
 
 <style scoped>
 .twitter_menu {
+  border-top: 1px solid #888;
   height: 56px;
   display: flex;
   width: 100%;

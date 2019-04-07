@@ -1,5 +1,8 @@
 <template>
   <div class="phone_content">
+    <div class="img-fullscreen" v-if="imgZoom !== undefined" >
+      <img :src="imgZoom" />
+    </div>
     <div class="tweets-wrapper" ref="elementsDiv">
         <div class="tweet" v-for='(tweet, key) in tweets' 
           v-bind:key="tweet.id"
@@ -14,8 +17,8 @@
               <div class="tweet-head-time">{{formatTime(tweet.time)}}</div>
             </div>
             <div class="tweet-message">
-              {{tweet.message}}
-              <img v-if="tweet.attachement_img" :src="tweet.attachement_img" class="tweet-attachement-img">
+              <template v-if="!isImage(tweet.message)">{{ tweet.message }}</template>
+              <img v-else :src="tweet.message" class="tweet-attachement-img">
             </div>
             <div class="tweet-like">
 
@@ -27,13 +30,14 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
               </div>
 
-              <div class="item" style="color: red;">
-                <template v-if="tweet.likes">              
+              <div class="item">
+                <template v-if="tweet.isLikes">              
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path style="fill:red" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                   <span style="color:red;">{{ tweet.likes }}</span>
                 </template>
                 <template v-else>
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/></svg>
+                  <span>{{ tweet.likes }}</span>
                 </template>
               </div>
               
@@ -50,25 +54,75 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import PhoneTitle from './../PhoneTitle'
+import Modal from '@/components/Modal/index.js'
 
 export default {
-  components: { PhoneTitle },
+  components: {},
   data () {
     return {
-      selectMessage: -1
+      selectMessage: -1,
+      ignoreControls: false,
+      imgZoom: undefined
     }
   },
   computed: {
-    ...mapGetters(['tweets'])
+    ...mapGetters(['tweets', 'IntlString'])
   },
   watch: {
   },
   methods: {
-    ...mapActions(['twitterLogin', 'twitterPostTweet', 'twitterToogleLike']),
+    ...mapActions(['twitterLogin', 'twitterPostTweet', 'twitterToogleLike', 'fetchTweets']),
     async showOption () {
+      this.ignoreControls = true
       const tweet = this.tweets[this.selectMessage]
-      this.twitterToogleLike({ tweetId: tweet.id })
+      let optionsChoix = [{
+        id: 1,
+        title: 'Like / Unlike',
+        icons: 'fa-heart'
+      }, {
+        id: 2,
+        title: 'Répondre',
+        icons: 'fa-reply'
+      }, {
+        id: -1,
+        title: this.IntlString('CANCEL'),
+        icons: 'fa-undo'
+      }]
+      if (this.isImage(tweet.message)) {
+        optionsChoix = [{
+          id: 3,
+          title: this.IntlString('APP_MESSAGE_ZOOM_IMG'),
+          icons: 'fa-search'
+        }, ...optionsChoix]
+      }
+      const choix = await Modal.CreateModal({ choix: optionsChoix })
+      this.ignoreControls = false
+      switch (choix.id) {
+        case 1:
+          this.twitterToogleLike({ tweetId: tweet.id })
+          break
+        case 2:
+          this.reply(tweet)
+          break
+        case 3:
+          this.imgZoom = tweet.message
+          break
+      }
+    },
+    isImage (mess) {
+      return /^https?:\/\/.*\.(png|jpg|jpeg|gif)/.test(mess)
+    },
+    async reply (tweet) {
+      const authorName = tweet.author
+      const rep = await this.$phoneAPI.getReponseText({
+        text: `@${authorName} `
+      })
+      if (rep !== undefined && rep.text !== undefined) {
+        const message = rep.text.trim()
+        if (message.length !== 0) {
+          this.twitterPostTweet({ message })
+        }
+      }
     },
     resetScroll () {
       this.$nextTick(() => {
@@ -104,6 +158,7 @@ export default {
       this.scrollIntoViewIfNeeded()
     },
     async onEnter () {
+      if (this.ignoreControls === true) return
       if (this.selectMessage === -1) {
         this.newTweet()
       } else {
@@ -111,6 +166,11 @@ export default {
       }
     },
     onBack () {
+      if (this.imgZoom !== undefined) {
+        this.imgZoom = undefined
+        return
+      }
+      if (this.ignoreControls === true) return
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
       } else {
@@ -129,6 +189,7 @@ export default {
     this.$bus.$on('keyUpBackspace', this.onBack)
   },
   mounted () {
+    this.fetchTweets()
   },
   beforeDestroy: function () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
@@ -140,6 +201,23 @@ export default {
 </script>
 
 <style scoped>
+.img-fullscreen {
+  position: fixed;
+  z-index: 999999;
+  background-color: rgba(20, 20, 20, 0.8);
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.img-fullscreen img {
+  display: flex;
+  max-width: 90vw;
+  max-height: 95vh;
+}
 .tweets-wrapper{
   height: 100%;
   background-color: #c0deed;
@@ -199,6 +277,7 @@ export default {
   font-size: 14px;
   color: 000;
   min-height: 36px;
+  word-break: break-word;
 }
 
 .tweet-attachement-img {

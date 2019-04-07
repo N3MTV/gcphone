@@ -50,9 +50,7 @@ export default {
       if (rep !== undefined && rep.text !== undefined) {
         const message = rep.text.trim()
         if (message.length !== 0) {
-          this.twitterPostTweet({
-            message
-          })
+          this.twitterPostTweet({ message })
         }
       }
     }
@@ -63,7 +61,6 @@ export default {
     this.$bus.$on('keyUpEnter', this.onEnter)
   },
   async mounted () {
-    this.tweets = await this.$phoneAPI.getFavoriteTweets()
   },
   beforeDestroy: function () {
     this.$bus.$off('keyUpArrowDown', this.onDown)

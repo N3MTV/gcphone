@@ -18,6 +18,9 @@ const getters = {
 }
 
 const actions = {
+  twitterCreateNewAccount (_, {username, password, avatarUrl}) {
+    PhoneAPI.twitter_createAccount(username, password, avatarUrl)
+  },
   twitterLogin ({ commit }, { username, password }) {
     localStorage['gcphone_twitter_username'] = username
     localStorage['gcphone_twitter_password'] = password
@@ -36,19 +39,31 @@ const actions = {
   twitterToogleLike ({ state }, { tweetId }) {
     PhoneAPI.twitter_toggleLikeTweet(state.twitterUsername, state.twitterPassword, tweetId)
   },
-  setInfoAccount ({ commit }, data) {
-    localStorage['gcphone_twitter_avatarUrl'] = data.avatarUrl
-    commit('UPDATE_ACCOUNT_INFO', data)
+  setInfoAccount ({ commit, dispatch }, data) {
+    if (data.avatarUrl) {
+      localStorage['gcphone_twitter_avatarUrl'] = data.avatarUrl
+      commit('UPDATE_ACCOUNT_INFO', data)
+    }
+    if (data.username) {
+      dispatch('twitterLogin', data)
+    }
   },
   addTweet ({ commit, state }, tweet) {
-    if (tweet.message && tweet.message.indexOf('@' + state.twitterUsername) !== -1) {
+    if (tweet.message && tweet.message.toLowerCase().indexOf(state.twitterUsername.toLowerCase()) !== -1) {
       Vue.notify({
         message: tweet.message,
         title: tweet.author + ' :',
-        icon: 'twitter'
+        icon: 'twitter',
+        sound: 'Twitter_Sound_Effect.ogg'
       })
     }
     commit('ADD_TWEET', { tweet })
+  },
+  fetchTweets ({ state }) {
+    PhoneAPI.twitter_getTweets(state.twitterUsername, state.twitterPassword)
+  },
+  fetchFavoriteTweets ({ state }) {
+    PhoneAPI.twitter_getFavoriteTweets(state.twitterUsername, state.twitterPassword)
   }
 }
 
@@ -76,6 +91,16 @@ const mutations = {
       state.favoriteTweets[tweetIndexFav].likes = likes
     }
   },
+  UPDATE_TWEET_ISLIKE (state, { tweetId, isLikes }) {
+    const tweetIndex = state.tweets.findIndex(t => t.id === tweetId)
+    if (tweetIndex !== -1) {
+      Vue.set(state.tweets[tweetIndex], 'isLikes', isLikes)
+    }
+    const tweetIndexFav = state.favoriteTweets.findIndex(t => t.id === tweetId)
+    if (tweetIndexFav !== -1) {
+      Vue.set(state.favoriteTweets[tweetIndexFav], 'isLikes', isLikes)
+    }
+  },
   UPDATE_ACCOUNT_INFO (state, { avatarUrl }) {
     state.twitterAvatarUrl = avatarUrl
   }
@@ -91,10 +116,11 @@ export default {
 if (process.env.NODE_ENV !== 'production') {
   state.tweets = [{
     id: 1,
-    message: 'Super Message de la mort',
+    message: 'https://pbs.twimg.com/profile_images/702982240184107008/tUKxvkcs_400x400.jpg',
     author: 'Gannon',
     time: new Date(),
-    likes: 3
+    likes: 3,
+    isLikes: 60
   }, {
     id: 2,
     message: 'Borderlands 3 arrives on Xbox One, PS4, and PC on September 13, 2019! Tune in to the Gameplay Reveal Event on May 1st, where we’ll debut the first hands-on looks! Pre-order now to get the Gold Weapon Skins Pack! ➜ https://borderlands.com  ',

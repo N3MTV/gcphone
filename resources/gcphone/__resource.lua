@@ -31,10 +31,15 @@ files {
 	'html/static/img/icons_app/photo.png',
 	'html/static/img/icons_app/bank.png',
 	'html/static/img/icons_app/9gag.png',
+	'html/static/img/icons_app/twitter.png',
 	
 	'html/static/img/app_bank/logo_mazebank.jpg',
 
 	'html/static/img/app_tchat/splashtchat.png',
+
+	'html/static/img/twitter/bird.png',
+	'html/static/img/twitter/default_profile.png',
+	'html/static/sound/Twitter_Sound_Effect.ogg',
 
 	'html/static/img/courbure.png',
 	'html/static/fonts/fontawesome-webfont.ttf',
@@ -53,6 +58,7 @@ client_script {
 	"client/photo.lua",
 	"client/app_tchat.lua",
 	"client/bank.lua",
+	"client/twitter.lua"
 }
 
 server_script {
@@ -61,4 +67,6 @@ server_script {
 	"server/server.lua",
 
 	"server/app_tchat.lua",
+	"server/twitter.lua",
+	-- "server/discord.js"
 }

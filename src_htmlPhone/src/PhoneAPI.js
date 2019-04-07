@@ -1,5 +1,6 @@
 import store from '@/store'
 import VoiceRTC from './VoiceRCT'
+import Vue from 'vue'
 
 let USE_VOICE_RTC = false
 const BASE_URL = 'http://gcphone/'
@@ -222,6 +223,9 @@ class PhoneAPI {
   }
 
   // === Twitter
+  twitter_createAccount (username, password, avatarUrl) {
+    this.post('twitter_createAccount', {username, password, avatarUrl})
+  }
   twitter_postTweet (username, password, message) {
     this.post('twitter_postTweet', { username, password, message })
   }
@@ -234,11 +238,11 @@ class PhoneAPI {
   twitter_setAvatar (username, password, avatarUrl) {
     this.post('twitter_setAvatarUrl', { username, password, avatarUrl })
   }
-  twitter_getTweets () {
-    this.post('twitter_getTweets')
+  twitter_getTweets (username, password) {
+    this.post('twitter_getTweets', { username, password })
   }
-  getFavoriteTweets () {
-    this.post('twitter_getFavoriteTweets')
+  twitter_getFavoriteTweets (username, password) {
+    this.post('twitter_getFavoriteTweets', { username, password })
   }
   ontwitter_tweets (data) {
     store.commit('SET_TWEETS', data)
@@ -254,6 +258,40 @@ class PhoneAPI {
   }
   ontwitter_updateTweetLikes (data) {
     store.commit('UPDATE_TWEET_LIKE', data)
+  }
+  ontwitter_setTweetLikes (data) {
+    store.commit('UPDATE_TWEET_ISLIKE', data)
+  }
+  ontwitter_createAccount (data) {
+    const account = data.account
+    if (account) {
+      Vue.notify({
+        message: store.getters.IntlString('APP_TWITTER_NOTIF_ACCOUNT_CREATE_SUCCESS'),
+        icon: 'twitter'
+      })
+      store.dispatch('setInfoAccount', account)
+    } else {
+      Vue.notify({
+        message: store.getters.IntlString('APP_TWITTER_NOTIF_ACCOUNT_CREATE_ERROR'),
+        icon: 'twitter',
+        backgroundColor: '#e0245e80'
+      })
+    }
+  }
+  ontwitter_showError (data) {
+    Vue.notify({
+      title: store.getters.IntlString(data.title, ''),
+      message: store.getters.IntlString(data.message),
+      icon: 'twitter',
+      backgroundColor: '#e0245e80'
+    })
+  }
+  ontwitter_showSuccess (data) {
+    Vue.notify({
+      title: store.getters.IntlString(data.title, ''),
+      message: store.getters.IntlString(data.message),
+      icon: 'twitter'
+    })
   }
 
 }

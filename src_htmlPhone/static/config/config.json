@@ -232,9 +232,20 @@
       "APP_DARKTCHAT_CANCEL": "Annuler",
       "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Entrer un message",
 
-      "APP_TWITER_ACCOUNT_USERNAME": "Nom utilisateur",
-      "APP_TWITER_ACCOUNT_PASSWORD": "Mot de passe",
-      "APP_TWITER_ACCOUNT_AVATAR": "Changer d'avatar",
+      "APP_TWITTER_ACCOUNT_USERNAME": "Nom utilisateur (>= 4)",
+      "APP_TWITTER_ACCOUNT_PASSWORD": "Mot de passe (>= 6)",
+      "APP_TWITTER_ACCOUNT_PASSWORD_CONFIRM": "Confirmer mot de passe",
+      "APP_TWITTER_ACCOUNT_AVATAR": "Changer l'avatar",
+      "APP_TWITTER_ACCOUNT_LOGIN": "Se connecter",
+      "APP_TWITTER_ACCOUNT_NEW": "Nouveau compte",
+      "APP_TWIITER_ACCOUNT_SAVE": "Enregistrer",
+      "APP_TWIITER_ACCOUNT_CREATE": "Créer le compte",
+      "APP_TWIITER_ACCOUNT_CANCEL": "Annuler",
+      "APP_TWITTER_NOTIFICATION": "Notification",
+
+      "APP_TWITTER_NOTIF_LOGIN_ERROR": "Compte / Mots de passe non valide",
+      "APP_TWITTER_NOTIF_ACCOUNT_CREATE_SUCCESS": "Votre compte Twitter à été crée",
+      "APP_TWITTER_NOTIF_ACCOUNT_CREATE_ERROR": "Votre compte Twitter n'à pas pu été crée (Pseudo déjà utilisé ?)",
 
       "TIMEAGO": [
         "à l'instant",

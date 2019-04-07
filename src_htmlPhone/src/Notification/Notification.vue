@@ -28,7 +28,7 @@ export default {
     events.$on('add', this.addItem)
   },
   methods: {
-    addItem (event = {}) {
+    async addItem (event = {}) {
       const dataNotif = {
         ...event,
         id: this.currentId ++,
@@ -38,6 +38,13 @@ export default {
       window.setTimeout(() => {
         this.destroy(dataNotif.id)
       }, dataNotif.duration)
+      if (event.sound !== null) {
+        const audio = new Audio('/html/static/sound/' + event.sound)
+        audio.addEventListener('ended', () => {
+          audio.src = null
+        })
+        audio.play()
+      }
     },
     style (notif) {
       return {
