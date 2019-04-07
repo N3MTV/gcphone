@@ -33,7 +33,7 @@ const actions = {
     if (/^https?:\/\/.*\.(png|jpg|jpeg|gif)$/.test(message)) {
       PhoneAPI.twitter_postTweetImg(state.twitterUsername, state.twitterPassword, message)
     } else {
-      PhoneAPI.twitter_postTweet(state.twitterUsername, state.twitterPassword, message)
+      PhoneAPI.twitter_postTweet(state.twitterUsername, state.twitterPassword, PhoneAPI.convertEmoji(message))
     }
   },
   twitterToogleLike ({ state }, { tweetId }) {

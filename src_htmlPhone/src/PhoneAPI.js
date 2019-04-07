@@ -1,6 +1,8 @@
 import store from '@/store'
 import VoiceRTC from './VoiceRCT'
 import Vue from 'vue'
+import emoji from './emoji.json'
+const keyEmoji = Object.keys(emoji)
 
 let USE_VOICE_RTC = false
 const BASE_URL = 'http://gcphone/'
@@ -32,6 +34,13 @@ class PhoneAPI {
     } else {
       return console.log(...data)
     }
+  }
+
+  convertEmoji (text) {
+    for (const e of keyEmoji) {
+      text = text.replace(new RegExp(`:${e}:`, 'g'), emoji[e])
+    }
+    return text
   }
 
   // === Gestion des messages
