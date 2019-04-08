@@ -11,12 +11,8 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-
--- Listage de la structure de la base pour essentialmode
-CREATE DATABASE IF NOT EXISTS `essentialmode` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
 USE `essentialmode`;
 
--- Listage de la structure de la table essentialmode. twitter_accounts
 CREATE TABLE IF NOT EXISTS `twitter_accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT '0',
@@ -26,21 +22,6 @@ CREATE TABLE IF NOT EXISTS `twitter_accounts` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
--- Les données exportées n'étaient pas sélectionnées.
--- Listage de la structure de la table essentialmode. twitter_likes
-CREATE TABLE IF NOT EXISTS `twitter_likes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `authorId` int(11) DEFAULT NULL,
-  `tweetId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_twitter_likes_twitter_accounts` (`authorId`),
-  KEY `FK_twitter_likes_twitter_tweets` (`tweetId`),
-  CONSTRAINT `FK_twitter_likes_twitter_accounts` FOREIGN KEY (`authorId`) REFERENCES `twitter_accounts` (`id`),
-  CONSTRAINT `FK_twitter_likes_twitter_tweets` FOREIGN KEY (`tweetId`) REFERENCES `twitter_tweets` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=137 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-
--- Les données exportées n'étaient pas sélectionnées.
--- Listage de la structure de la table essentialmode. twitter_tweets
 CREATE TABLE IF NOT EXISTS `twitter_tweets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `authorId` int(11) NOT NULL,
@@ -53,7 +34,17 @@ CREATE TABLE IF NOT EXISTS `twitter_tweets` (
   CONSTRAINT `FK_twitter_tweets_twitter_accounts` FOREIGN KEY (`authorId`) REFERENCES `twitter_accounts` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=170 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Les données exportées n'étaient pas sélectionnées.
+CREATE TABLE IF NOT EXISTS `twitter_likes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `authorId` int(11) DEFAULT NULL,
+  `tweetId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_twitter_likes_twitter_accounts` (`authorId`),
+  KEY `FK_twitter_likes_twitter_tweets` (`tweetId`),
+  CONSTRAINT `FK_twitter_likes_twitter_accounts` FOREIGN KEY (`authorId`) REFERENCES `twitter_accounts` (`id`),
+  CONSTRAINT `FK_twitter_likes_twitter_tweets` FOREIGN KEY (`tweetId`) REFERENCES `twitter_tweets` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=137 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
