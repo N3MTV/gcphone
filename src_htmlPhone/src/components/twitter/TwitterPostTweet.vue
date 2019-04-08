@@ -25,24 +25,6 @@ export default {
   },
   methods: {
     ...mapActions(['twitterPostTweet']),
-    onUp: function () {
-      if (this.ignoreControls === true) return
-      if (this.selectMessage === -1) {
-        this.selectMessage = 0
-      } else {
-        this.selectMessage = this.selectMessage === 0 ? 0 : this.selectMessage - 1
-      }
-      this.scrollIntoViewIfNeeded()
-    },
-    onDown () {
-      if (this.ignoreControls === true) return
-      if (this.selectMessage === -1) {
-        this.selectMessage = 0
-      } else {
-        this.selectMessage = this.selectMessage === this.tweets.length - 1 ? this.selectMessage : this.selectMessage + 1
-      }
-      this.scrollIntoViewIfNeeded()
-    },
     async onEnter () {
       const rep = await this.$phoneAPI.getReponseText({
         // text: 'https://i.imgur.com/axLm3p6.png'
@@ -51,20 +33,22 @@ export default {
         const message = rep.text.trim()
         if (message.length !== 0) {
           this.twitterPostTweet({ message })
+          this.$bus.$emit('twitterHomme')
         }
       }
+    },
+    onBack () {
+      this.$bus.$emit('twitterHomme')
     }
   },
   created: function () {
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
+    this.$bus.$on('keyUpBackspace', this.onBack)
     this.$bus.$on('keyUpEnter', this.onEnter)
   },
   async mounted () {
   },
   beforeDestroy: function () {
-    this.$bus.$off('keyUpArrowDown', this.onDown)
-    this.$bus.$off('keyUpArrowUp', this.onUp)
+    this.$bus.$off('keyUpBackspace', this.onBack)
     this.$bus.$off('keyUpEnter', this.onEnter)
   }
 }

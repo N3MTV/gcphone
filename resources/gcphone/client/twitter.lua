@@ -11,7 +11,6 @@ RegisterNetEvent("gcPhone:twitter_getFavoriteTweets")
 AddEventHandler("gcPhone:twitter_getFavoriteTweets", function(tweets)
   SendNUIMessage({event = 'twitter_favoritetweets', tweets = tweets})
   print(tweets[1].message)
-  print(tweets[1].isLikes)
 end)
 
 RegisterNetEvent("gcPhone:twitter_newTweets")

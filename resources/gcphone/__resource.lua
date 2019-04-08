@@ -67,6 +67,5 @@ server_script {
 	"server/server.lua",
 
 	"server/app_tchat.lua",
-	"server/twitter.lua",
-	-- "server/discord.js"
+	"server/twitter.lua"
 }

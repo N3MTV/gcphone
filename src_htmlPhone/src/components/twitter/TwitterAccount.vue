@@ -5,9 +5,9 @@
         <input type='button' class="btn btn-blue" :value="IntlString('APP_TWITTER_ACCOUNT_LOGIN')" />
       </div>
 
-      <div class="group" style="margin-top:40px;" data-type="button" @click="state = STATES.NOTIFICATION">      
+      <!-- <div class="group" style="margin-top:40px;" data-type="button" @click="state = STATES.NOTIFICATION">      
         <input type='button' class="btn btn-blue" :value="IntlString('Notification')" />
-      </div>
+      </div> -->
 
       <div class="group" style="margin-top:220px;" data-type="button" @click="state = STATES.NEW_ACCOUNT">      
         <input type='button' class="btn btn-blue" :value="IntlString('APP_TWITTER_ACCOUNT_NEW')" />
@@ -98,10 +98,10 @@ export default {
       STATES,
       state: STATES.MENU,
       newAccount: {
-        username: 'John Doe',
-        password: '123456',
-        passwordConfirm: '123456',
-        avatarUrl: 'https://i.imgur.com/ncX6mh7.jpg' // null
+        username: '',
+        password: '',
+        passwordConfirm: '',
+        avatarUrl: null
       }
     }
   },
@@ -189,7 +189,8 @@ export default {
     onBack () {
       if (this.state !== this.STATES.MENU) {
         this.state = this.STATES.MENU
-        this.$phoneAPI.debugStore()
+      } else {
+        this.$bus.$emit('twitterHomme')
       }
     },
     onPressChangeAvartar () {

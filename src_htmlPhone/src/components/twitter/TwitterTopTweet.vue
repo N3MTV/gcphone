@@ -177,7 +177,7 @@ export default {
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
       } else {
-        this.$router.push({ name: 'home' })
+        this.$bus.$emit('twitterHomme')
       }
     },
     formatTime (time) {

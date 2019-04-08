@@ -66,17 +66,22 @@ export default {
     },
     onRight () {
       this.currentScreenIndex = Math.min(this.screen.length - 1, this.currentScreenIndex + 1)
+    },
+    home () {
+      this.currentScreenIndex = 0
     }
   },
   created: function () {
     this.$bus.$on('keyUpArrowLeft', this.onLeft)
     this.$bus.$on('keyUpArrowRight', this.onRight)
+    this.$bus.$on('twitterHomme', this.home)
   },
   mounted () {
   },
   beforeDestroy: function () {
     this.$bus.$off('keyUpArrowLeft', this.onLeft)
     this.$bus.$off('keyUpArrowRight', this.onRight)
+    this.$bus.$off('twitterHomme', this.home)
   }
 }
 </script>
