@@ -3,15 +3,15 @@
     <div class='tweet_write'>
         <div class="input">
           <span class="input-blink"></span>
-          <span>Quoi de neuf ?</span>
+          <span>{{ IntlString('APP_TWITTER_PLACEHOLDER_MESSAGE') }}</span>
         </div>
-        <span class='tweet_send'>Tweeter</span>
+        <span class='tweet_send'>{{ IntlString('APP_TWITTER_BUTTON_ACTION_TWEETER') }}</span>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   components: {},
@@ -20,6 +20,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['IntlString'])
   },
   watch: {
   },

@@ -21,6 +21,7 @@ import TwitterView from './TwitterView'
 import TwitterPostTweet from './TwitterPostTweet'
 import TwitterAccount from './TwitterAccount'
 import TwitterTopTweet from './TwitterTopTweet'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -28,32 +29,35 @@ export default {
   },
   data () {
     return {
-      currentScreenIndex: 0,
-      screen: [
+      currentScreenIndex: 0
+    }
+  },
+  computed: {
+    ...mapGetters(['IntlString']),
+    screen () {
+      return [
         {
-          title: 'Twitter',
+          title: this.IntlString('APP_TWITTER_VIEW_TWITTER'),
           component: TwitterView,
           icon: 'fa-home'
         },
         {
-          title: 'Top Tweet',
+          title: this.IntlString('APP_TWITTER_VIEW_TOP_TWEETS'),
           component: TwitterTopTweet,
           icon: 'fa-heart'
         },
         {
-          title: 'Tweeter',
+          title: this.IntlString('APP_TWITTER_VIEW_TWEETER'),
           component: TwitterPostTweet,
           icon: 'fa-comment'
         },
         {
-          title: 'Mon Compte',
+          title: this.IntlString('APP_TWITTER_VIEW_SETTING'),
           component: TwitterAccount,
           icon: 'fa-cog'
         }
       ]
-    }
-  },
-  computed: {
+    },
     currentScreen () {
       return this.screen[this.currentScreenIndex]
     }
@@ -88,7 +92,7 @@ export default {
 
 <style scoped>
 .twitter_menu {
-  border-top: 1px solid #888;
+  border-top: 1px solid #CCC;
   height: 56px;
   display: flex;
   width: 100%;

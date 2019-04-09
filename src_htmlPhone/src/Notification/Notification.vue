@@ -38,7 +38,7 @@ export default {
       window.setTimeout(() => {
         this.destroy(dataNotif.id)
       }, dataNotif.duration)
-      if (event.sound !== null) {
+      if (event.sound !== null && event.sound !== undefined) {
         const audio = new Audio('/html/static/sound/' + event.sound)
         audio.addEventListener('ended', () => {
           audio.src = null

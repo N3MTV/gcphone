@@ -232,6 +232,12 @@ class PhoneAPI {
   }
 
   // === Twitter
+  twitter_login (username, password) {
+    this.post('twitter_login', {username, password})
+  }
+  twitter_changePassword (username, password, newPassword) {
+    this.post('twitter_changePassword', {username, password, newPassword})
+  }
   twitter_createAccount (username, password, avatarUrl) {
     this.post('twitter_createAccount', {username, password, avatarUrl})
   }
@@ -262,30 +268,14 @@ class PhoneAPI {
   ontwitter_newTweet (data) {
     store.dispatch('addTweet', data.tweet)
   }
-  ontwitter_setAvatarUrl (data) {
-    store.dispatch('setInfoAccount', data)
+  ontwitter_setAccount (data) {
+    store.dispatch('setAccount', data)
   }
   ontwitter_updateTweetLikes (data) {
     store.commit('UPDATE_TWEET_LIKE', data)
   }
   ontwitter_setTweetLikes (data) {
     store.commit('UPDATE_TWEET_ISLIKE', data)
-  }
-  ontwitter_createAccount (data) {
-    const account = data.account
-    if (account) {
-      Vue.notify({
-        message: store.getters.IntlString('APP_TWITTER_NOTIF_ACCOUNT_CREATE_SUCCESS'),
-        icon: 'twitter'
-      })
-      store.dispatch('setInfoAccount', account)
-    } else {
-      Vue.notify({
-        message: store.getters.IntlString('APP_TWITTER_NOTIF_ACCOUNT_CREATE_ERROR'),
-        icon: 'twitter',
-        backgroundColor: '#e0245e80'
-      })
-    }
   }
   ontwitter_showError (data) {
     Vue.notify({

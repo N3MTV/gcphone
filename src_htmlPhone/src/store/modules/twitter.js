@@ -5,6 +5,8 @@ const state = {
   twitterUsername: localStorage['gcphone_twitter_username'],
   twitterPassword: localStorage['gcphone_twitter_password'],
   twitterAvatarUrl: localStorage['gcphone_twitter_avatarUrl'],
+  twitterNotification: localStorage['gcphone_twitter_notif'] ? parseInt(localStorage['gcphone_twitter_notif']) : 1,
+  twitterNotificationSound: localStorage['gcphone_twitter_notif_sound'] !== 'false',
   tweets: [],
   favoriteTweets: []
 }
@@ -13,6 +15,8 @@ const getters = {
   twitterUsername: ({ twitterUsername }) => twitterUsername,
   twitterPassword: ({ twitterPassword }) => twitterPassword,
   twitterAvatarUrl: ({ twitterAvatarUrl }) => twitterAvatarUrl,
+  twitterNotification: ({ twitterNotification }) => twitterNotification,
+  twitterNotificationSound: ({ twitterNotificationSound }) => twitterNotificationSound,
   tweets: ({ tweets }) => tweets,
   favoriteTweets: ({ favoriteTweets }) => favoriteTweets
 }
@@ -22,9 +26,20 @@ const actions = {
     PhoneAPI.twitter_createAccount(username, password, avatarUrl)
   },
   twitterLogin ({ commit }, { username, password }) {
-    localStorage['gcphone_twitter_username'] = username
-    localStorage['gcphone_twitter_password'] = password
-    commit('SET_TWITTER_LOGIN', { username, password })
+    PhoneAPI.twitter_login(username, password)
+  },
+  twitterChangePassword ({ state }, newPassword) {
+    PhoneAPI.twitter_changePassword(state.twitterUsername, state.twitterPassword, newPassword)
+  },
+  twitterLogout ({ commit }) {
+    localStorage.removeItem('gcphone_twitter_username')
+    localStorage.removeItem('gcphone_twitter_password')
+    localStorage.removeItem('gcphone_twitter_avatarUrl')
+    commit('UPDATE_ACCOUNT', {
+      username: undefined,
+      password: undefined,
+      avatarUrl: undefined
+    })
   },
   twitterSetAvatar ({ state }, { avatarUrl }) {
     PhoneAPI.twitter_setAvatar(state.twitterUsername, state.twitterPassword, avatarUrl)
@@ -39,22 +54,23 @@ const actions = {
   twitterToogleLike ({ state }, { tweetId }) {
     PhoneAPI.twitter_toggleLikeTweet(state.twitterUsername, state.twitterPassword, tweetId)
   },
-  setInfoAccount ({ commit, dispatch }, data) {
-    if (data.avatarUrl) {
-      localStorage['gcphone_twitter_avatarUrl'] = data.avatarUrl
-      commit('UPDATE_ACCOUNT_INFO', data)
-    }
-    if (data.username) {
-      dispatch('twitterLogin', data)
-    }
+  setAccount ({ commit }, data) {
+    localStorage['gcphone_twitter_username'] = data.username
+    localStorage['gcphone_twitter_password'] = data.password
+    localStorage['gcphone_twitter_avatarUrl'] = data.avatarUrl
+    commit('UPDATE_ACCOUNT', data)
   },
   addTweet ({ commit, state }, tweet) {
-    if (tweet.message && tweet.message.toLowerCase().indexOf(state.twitterUsername.toLowerCase()) !== -1) {
+    let notif = state.twitterNotification === 2
+    if (state.twitterNotification === 1) {
+      notif = tweet.message && tweet.message.toLowerCase().indexOf(state.twitterUsername.toLowerCase()) !== -1
+    }
+    if (notif === true) {
       Vue.notify({
         message: tweet.message,
         title: tweet.author + ' :',
         icon: 'twitter',
-        sound: 'Twitter_Sound_Effect.ogg'
+        sound: state.twitterNotificationSound ? 'Twitter_Sound_Effect.ogg' : undefined
       })
     }
     commit('ADD_TWEET', { tweet })
@@ -64,13 +80,28 @@ const actions = {
   },
   fetchFavoriteTweets ({ state }) {
     PhoneAPI.twitter_getFavoriteTweets(state.twitterUsername, state.twitterPassword)
+  },
+  setTwitterNotification ({ commit }, value) {
+    localStorage['gcphone_twitter_notif'] = value
+    commit('SET_TWITTER_NOTIFICATION', { notification: value })
+  },
+  setTwitterNotificationSound ({ commit }, value) {
+    localStorage['gcphone_twitter_notif_sound'] = value
+    commit('SET_TWITTER_NOTIFICATION_SOUND', { notificationSound: value })
   }
 }
 
 const mutations = {
-  SET_TWITTER_LOGIN (state, { username, password }) {
+  SET_TWITTER_NOTIFICATION (state, { notification }) {
+    state.twitterNotification = notification
+  },
+  SET_TWITTER_NOTIFICATION_SOUND (state, { notificationSound }) {
+    state.twitterNotificationSound = notificationSound
+  },
+  UPDATE_ACCOUNT (state, { username, password, avatarUrl }) {
     state.twitterUsername = username
     state.twitterPassword = password
+    state.twitterAvatarUrl = avatarUrl
   },
   SET_TWEETS (state, { tweets }) {
     state.tweets = tweets
@@ -100,9 +131,6 @@ const mutations = {
     if (tweetIndexFav !== -1) {
       Vue.set(state.favoriteTweets[tweetIndexFav], 'isLikes', isLikes)
     }
-  },
-  UPDATE_ACCOUNT_INFO (state, { avatarUrl }) {
-    state.twitterAvatarUrl = avatarUrl
   }
 }
 

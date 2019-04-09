@@ -157,24 +157,55 @@ function TwitterShowSuccess (sourcePlayer, title, message)
   TriggerClientEvent('gcPhone:twitter_showSuccess', sourcePlayer, title, message)
 end
 
+RegisterServerEvent('gcPhone:twitter_login')
+AddEventHandler('gcPhone:twitter_login', function(username, password)
+  local sourcePlayer = tonumber(source)
+  getUser(username, password, function (user)
+    if user == nil then
+      TwitterShowError(sourcePlayer, 'Twitter Info', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
+    else
+      TwitterShowSuccess(sourcePlayer, 'Twitter Info', 'APP_TWITTER_NOTIF_LOGIN_SUCCESS')
+      TriggerClientEvent('gcPhone:twitter_setAccount', sourcePlayer, username, password, user.authorIcon)
+    end
+  end)
+end)
+
+RegisterServerEvent('gcPhone:twitter_changePassword')
+AddEventHandler('gcPhone:twitter_changePassword', function(username, password, newPassword)
+  local sourcePlayer = tonumber(source)
+  getUser(username, password, function (user)
+    if user == nil then
+      TwitterShowError(sourcePlayer, 'Twitter Info', 'APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR')
+    else
+      MySQL.Async.execute("UPDATE `twitter_accounts` SET `password`= @newPassword WHERE twitter_accounts.username = @username AND twitter_accounts.password = @password", {
+        ['@username'] = username,
+        ['@password'] = password,
+        ['@newPassword'] = newPassword
+      }, function (result)
+        if (result == 1) then
+          TriggerClientEvent('gcPhone:twitter_setAccount', sourcePlayer, username, newPassword, user.authorIcon)
+          TwitterShowSuccess(sourcePlayer, 'Twitter Info', 'APP_TWITTER_NOTIF_NEW_PASSWORD_SUCCESS')
+        else
+          TwitterShowError(sourcePlayer, 'Twitter Info', 'APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR')
+        end
+      end)
+    end
+  end)
+end)
+
 
 RegisterServerEvent('gcPhone:twitter_createAccount')
 AddEventHandler('gcPhone:twitter_createAccount', function(username, password, avatarUrl)
   local sourcePlayer = tonumber(source)
   TwitterCreateAccount(username, password, avatarUrl, function (id)
     if (id ~= 0) then
-      TriggerClientEvent('gcPhone:twitter_createAccount', sourcePlayer, {
-        username = username,
-        password = password,
-        avatarUrl = avatarUrl
-      })
+      TriggerClientEvent('gcPhone:twitter_setAccount', sourcePlayer, username, password, avatarUrl)
+      TwitterShowSuccess(sourcePlayer, 'Twitter Info', 'APP_TWITTER_NOTIF_ACCOUNT_CREATE_SUCCESS')
     else
-      TriggerClientEvent('gcPhone:twitter_createAccount', sourcePlayer, nil)
+      TwitterShowError(sourcePlayer, 'Twitter Info', 'APP_TWITTER_NOTIF_ACCOUNT_CREATE_ERROR')
     end
   end)
 end)
-
-
 
 RegisterServerEvent('gcPhone:twitter_getTweets')
 AddEventHandler('gcPhone:twitter_getTweets', function(username, password)
@@ -233,7 +264,7 @@ AddEventHandler('gcPhone:twitter_setAvatarUrl', function(username, password, ava
     ['@avatarUrl'] = avatarUrl
   }, function (result)
     if (result == 1) then
-      TriggerClientEvent('gcPhone:twitter_setAvatarUrl', sourcePlayer, avatarUrl)
+      TriggerClientEvent('gcPhone:twitter_setAccount', sourcePlayer, username, password, avatarUrl)
       TwitterShowSuccess(sourcePlayer, 'Twitter Info', 'APP_TWITTER_NOTIF_AVATAR_SUCCESS')
     else
       TwitterShowError(sourcePlayer, 'Twitter Info', 'APP_TWITTER_NOTIF_LOGIN_ERROR')
@@ -244,9 +275,10 @@ end)
 
 --[[
   Discord WebHook
+  set discord_webhook 'https//....' in config.cfg
 --]]
 AddEventHandler('gcPhone:twitter_newTweets', function (tweet)
-  print(json.encode(tweet))
+  -- print(json.encode(tweet))
   local discord_webhook = GetConvar('discord_webhook', '')
   if discord_webhook == '' then
     return
@@ -274,68 +306,3 @@ AddEventHandler('gcPhone:twitter_newTweets', function (tweet)
   end
   PerformHttpRequest(discord_webhook, function(err, text, headers) end, 'POST', json.encode(data), headers)
 end)
-
--- TwitterPostTweet('Gannon', '123456', 'https://cdn.discordapp.com/attachments/512272954248396811/564814901286273024/unknown.png')
-
---[[
--- --------------------------------------------------------
--- Hôte :                        127.0.0.1
--- Version du serveur:           10.3.7-MariaDB - mariadb.org binary distribution
--- SE du serveur:                Win64
--- HeidiSQL Version:             10.1.0.5464
--- --------------------------------------------------------
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-
-
--- Listage de la structure de la base pour essentialmode
-CREATE DATABASE IF NOT EXISTS `essentialmode` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
-USE `essentialmode`;
-
--- Listage de la structure de la table essentialmode. twitter_accounts
-CREATE TABLE IF NOT EXISTS `twitter_accounts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT '0',
-  `password` varchar(50) COLLATE utf8mb4_bin NOT NULL DEFAULT '0',
-  `avatar_url` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-
--- Les données exportées n'étaient pas sélectionnées.
--- Listage de la structure de la table essentialmode. twitter_likes
-CREATE TABLE IF NOT EXISTS `twitter_likes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `authorId` int(11) DEFAULT NULL,
-  `tweetId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_twitter_likes_twitter_accounts` (`authorId`),
-  KEY `FK_twitter_likes_twitter_tweets` (`tweetId`),
-  CONSTRAINT `FK_twitter_likes_twitter_accounts` FOREIGN KEY (`authorId`) REFERENCES `twitter_accounts` (`id`),
-  CONSTRAINT `FK_twitter_likes_twitter_tweets` FOREIGN KEY (`tweetId`) REFERENCES `twitter_tweets` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=137 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-
--- Les données exportées n'étaient pas sélectionnées.
--- Listage de la structure de la table essentialmode. twitter_tweets
-CREATE TABLE IF NOT EXISTS `twitter_tweets` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `authorId` int(11) NOT NULL,
-  `realUser` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `message` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `time` timestamp NOT NULL DEFAULT current_timestamp(),
-  `likes` int(11) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  KEY `FK_twitter_tweets_twitter_accounts` (`authorId`),
-  CONSTRAINT `FK_twitter_tweets_twitter_accounts` FOREIGN KEY (`authorId`) REFERENCES `twitter_accounts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=170 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Les données exportées n'étaient pas sélectionnées.
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-
---]]
