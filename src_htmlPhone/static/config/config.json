@@ -241,6 +241,8 @@
       "APP_TWITTER_NEW_ACCOUNT_PASSWORD": "Mot de passe (>= 6)",
       "APP_TWITTER_NEW_ACCOUNT_PASSWORD_CONFIRM": "Confirmer mot de passe",
       "APP_TWITTER_NEW_ACCOUNT_AVATAR": "Url de votre avatar",
+      "APP_TWITTER_PLACEHOLDER_MESSAGE": "Quoi de neuf ?",
+      "APP_TWITTER_BUTTON_ACTION_TWEETER": "Tweeter",
 
       "APP_TWITTER_ACCOUNT_LOGIN": "Se connecter",
       "APP_TWITTER_ACCOUNT_LOGOUT": "Se déconnecter",
