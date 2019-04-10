@@ -24,7 +24,7 @@
 
   "useFormatNumberFrance": true,
 
-  "useWebRTCVocal": false,			--You can't hear set true / speach aktivation aktivated?
+  "useWebRTCVocal": false,
   "RTCConfig": {
     "iceServers": [{
       "urls": ["turn:gannon.ovh"],
@@ -34,7 +34,7 @@
   },
 
 
-  "background" : {
+  "background": {
     "Calvin & Hobbes": "back001.jpg",
     "Destiny": "back002.jpg",
     "Stormtrooper": "back003.jpg",
@@ -58,12 +58,10 @@
   },
 
 
-  "serviceCall": [
-    {
+  "serviceCall": [{
       "display": "Police",
       "icon": "/html/static/img/icons_app/police.png",
-      "subMenu": [
-        {
+      "subMenu": [{
           "title": "Envoyer un message",
           "eventName": "esx_addons_gcphone:call",
           "type": {
@@ -82,25 +80,30 @@
     {
       "display": "Ambulance",
       "backgroundColor": "red",
-      "subMenu": [
-        {
-          "title": "Envoyer un message",
-          "eventName": "esx_addons_gcphone:call",
-          "type": {
-            "number": "ambulance"
-          }
+      "subMenu": [{
+        "title": "Envoyer un message",
+        "eventName": "esx_addons_gcphone:call",
+        "type": {
+          "number": "ambulance"
         }
-      ]
+      }]
     }
   ],
 
-  "defaultContacts": [
-    { "number": "ambulance" , "display": "Ambulance", "icon": "/html/static/img/icons_app/bank.png" },
-    { "number": "police" , "display": "Police", "backgroundColor": "blue", "letter": "J" }
+  "defaultContacts": [{
+      "number": "ambulance",
+      "display": "Ambulance",
+      "icon": "/html/static/img/icons_app/bank.png"
+    },
+    {
+      "number": "police",
+      "display": "Police",
+      "backgroundColor": "blue",
+      "letter": "J"
+    }
   ],
 
-  "apps": [
-    {
+  "apps": [{
       "name": "Twitter",
       "fr_FR__name": "Twitter",
       "en_US__name": "Twitter",
@@ -124,10 +127,10 @@
     },
     {
       "name": "Messages",
-	  "fr_FR__name": "Messages",
+      "fr_FR__name": "Messages",
       "en_US__name": "Messages",
       "de_DE__name": "Nachrichten",
-	  "pl_PL__name": "Wiadomości",
+      "pl_PL__name": "Wiadomości",
       "es_ES__name": "Mensajes",
       "icons": "/html/static/img/icons_app/sms.png",
       "routeName": "messages",
@@ -136,10 +139,10 @@
     },
     {
       "name": "Contacts",
-	  "fr_FR__name": "Contacts",
+      "fr_FR__name": "Contacts",
       "en_US__name": "Contacts",
       "de_DE__name": "Kontakte",
-	  "pl_PL__name": "Kontakty",
+      "pl_PL__name": "Kontakty",
       "es_ES__name": "Contactos",
       "icons": "/html/static/img/icons_app/contacts.png",
       "routeName": "contacts",
@@ -150,7 +153,7 @@
       "fr_FR__name": "Paramètres",
       "en_US__name": "System",
       "de_DE__name": "Einstellungen",
-	  "pl_PL__name": "Ustawienia",
+      "pl_PL__name": "Ustawienia",
       "es_ES__name": "Ajustes",
       "icons": "/html/static/img/icons_app/settings.png",
       "routeName": "parametre",
@@ -161,7 +164,7 @@
       "fr_FR__name": "Banque",
       "en_US__name": "Bankmanager",
       "de_DE__name": "Banker",
-	  "pl_PL__name": "Lawka",
+      "pl_PL__name": "Lawka",
       "es_ES__name": "Banquillo",
       "icons": "/html/static/img/icons_app/bank.png",
       "routeName": "bank",
@@ -181,18 +184,18 @@
       "fr_FR__name": "Photo",
       "en_US__name": "Camera",
       "de_DE__name": "Kamera",
-	  "pl_PL__name": "Kamera",
-      "es_ES__name": "Cámara"
+      "pl_PL__name": "Kamera",
+      "es_ES__name": "Cámara",
       "icons": "/html/static/img/icons_app/photo.png",
       "routeName": "photo"
     },
     {
       "name": "Dark Chat",
-	  "fr_FR__name": "Dark Chat",
+      "fr_FR__name": "Dark Chat",
       "en_US__name": "Dark Chat",
       "de_DE__name": "Dark Net",
-	  "pl_PL__name": "Czat czarny",
-      "es_ES__name": "Chat Oscuro"
+      "pl_PL__name": "Czat czarny",
+      "es_ES__name": "Chat Oscuro",
       "icons": "/html/static/img/icons_app/tchat.png",
       "routeName": "tchat"
     },
@@ -290,19 +293,19 @@
       "APP_TWITTER_NOTIF_AVATAR_SUCCESS": "Votre avatar à été changer !",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_SUCCESS": "Votre mot de passe a été modifié",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR": "Oups ... votre mot de passe n'a pas pu être modifié",
-      "APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH": "Les mots de passe ne corresponde pa",
-      "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Mot de passe invalid",
+      "APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH": "Les mots de passe ne corresponde pas",
+      "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Mot de passe trop court",
 
 
       "TIMEAGO": [
         "à l'instant",
         ["il y a %s seconde", "il y a %s secondes"],
-        ["il y a %s minute",  "il y a %s minutes"],
-        ["il y a %s heure",   "il y a %s heures"],
-        ["il y a %s jour",    "il y a %s jours"],
+        ["il y a %s minute", "il y a %s minutes"],
+        ["il y a %s heure", "il y a %s heures"],
+        ["il y a %s jour", "il y a %s jours"],
         ["il y a %s semaine", "il y a %s semaines"],
-        ["il y a %s mois",    "il y a %s mois"],
-        ["il y a %s an",      "il y a %s ans"]
+        ["il y a %s mois", "il y a %s mois"],
+        ["il y a %s an", "il y a %s ans"]
       ]
 
     },
@@ -394,9 +397,8 @@
       "APP_TWITTER_NOTIF_NEW_PASSWORD_SUCCESS": "Your password has been changed.",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR": "Oops.... Your password could not be changed.",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH": "Passwords do not match",
-      "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Password too long",
+      "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Password too short",
 
-      
       "TIMEAGO": [
         "just now",
         ["%s second ago", "%s seconds ago"],
@@ -408,7 +410,7 @@
         ["%s year ago", "%s years ago"]
       ]
     },
-	"de_DE": {
+    "de_DE": {
       "NAME": "Deutsch",
       "PHONE_WARNING_MESSAGE": "Erinnerung",
       "PHONE_WARNING_MESSAGE_MESS": "Nachrichten",
@@ -496,17 +498,17 @@
       "APP_TWITTER_NOTIF_NEW_PASSWORD_SUCCESS": "Dein Passwort wurde geändert.",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR": "Ups.... Dein Passwort konnte nicht geändert werden.",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH": "Passwörter stimmen nicht überein",
-      "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Passwort zu lang",
-      
+      "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Passwort zu kurz",
+
       "TIMEAGO": [
-        "gerade",
-        ["Vor %s Sekunde", "Vor %s Sekunden"],
-        ["Vor %s Minute", "Vor %s Minuten"],
-        ["Vor %s Stunde", "Vor %s Stunden"],
-        ["Vor %s Tag", "Vor %s Tage"],
-        ["Vor %s Woche", "Vor %s Wochen"],
-        ["Vor %s Monat", "Vor %s Monate"],
-        ["Vor %s Jahr", "Vor %s Jahre"]
+        "jetzt gerade",
+        ["vor %s Sekunde", "vor %s Sekunden"],
+        ["vor %s Minute", "vor %s Minuten"],
+        ["vor %s Stunde", "vor %s Stunden"],
+        ["vor %s Tag", "vor %s Tagen"],
+        ["vor %s Woche", "vor %s Wochen"],
+        ["vor %s Monat", "vor %s Monaten"],
+        ["vor %s Jahr", "vor %s Jahren"]
       ]
     },
     "pl_PL": {
@@ -597,20 +599,20 @@
       "APP_TWITTER_NOTIF_NEW_PASSWORD_SUCCESS": "Twoje hasło zostało zmienione.",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR": "Ups....... Twoje hasło nie mogło zostać zmienione.",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH": "Hasła nie pasują do siebie.",
-      "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Hasło zbyt długie",
+      "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Hasło jest za krótkie",
 
-	  "TIMEAGO": [
+      "TIMEAGO": [
         "tylko teraz",
-        ["%s second ago", "%s seconds ago"],
-        ["%s minutę temu", "%s minutę temu"],
-        ["%s hour ago", "%s hours ago"],
-        "[%s day ago", "%s days ago"],
+        ["mniej niż minuta"],
+        ["około minuty", "%s minut"],
+        ["około godziny", "około %s godzin"],
+        ["około tygodnia", "%s tydzień"],
         ["%s week ago", "%s weeks ago"],
-        ["%s month ago", "%s months ago"],
-        ["%s year ago", "%s years ago"]
+        ["około miesiąca", "%s miesięcy"],
+        ["około roku", "%s lat"]
       ]
-  },
-      "es_ES": {
+    },
+    "es_ES": {
       "NAME": "Spanish",
       "PHONE_WARNING_MESSAGE": "recuerdo",
       "PHONE_WARNING_MESSAGE_MESS": "noticias",
@@ -698,18 +700,18 @@
       "APP_TWITTER_NOTIF_NEW_PASSWORD_SUCCESS": "Su contraseña ha sido cambiada.",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR": "Oops...... Su contraseña no se ha podido cambiar.",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH": "Las contraseñas no coinciden",
-      "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Contraseña demasiado larga",
-	  
-	  "TIMEAGO": [
-        "ahora mismo",
-        ["%s second ago", "%s seconds ago"],
-        ["%s minute ago", "%s minutes ago"],
-        ["Hace una hora", "Hace una hora"],
-        ["Hace un día", "Hace un día"],
-        ["Hace una semana", "Hace una semana", "Hace una semana"],
-        ["Hace un mes", "Hace un mes"],
-        ["%s year ago", "%s years ago"]
+      "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Contraseña demasiado corta",
+
+      "TIMEAGO": [
+        "ahora",
+        ["hace %s segundo", "hace %s segundos"],
+        ["hace %s minuto", "hace %s minutos"],
+        ["hace %s hora", "hace %s horas"],
+        ["hace %s día", "hace %s días"],
+        ["hace %s semana", "hace %s semanas"],
+        ["hace %s mes", "hace %s meses"],
+        ["hace %s año", "hace %s años"]
       ]
-	}
+    }
   }
 }
