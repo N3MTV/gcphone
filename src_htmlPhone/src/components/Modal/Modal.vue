@@ -1,12 +1,16 @@
 <template>
 <transition name="modal">
-    <div class="modal-mask">
+    <div
+      class="modal-mask"
+      @click.stop="cancel">
 
         <div class="modal-container">
             <div class="modal-choix" 
               v-bind:class="{ select: index === currentSelect}" 
               v-for="(val, index) in choix" :key='index'
-              v-bind:style="{color: val.color}">
+              v-bind:style="{color: val.color}"
+              @click.stop="selectItem(val)"
+            >
                 <i class="fa" :class="val.icons" ></i>{{val.title}}
             </div>
           
@@ -45,6 +49,9 @@ export default {
     onDown: function () {
       this.currentSelect = this.currentSelect === this.choix.length - 1 ? this.currentSelect : this.currentSelect + 1
       this.scrollIntoViewIfNeeded()
+    },
+    selectItem (elem) {
+      this.$emit('select', elem)
     },
     onEnter: function () {
       this.$emit('select', this.choix[this.currentSelect])
@@ -124,7 +131,7 @@ export default {
         background-position-y: 100%;
         height: 42px;
     }
-    .modal-choix.select {
+    .modal-choix.select, .modal-choix:hover {
         background-color: #E3E3E3;
         color: #42B2DC;
     }

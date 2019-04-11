@@ -8,6 +8,8 @@
         <div class="element" v-for='(elem, key) in list' 
           v-bind:key="elem[keyDispay]"
           v-bind:class="{ select: key === currentSelect}"
+          @click="selectItem(elem)"
+          @contextmenu.prevent="optionItem(elem)"
           >
             <div class="elem-pic" v-bind:style="stylePuce(elem)">
               {{elem.letter || elem[keyDispay][0]}}
@@ -116,6 +118,12 @@ export default {
       this.currentSelect = this.currentSelect === this.list.length - 1 ? 0 : this.currentSelect + 1
       this.scrollIntoViewIfNeeded()
     },
+    selectItem (item) {
+      this.$emit('select', item)
+    },
+    optionItem (item) {
+      this.$emit('option', item)
+    },
     onRight: function () {
       if (this.disable === true) return
       this.$emit('option', this.list[this.currentSelect])
@@ -158,7 +166,7 @@ export default {
   position: relative;
 }
 
-.element.select{
+.element.select, .element:hover {
    background-color: #DDD;
 }
 

@@ -195,11 +195,14 @@ Citizen.CreateThread(function()
       
     end
     if menuIsOpen == true then
+	  SetNuiFocus(true, true)
       for _, value in ipairs(KeyToucheCloseEvent) do
         if IsControlJustPressed(1, value.code) then
           SendNUIMessage({keyUp = value.event})
         end
       end
+	else
+	  SetNuiFocus(false, false)
     end
   end
 end)

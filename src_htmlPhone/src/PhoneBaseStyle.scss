@@ -20,6 +20,26 @@ body {
   line-height: 52px;
   font-size: 24px;
   font-weight: 500;
+  padding-left: 64px;
+}
+.phone_title .btn-back {
+  width: 42px;
+  height: 42px;
+  line-height: 42px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 16px;
+  top: 35px;
+  color: rgba(255,255,255, 0.7);
+  outline: none;
+}
+.phone_title .btn-back:hover {
+  background-color: rgba(255,255,255, 0.3);
+  color: white;
 }
 
 .phone_content {
@@ -41,6 +61,7 @@ body {
   z-index: 999;
   width: 500px;
   height: 1000px;
+  pointer-events:none;
 }
 
 .phone_screen{

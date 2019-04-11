@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="currentScreen.title" backgroundColor="#1da1f2" />
+    <PhoneTitle :title="currentScreen.title" backgroundColor="#1da1f2" v-on:back="quit"/>
     <div class="phone_content">
       <component v-bind:is="currentScreen.component"/>
     </div>
@@ -73,6 +73,9 @@ export default {
     },
     home () {
       this.currentScreenIndex = 0
+    },
+    quit () {
+      this.$router.push({ name: 'home' })
     }
   },
   created: function () {

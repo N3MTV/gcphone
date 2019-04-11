@@ -2,17 +2,17 @@
   <div class="phone_app">
     <div class="backblur" v-bind:style="{background: 'url(' + backgroundURL +')'}"></div>
     <InfoBare class="infobare"/>
-    <div class="menu">
+    <div class="menu" @click="onBack">
       
       <div class="menu_content">
-        
-
+      
           <div class='menu_buttons'>
             <button 
                 v-for="(but, key) of Apps" 
                 v-bind:key="but.name" 
                 v-bind:class="{ select: key === currentSelect}"
                 v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
+                @click.stop="openApp(but)"
               >
                 {{but.intlName}}
                 <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
@@ -72,9 +72,11 @@ export default {
       }
       this.currentSelect = newS
     },
-    onEnter: function () {
-      const name = this.Apps[this.currentSelect].routeName
-      this.$router.push({ name })
+    openApp (app) {
+      this.$router.push({ name: app.routeName })
+    },
+    onEnter () {
+      this.openApp(this.AppsHome[this.currentSelect])
     },
     onBack: function () {
       this.$router.push({ name: 'home' })
@@ -185,7 +187,7 @@ button .puce{
   bottom: 32px;
   right: 12px;
 }
-button.select{
+button.select, button:hover{
   background-color: rgba(255,255,255, 0.7);
   border-radius: 12px;
 }

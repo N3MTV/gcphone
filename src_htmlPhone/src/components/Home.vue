@@ -14,6 +14,7 @@
           v-bind:key="but.name" 
           v-bind:class="{ select: key === currentSelect}"
           v-bind:style="{backgroundImage: 'url(' + but.icons +')'}"
+          @click="openApp(but)"
          >
           {{but.intlName}}
           <span class="puce" v-if="but.puce !== undefined && but.puce !== 0">{{but.puce}}</span>
@@ -21,8 +22,9 @@
       <div class="btn_menu_ctn">
         <button 
           class="btn_menu"
-            :class="{ select: AppsHome.length === currentSelect}"
-            v-bind:style="{backgroundImage: 'url(' + '/html/static/img/icons_app/menu.png' +')'}"
+          :class="{ select: AppsHome.length === currentSelect}"
+          v-bind:style="{backgroundImage: 'url(' + '/html/static/img/icons_app/menu.png' +')'}"
+          @click="openApp({routeName: 'menu'})"
           >
         </button>
       </div>
@@ -60,13 +62,11 @@ export default {
     onDown () {
       this.currentSelect = Math.min(this.currentSelect + 4, this.AppsHome.length)
     },
+    openApp (app) {
+      this.$router.push({ name: app.routeName })
+    },
     onEnter () {
-      if (this.currentSelect === this.AppsHome.length) {
-        this.$router.push({ name: 'menu' })
-      } else {
-        const name = this.AppsHome[this.currentSelect].routeName
-        this.$router.push({ name })
-      }
+      this.openApp(this.AppsHome[this.currentSelect] || {routeName: 'menu'})
     },
     onBack () {
       this.closePhone()
@@ -190,7 +190,7 @@ button .puce{
   bottom: 32px;
   right: 12px;
 }
-button.select{
+button.select, button:hover{
   background-color: rgba(255,255,255, 0.7);
   border-radius: 12px;
 }

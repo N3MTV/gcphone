@@ -1,12 +1,17 @@
 <template>
    <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_PHONE_TITLE')" />
+    <PhoneTitle :title="IntlString('APP_PHONE_TITLE')" v-on:back="onBackspace" />
     <div class="content">
       <component :is="subMenu[currentMenuIndex].Comp" />
     </div>
     <div class="subMenu">
-      <div class="subMenu-elem" :style="getColorItem(i)"
-        v-for="(Comp, i) of subMenu" :key="i">
+      <div
+        class="subMenu-elem"
+        :style="getColorItem(i)"
+        v-for="(Comp, i) of subMenu" 
+        :key="i"
+        @click="swapMenu(i)"
+      >
         <i class="subMenu-icon fa" :class="['fa-' + Comp.icon]"></i>
         <span class="subMenu-name">{{Comp.name}}</span>
       </div>
@@ -57,6 +62,9 @@ export default {
         }
       }
       return {}
+    },
+    swapMenu (index) {
+      this.currentMenuIndex = index
     },
     onLeft () {
       this.currentMenuIndex = Math.max(this.currentMenuIndex - 1, 0)
@@ -117,7 +125,7 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.subMenu-elem-select {
+.subMenu-elem-select, .subMenu-elem:hover {
   color: #0288D1;
 }
 .subMenu-icon{

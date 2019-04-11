@@ -2,6 +2,7 @@
   <div class="phone_app">
     <div class="elements">
         <div class="element" :class="{'active': selectIndex === key}" v-for='(histo, key) in historique' :key="key"
+          @click.stop="selectItem(histo)"
           >
             <div class="elem-pic" :style="stylePuce(histo)">{{histo.letter}}</div>
             <div class="elem-content">
@@ -72,11 +73,11 @@ export default {
       this.selectIndex = Math.min(this.historique.length - 1, this.selectIndex + 1)
       this.scrollIntoViewIfNeeded()
     },
-    async onEnter () {
-      if (this.ignoreControls === true) return
-      const numero = this.historique[this.selectIndex].num
+    async selectItem (item) {
+      const numero = item.num
       const isValid = numero.startsWith('#') === false
       this.ignoreControls = true
+      console.log('set ignore', this.ignoreControls)
       let choix = [
         {id: 1, title: this.IntlString('APP_PHONE_DELETE'), icons: 'fa-circle-o', color: 'orange'},
         {id: 2, title: this.IntlString('APP_PHONE_DELETE_ALL'), icons: 'fa-circle-o', color: 'red'},
@@ -86,7 +87,7 @@ export default {
         choix = [{id: 0, title: this.IntlString('APP_PHONE_CALL'), icons: 'fa-call-o'}, ...choix]
       }
       const rep = await Modal.CreateModal({ choix })
-      this.ignoreControls = true
+      this.ignoreControls = false
       switch (rep.id) {
         case 0:
           this.startCall({ numero })
@@ -97,6 +98,10 @@ export default {
         case 2 :
           this.appelsDeleteAllHistorique()
       }
+    },
+    async onEnter () {
+      if (this.ignoreControls === true) return
+      this.selectItem(this.historique[this.selectIndex])
     },
     stylePuce (data) {
       data = data || {}
@@ -173,7 +178,7 @@ export default {
     border-radius: 2px;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
   }
-  .active.active {
+  .active, .element:hover {
     background: radial-gradient(rgba(3, 168, 244, 0.14), rgba(3, 169, 244, 0.26));
   }
   .elem-pic{
