@@ -26,6 +26,8 @@
 <script>
 import PhoneTitle from './PhoneTitle'
 import InfoBare from './InfoBare'
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'hello',
   components: {
@@ -80,6 +82,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['useMouse'])
   },
   methods: {
     styleTitle: function () {
@@ -137,10 +140,14 @@ export default {
     }
   },
   created: function () {
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpArrowRight', this.onRight)
-    this.$bus.$on('keyUpEnter', this.onEnter)
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowDown', this.onDown)
+      this.$bus.$on('keyUpArrowUp', this.onUp)
+      this.$bus.$on('keyUpArrowRight', this.onRight)
+      this.$bus.$on('keyUpEnter', this.onEnter)
+    } else {
+      this.currentSelect = -1
+    }
   },
   beforeDestroy: function () {
     this.$bus.$off('keyUpArrowDown', this.onDown)

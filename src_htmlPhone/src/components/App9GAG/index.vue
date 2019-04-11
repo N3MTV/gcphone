@@ -1,12 +1,11 @@
 <template>
   <div class="phone_app">
     <PhoneTitle :title="'9 GAG (' + currentSelectPost + ')'" backgroundColor="#000" @back="quit"/>  
-    <div class='phone_content'>
+    <div class='phone_content' @click="onClick">
       <div class="post" v-if="currentPost !== undefined">
         <h1 class="post-title">{{ currentPost.title }}</h1>
         <div class="post-content">
           <video class="post-video" ref="video" v-if="currentPost.images.image460svwm !== undefined" autoplay loop :src="currentPost.images.image460svwm.url">
-
           </video>
           <img class="post-image" v-else :src="currentPost.images.image460.url" alt="">
         </div>
@@ -29,6 +28,15 @@ export default {
       nextCursor: 'c=10',
       currentSelectPost: 0,
       posts: []
+    }
+  },
+  computed: {
+    currentPost () {
+      if (this.posts && this.posts.length > this.currentSelectPost) {
+        return this.posts[this.currentSelectPost]
+      }
+      this.loadItems()
+      return undefined
     }
   },
   methods: {
@@ -58,17 +66,15 @@ export default {
         }
       }, 200)
     },
+    onClick ($event) {
+      if ($event.offsetX < 200) {
+        this.previewPost()
+      } else {
+        this.nextPost()
+      }
+    },
     quit: function () {
       this.$router.push({ name: 'home' })
-    }
-  },
-  computed: {
-    currentPost () {
-      if (this.posts && this.posts.length > this.currentSelectPost) {
-        return this.posts[this.currentSelectPost]
-      }
-      this.loadItems()
-      return undefined
     }
   },
   created: function () {

@@ -37,7 +37,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'themeColor']),
+    ...mapGetters(['IntlString', 'useMouse', 'themeColor']),
     subMenu () {
       return [{
         Comp: AppelsFavoris,
@@ -78,12 +78,14 @@ export default {
     }
   },
 
-  created: function () {
-    this.$bus.$on('keyUpBackspace', this.onBackspace)
-    this.$bus.$on('keyUpArrowLeft', this.onLeft)
-    this.$bus.$on('keyUpArrowRight', this.onRight)
+  created () {
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpBackspace', this.onBackspace)
+      this.$bus.$on('keyUpArrowLeft', this.onLeft)
+      this.$bus.$on('keyUpArrowRight', this.onRight)
+    }
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$bus.$off('keyUpBackspace', this.onBackspace)
     this.$bus.$off('keyUpArrowLeft', this.onLeft)
     this.$bus.$off('keyUpArrowRight', this.onRight)

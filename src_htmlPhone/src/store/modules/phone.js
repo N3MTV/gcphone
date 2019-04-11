@@ -8,13 +8,15 @@ const state = {
   coque: JSON.parse(window.localStorage['gc_coque'] || null),
   zoom: window.localStorage['gc_zoom'] || '100%',
   volume: parseFloat(window.localStorage['gc_volume']) || 1,
+  mouse: window.localStorage['gc_mouse'] || false,
   lang: window.localStorage['gc_language'] || 'fr_FR',
   config: {
     reseau: 'Gannon',
     useFormatNumberFrance: false,
     apps: [],
     themeColor: '#2A56C6',
-    colors: ['#2A56C6']
+    colors: ['#2A56C6'],
+    language: {}
   }
 }
 
@@ -55,6 +57,7 @@ const getters = {
   },
   coqueLabel: (state, getters) => getters.coque.label,
   zoom: ({ zoom }) => zoom,
+  useMouse: ({ mouse }) => mouse,
   config: ({ config }) => config,
   warningMessageCount: ({ config }) => config.warningMessageCount || 250,
   useFormatNumberFrance: ({ config }) => config.useFormatNumberFrance,
@@ -133,6 +136,10 @@ const actions = {
     Vue.prototype.$timeago.setCurrentLocale(lang)
     commit('SET_LANGUAGE', lang)
   },
+  setMouseSupport ({ commit }, value) {
+    window.localStorage['gc_mouse'] = value
+    commit('SET_MOUSE_SUPPORT', value)
+  },
   closePhone () {
     PhoneAPI.closePhone()
   },
@@ -175,6 +182,9 @@ const mutations = {
   },
   SET_LANGUAGE (state, lang) {
     state.lang = lang
+  },
+  SET_MOUSE_SUPPORT (state, value) {
+    state.mouse = value
   }
 }
 

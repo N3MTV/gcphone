@@ -40,7 +40,7 @@ export default {
     ...mapGetters(['nbMessagesUnread', 'backgroundURL', 'Apps'])
   },
   methods: {
-    ...mapGetters(['closePhone']),
+    ...mapGetters(['closePhone', 'useMouse']),
     onLeft: function () {
       const l = Math.floor(this.currentSelect / 4)
       const newS = (this.currentSelect + 4 - 1) % 4 + l * 4
@@ -85,12 +85,16 @@ export default {
   mounted () {
   },
   created () {
-    this.$bus.$on('keyUpArrowLeft', this.onLeft)
-    this.$bus.$on('keyUpArrowRight', this.onRight)
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpEnter', this.onEnter)
-    this.$bus.$on('keyUpBackspace', this.onBack)
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowLeft', this.onLeft)
+      this.$bus.$on('keyUpArrowRight', this.onRight)
+      this.$bus.$on('keyUpArrowDown', this.onDown)
+      this.$bus.$on('keyUpArrowUp', this.onUp)
+      this.$bus.$on('keyUpEnter', this.onEnter)
+      this.$bus.$on('keyUpBackspace', this.onBack)
+    } else {
+      this.currentSelect = -1
+    }
   },
   beforeDestroy () {
     this.$bus.$off('keyUpArrowLeft', this.onLeft)

@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_BOURSE_TITLE')"/>
+    <PhoneTitle :title="IntlString('APP_BOURSE_TITLE')" @back="onBackspace"/>
     <div class='elements'>
       <div class='element'
           v-for='(elem, key) in bourseInfo' 
@@ -28,7 +28,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'bourseInfo'])
+    ...mapGetters(['IntlString', 'useMouse', 'bourseInfo'])
   },
   methods: {
     scrollIntoViewIfNeeded: function () {
@@ -67,9 +67,11 @@ export default {
     }
   },
   created: function () {
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpBackspace', this.onBackspace)
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowDown', this.onDown)
+      this.$bus.$on('keyUpArrowUp', this.onUp)
+      this.$bus.$on('keyUpBackspace', this.onBackspace)
+    }
   },
   beforeDestroy: function () {
     this.$bus.$off('keyUpArrowDown', this.onDown)

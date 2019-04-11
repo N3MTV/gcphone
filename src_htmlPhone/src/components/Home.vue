@@ -46,7 +46,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'nbMessagesUnread', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
+    ...mapGetters(['IntlString', 'useMouse', 'nbMessagesUnread', 'backgroundURL', 'messages', 'AppsHome', 'warningMessageCount'])
   },
   methods: {
     ...mapActions(['closePhone', 'setMessages']),
@@ -73,12 +73,16 @@ export default {
     }
   },
   created () {
-    this.$bus.$on('keyUpArrowLeft', this.onLeft)
-    this.$bus.$on('keyUpArrowRight', this.onRight)
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpEnter', this.onEnter)
-    this.$bus.$on('keyUpBackspace', this.onBack)
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowLeft', this.onLeft)
+      this.$bus.$on('keyUpArrowRight', this.onRight)
+      this.$bus.$on('keyUpArrowDown', this.onDown)
+      this.$bus.$on('keyUpArrowUp', this.onUp)
+      this.$bus.$on('keyUpEnter', this.onEnter)
+      this.$bus.$on('keyUpBackspace', this.onBack)
+    } else {
+      this.currentSelect = -1
+    }
   },
   beforeDestroy () {
     this.$bus.$off('keyUpArrowLeft', this.onLeft)

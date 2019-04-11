@@ -10,11 +10,11 @@ const getters = {
   appelsInfo: ({ appelsInfo }) => appelsInfo,
   appelsDisplayName (state, getters) {
     if (state.appelsInfo.hidden === true) {
-      return 'Appels masqué'
+      return getters.IntlString('APP_PHONE_NUMBER_HIDDEN')
     }
     const num = getters.appelsDisplayNumber
     const contact = getters.contacts.find(e => e.number === num) || {}
-    return contact.display || 'Inconnu'
+    return contact.display || getters.IntlString('APP_PHONE_NUMBER_UNKNOWN')
   },
   appelsDisplayNumber (state, getters) {
     if (getters.isInitiatorCall === true) {

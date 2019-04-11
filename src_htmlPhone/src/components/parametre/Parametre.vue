@@ -35,7 +35,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'myPhoneNumber', 'backgroundLabel', 'coqueLabel', 'zoom', 'config', 'volume', 'availableLanguages']),
+    ...mapGetters(['IntlString', 'useMouse', 'myPhoneNumber', 'backgroundLabel', 'coqueLabel', 'zoom', 'config', 'volume', 'availableLanguages']),
     paramList () {
       const cancelStr = this.IntlString('CANCEL')
       const confirmResetStr = this.IntlString('APP_CONFIG_RESET_CONFIRM')
@@ -105,6 +105,16 @@ export default {
           }
         },
         {
+          icons: 'fa-mouse-pointer',
+          title: this.IntlString('MOUSE_SUPPORT'),
+          onValid: 'onChangeMouseSupport',
+          values: {
+            'Yes': true,
+            'No': false,
+            ...cancelOption
+          }
+        },
+        {
           icons: 'fa-exclamation-triangle',
           color: '#c0392b',
           title: this.IntlString('APP_CONFIG_RESET'),
@@ -121,7 +131,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getIntlString', 'setZoon', 'setBackground', 'setCoque', 'setVolume', 'setLanguage']),
+    ...mapActions(['getIntlString', 'setZoon', 'setBackground', 'setCoque', 'setVolume', 'setLanguage', 'setMouseSupport']),
     scrollIntoViewIfNeeded: function () {
       this.$nextTick(() => {
         document.querySelector('.select').scrollIntoViewIfNeeded()
@@ -155,13 +165,7 @@ export default {
         param.onLeft(param)
       }
     },
-    onPressItem (index) {
-      this.currentSelect = index
-      this.onEnter()
-    },
-    onEnter () {
-      if (this.ignoreControls === true) return
-      let param = this.paramList[this.currentSelect]
+    actionItem (param) {
       if (param.values !== undefined) {
         this.ignoreControls = true
         let choix = Object.keys(param.values).map(key => {
@@ -173,6 +177,13 @@ export default {
           this[param.onValid](param, reponse)
         })
       }
+    },
+    onPressItem (index) {
+      this.actionItem(this.paramList[index])
+    },
+    onEnter () {
+      if (this.ignoreControls === true) return
+      this.actionItem(this.paramList[this.currentSelect])
     },
     async onChangeBackground (param, data) {
       let val = data.value
@@ -223,6 +234,12 @@ export default {
         this.setLanguage(data.value)
       }
     },
+    onChangeMouseSupport (param, data) {
+      if (data.value !== 'cancel') {
+        this.setMouseSupport(data.value)
+        this.onBackspace()
+      }
+    },
     resetPhone: function (param, data) {
       if (data.value !== 'cancel') {
         this.ignoreControls = true
@@ -239,15 +256,19 @@ export default {
     }
   },
 
-  created: function () {
-    this.$bus.$on('keyUpArrowRight', this.onRight)
-    this.$bus.$on('keyUpArrowLeft', this.onLeft)
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpEnter', this.onEnter)
-    this.$bus.$on('keyUpBackspace', this.onBackspace)
+  created () {
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowRight', this.onRight)
+      this.$bus.$on('keyUpArrowLeft', this.onLeft)
+      this.$bus.$on('keyUpArrowDown', this.onDown)
+      this.$bus.$on('keyUpArrowUp', this.onUp)
+      this.$bus.$on('keyUpEnter', this.onEnter)
+      this.$bus.$on('keyUpBackspace', this.onBackspace)
+    } else {
+      this.currentSelect = -1
+    }
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$bus.$off('keyUpArrowRight', this.onRight)
     this.$bus.$off('keyUpArrowLeft', this.onLeft)
     this.$bus.$off('keyUpArrowDown', this.onDown)
@@ -297,7 +318,7 @@ export default {
   font-size: 16px;
   color: #808080;
 }
-.element.select{
+.element.select, .element:hover{
    background-color: #DDD;
 }
 </style>
