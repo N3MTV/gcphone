@@ -2,7 +2,7 @@
   <div class='phone_content content inputText'>
     <template v-if="state === STATES.MENU">
       <template v-if="!isLogin">
-        <div class="group select" data-type="button" @click="state = STATES.LOGIN">      
+        <div class="group" data-type="button" @click="state = STATES.LOGIN">      
           <input type='button' class="btn btn-blue" :value="IntlString('APP_TWITTER_ACCOUNT_LOGIN')" />
         </div>
 
@@ -18,7 +18,7 @@
       <template v-if="isLogin">
         <img :src="twitterAvatarUrl" height="128" width="128" style="align-self: center;">
 
-        <div class="group select" data-type="button" @click="state = STATES.ACCOUNT">      
+        <div class="group" data-type="button" @click="state = STATES.ACCOUNT">      
           <input type='button' class="btn btn-blue" :value="IntlString('APP_TWITTER_ACCOUNT_PARAM')" />
         </div>
 
@@ -33,7 +33,7 @@
     </template>
 
     <template v-else-if="state === STATES.LOGIN">
-      <div class="group inputText select" data-type="text" data-maxlength='64' :data-defaultValue="localAccount.username">      
+      <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="localAccount.username">      
           <input type="text" :value="localAccount.username" @change="setLocalAccount($event, 'username')">
           <span class="highlight"></span>
           <span class="bar"></span>
@@ -140,6 +140,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import Modal from '@/components/Modal'
+
 const STATES = Object.freeze({
   MENU: 0,
   NEW_ACCOUNT: 1,
@@ -165,7 +167,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'twitterUsername', 'twitterPassword', 'twitterAvatarUrl', 'twitterNotification', 'twitterNotificationSound']),
+    ...mapGetters(['IntlString', 'useMouse', 'twitterUsername', 'twitterPassword', 'twitterAvatarUrl', 'twitterNotification', 'twitterNotificationSound']),
     isLogin () {
       return this.twitterUsername !== undefined && this.twitterUsername !== ''
     },
@@ -257,20 +259,21 @@ export default {
     setLocalAccount ($event, key) {
       this.localAccount[key] = $event.target.value
     },
-    setLocalAccountAvartar ($event) {
-      this.$phoneAPI.getReponseText({text: this.twitterAvatarUrl || 'https://i.imgur.com/'}).then(data => {
+    async setLocalAccountAvartar ($event) {
+      try {
+        const data = await Modal.CreateTextModal({
+          text: this.twitterAvatarUrl || 'https://i.imgur.com/'
+        })
         this.localAccount.avatarUrl = data.text
-      })
+      } catch (e) {}
     },
-    onPressChangeAvartar () {
-      this.$phoneAPI.getReponseText({text: this.twitterAvatarUrl || 'https://i.imgur.com/'}).then(data => {
+    async onPressChangeAvartar () {
+      try {
+        const data = await Modal.CreateTextModal({
+          text: this.twitterAvatarUrl || 'https://i.imgur.com/'
+        })
         this.twitterSetAvatar({avatarUrl: data.text})
-      })
-    },
-    onPressChangeAvartarLocal () {
-      this.$phoneAPI.getReponseText({text: this.twitterAvatarUrl || 'https://i.imgur.com/'}).then(data => {
-        this.newAccount.avatarUrl = data.text
-      })
+      } catch (e) {}
     },
     login () {
       this.twitterLogin({
@@ -305,9 +308,9 @@ export default {
     },
     async changePassword (value) {
       try {
-        const password1 = await this.$phoneAPI.getReponseText({limit: 30})
+        const password1 = await Modal.CreateTextModal({limit: 30})
         if (password1.text === '') return
-        const password2 = await this.$phoneAPI.getReponseText({limit: 30})
+        const password2 = await Modal.CreateTextModal({limit: 30})
         if (password2.text === '') return
         if (password2.text !== password1.text) {
           this.$notify({
@@ -332,13 +335,15 @@ export default {
       }
     }
   },
-  created: function () {
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpEnter', this.onEnter)
-    this.$bus.$on('keyUpBackspace', this.onBack)
+  created () {
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowDown', this.onDown)
+      this.$bus.$on('keyUpArrowUp', this.onUp)
+      this.$bus.$on('keyUpEnter', this.onEnter)
+      this.$bus.$on('keyUpBackspace', this.onBack)
+    }
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpEnter', this.onEnter)
@@ -527,7 +532,7 @@ input:focus ~ .highlight {
   font-weight: 500;
   border-radius: 10px;
 }
-.group.select .btn.btn-blue{
+.group.select .btn.btn-blue, .group:hover .btn.btn-blue{
   background-color: #00aced;
   color: white;
   border: none;
@@ -540,7 +545,7 @@ input:focus ~ .highlight {
   font-weight: 500;
   border-radius: 10px;
 }
-.group.select .btn.btn-red{
+.group.select .btn.btn-red, .group:hover .btn.btn-red{
   background-color: #e0245e;
   color: white;
   border: none;
@@ -553,7 +558,7 @@ input:focus ~ .highlight {
   font-weight: 500;
   border-radius: 10px;
 }
-.group.select .btn.btn-gray{
+.group.select .btn.btn-gray, .group:hover .btn.btn-gray{
   background-color: #757575;
   color: white;
   border: none;

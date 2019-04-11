@@ -1,6 +1,6 @@
 <template>
   <div class="phone_content">
-    <div class="img-fullscreen" v-if="imgZoom !== undefined" >
+    <div class="img-fullscreen" v-if="imgZoom !== undefined" @click="imgZoom = undefined">
       <img :src="imgZoom" />
     </div>
     <div class="tweets-wrapper" ref="elementsDiv">
@@ -18,11 +18,11 @@
             </div>
             <div class="tweet-message">
               <template v-if="!isImage(tweet.message)">{{ tweet.message }}</template>
-              <img v-else :src="tweet.message" class="tweet-attachement-img">
+              <img v-else :src="tweet.message" class="tweet-attachement-img" @click="imgZoom = tweet.message">
             </div>
             <div class="tweet-like">
 
-              <div class="item">
+              <div class="item svgreply" @click="reply(tweet)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
               </div>
               
@@ -30,15 +30,13 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
               </div>
 
-              <div class="item">
-                <template v-if="tweet.isLikes">              
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path style="fill:red" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                  <span style="color:red;">{{ tweet.likes }}</span>
-                </template>
-                <template v-else>
+              <div v-if="tweet.isLikes" class="item svgdislike" @click="twitterToogleLike({ tweetId: tweet.id })">     
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  <span>{{ tweet.likes }}</span>
+              </div>
+              <div v-else class="svglike" @click="twitterToogleLike({ tweetId: tweet.id })">
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/></svg>
                   <span>{{ tweet.likes }}</span>
-                </template>
               </div>
               
               <div class="item">
@@ -66,9 +64,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['favoriteTweets', 'IntlString']),
+    ...mapGetters(['favoriteTweets', 'IntlString', 'useMouse']),
     tweets () {
-      return this.favoriteTweets
+      this.favoriteTweets
     }
   },
   watch: {
@@ -117,15 +115,18 @@ export default {
     },
     async reply (tweet) {
       const authorName = tweet.author
-      const rep = await this.$phoneAPI.getReponseText({
-        text: `@${authorName} `
-      })
-      if (rep !== undefined && rep.text !== undefined) {
-        const message = rep.text.trim()
-        if (message.length !== 0) {
-          this.twitterPostTweet({ message })
+      try {
+        const rep = await Modal.CreateTextModal({
+          title: 'Répondre',
+          text: `@${authorName} `
+        })
+        if (rep !== undefined && rep.text !== undefined) {
+          const message = rep.text.trim()
+          if (message.length !== 0) {
+            this.twitterPostTweet({ message })
+          }
         }
-      }
+      } catch (e) {}
     },
     resetScroll () {
       this.$nextTick(() => {
@@ -177,7 +178,7 @@ export default {
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
       } else {
-        this.$bus.$emit('twitterHomme')
+        this.$router.push({ name: 'home' })
       }
     },
     formatTime (time) {
@@ -185,16 +186,18 @@ export default {
       return d.toLocaleTimeString()
     }
   },
-  created: function () {
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpEnter', this.onEnter)
-    this.$bus.$on('keyUpBackspace', this.onBack)
+  created () {
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowDown', this.onDown)
+      this.$bus.$on('keyUpArrowUp', this.onUp)
+      this.$bus.$on('keyUpEnter', this.onEnter)
+      this.$bus.$on('keyUpBackspace', this.onBack)
+    }
   },
   mounted () {
     this.fetchFavoriteTweets()
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpEnter', this.onEnter)
@@ -204,6 +207,26 @@ export default {
 </script>
 
 <style scoped>
+  .svgreply:hover {
+    cursor: pointer;
+    fill: #1da1f2;
+    color: #1da1f2;
+  }
+  .svglike:hover {
+    cursor: pointer;
+    fill: red;
+    color: red;
+  }
+  .svgdislike {
+    fill: red;
+    color: red;
+  }
+  .svgdislike:hover {
+    cursor: pointer;
+    fill: #C0C0C0;
+    color: #C0C0C0;
+  }
+
 .img-fullscreen {
   position: fixed;
   z-index: 999999;
@@ -227,7 +250,6 @@ export default {
   color: black;
   display: flex;
   flex-direction: column;
-  padding-bottom: 12px;
   overflow-y: auto;
 }
 

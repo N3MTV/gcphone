@@ -20,7 +20,12 @@
     </div>
 
     <div id='sms_write'>
-        <input type="text" :placeholder="IntlString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')" v-model="message">
+        <input
+          type="text"
+          v-model="message"
+          :placeholder="IntlString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')"
+          @keyup.enter.prevent="send"
+        >
         <div class="sms_send" @click="send">
           <svg height="24" viewBox="0 0 24 24" width="24">
               <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -106,6 +111,7 @@ export default {
       }
     },
     send () {
+      console.log('sendsendsendsend')
       const message = this.message.trim()
       if (message === '') return
       this.message = ''
@@ -203,7 +209,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'messages', 'contacts']),
+    ...mapGetters(['IntlString', 'messages', 'contacts', 'useMouse']),
     messagesList () {
       return this.messages.filter(e => e.transmitter === this.phoneNumber).sort((a, b) => a.time - b.time)
     },
@@ -235,16 +241,18 @@ export default {
       this.resetScroll()
     }
   },
-  created: function () {
+  created () {
     this.display = this.$route.params.display
     this.phoneNumber = this.$route.params.number
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpEnter', this.onEnter)
-    this.$bus.$on('keyUpBackspace', this.onBackspace)
-    this.$bus.$on('keyUpArrowRight', this.onRight)
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowDown', this.onDown)
+      this.$bus.$on('keyUpArrowUp', this.onUp)
+      this.$bus.$on('keyUpEnter', this.onEnter)
+      this.$bus.$on('keyUpBackspace', this.onBackspace)
+      this.$bus.$on('keyUpArrowRight', this.onRight)
+    }
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpEnter', this.onEnter)

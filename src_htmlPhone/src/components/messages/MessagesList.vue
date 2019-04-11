@@ -52,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'contacts', 'messages']),
+    ...mapGetters(['IntlString', 'useMouse', 'contacts', 'messages']),
     messagesData: function () {
       let messages = this.messages
       let contacts = this.contacts
@@ -108,10 +108,12 @@ export default {
       }
     }
   },
-  created: function () {
-    this.$bus.$on('keyUpBackspace', this.back)
+  created () {
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpBackspace', this.back)
+    }
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$bus.$off('keyUpBackspace', this.back)
   }
 }

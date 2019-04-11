@@ -13,7 +13,6 @@ Vue.config.productionTip = false
 Vue.prototype.$bus = new Vue()
 Vue.prototype.$phoneAPI = PhoneAPI
 
-window.DDD = store
 window.VueTimeago = VueTimeago
 window.Vue = Vue
 window.store = store

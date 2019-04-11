@@ -21,9 +21,13 @@
 </template>
 
 <script>
+import store from './../../store'
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'Modal',
-  data: function () {
+  store: store,
+  data () {
     return {
       currentSelect: 0
     }
@@ -31,42 +35,47 @@ export default {
   props: {
     choix: {
       type: Array,
-      default: function () {
-        return []
-      }
+      default: () => []
     }
   },
+  computed: {
+    ...mapGetters(['useMouse'])
+  },
   methods: {
-    scrollIntoViewIfNeeded: function () {
+    scrollIntoViewIfNeeded () {
       this.$nextTick(() => {
         document.querySelector('.modal-choix.select').scrollIntoViewIfNeeded()
       })
     },
-    onUp: function () {
+    onUp () {
       this.currentSelect = this.currentSelect === 0 ? 0 : this.currentSelect - 1
       this.scrollIntoViewIfNeeded()
     },
-    onDown: function () {
+    onDown () {
       this.currentSelect = this.currentSelect === this.choix.length - 1 ? this.currentSelect : this.currentSelect + 1
       this.scrollIntoViewIfNeeded()
     },
     selectItem (elem) {
       this.$emit('select', elem)
     },
-    onEnter: function () {
+    onEnter () {
       this.$emit('select', this.choix[this.currentSelect])
     },
-    cancel: function () {
+    cancel () {
       this.$emit('cancel')
     }
   },
-  created: function () {
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpEnter', this.onEnter)
-    this.$bus.$on('keyUpBackspace', this.cancel)
+  created () {
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowDown', this.onDown)
+      this.$bus.$on('keyUpArrowUp', this.onUp)
+      this.$bus.$on('keyUpEnter', this.onEnter)
+      this.$bus.$on('keyUpBackspace', this.cancel)
+    } else {
+      this.currentSelect = -1
+    }
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpEnter', this.onEnter)

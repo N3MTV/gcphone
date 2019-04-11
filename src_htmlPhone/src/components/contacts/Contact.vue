@@ -16,13 +16,13 @@
             <span class="bar"></span>
             <label>{{ IntlString('APP_CONTACT_LABEL_NUMBER') }}</label>
         </div>
-        <div style="margin-top: 56px;" class="group " data-type="button" data-action='save'>      
+        <div style="margin-top: 56px;" class="group " data-type="button" data-action='save' @click="save">      
             <input type='button' class="btn btn-green" :value="IntlString('APP_CONTACT_SAVE')" />
         </div>
-        <div class="group" data-type="button" data-action='cancel'>      
+        <div class="group" data-type="button" data-action='cancel' @click="cancel">      
             <input type='button' class="btn btn-orange" :value="IntlString('APP_CONTACT_CANCEL')" />
         </div>
-        <div class="group" data-type="button" data-action='delete'>      
+        <div class="group" data-type="button" data-action='deleteC' @click="deleteC">      
             <input type='button' class="btn btn-red" :value="IntlString('APP_CONTACT_DELETE')" />
         </div>
     </div>
@@ -49,6 +49,9 @@ export default {
         id: -1
       }
     }
+  },
+  computed: {
+    ...mapGetters(['IntlString', 'contacts', 'useMouse'])
   },
   methods: {
     ...mapActions(['updateContact', 'addContact']),
@@ -115,7 +118,7 @@ export default {
       if (this.ignoreControls === true) return
       history.back()
     },
-    delete: function () {
+    deleteC: function () {
       if (this.id !== -1) {
         this.ignoreControls = true
         let choix = [{title: 'Annuler'}, {title: 'Annuler'}, {title: 'Supprimer', color: 'red'}, {title: 'Annuler'}, {title: 'Annuler'}]
@@ -131,20 +134,25 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters(['IntlString', 'contacts'])
-  },
-  created: function () {
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpEnter', this.onEnter)
-    this.$bus.$on('keyUpBackspace', this.cancel)
+  created () {
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowDown', this.onDown)
+      this.$bus.$on('keyUpArrowUp', this.onUp)
+      this.$bus.$on('keyUpEnter', this.onEnter)
+      this.$bus.$on('keyUpBackspace', this.cancel)
+    } else {
+      this.currentSelect = -1
+    }
     this.id = parseInt(this.$route.params.id)
     this.contact.display = this.IntlString('APP_CONTACT_NEW')
     if (this.id !== -1) {
       const c = this.contacts.find(e => e.id === this.id)
       if (c !== undefined) {
-        this.contact = c
+        this.contact = {
+          id: c.id,
+          display: c.display,
+          number: c.number
+        }
       }
     }
   },
@@ -283,7 +291,7 @@ input:focus ~ .highlight {
   font-weight: 500;
   border-radius: 10px;
 }
-.group.select .btn.btn-green{
+.group.select .btn.btn-green, .group:hover .btn.btn-green{
   background-color: #2ecc70;
   color: white;
   border: none;
@@ -295,7 +303,7 @@ input:focus ~ .highlight {
   font-weight: 500;
   border-radius: 10px;
 }
-.group.select .btn.btn-orange{
+.group.select .btn.btn-orange, .group:hover .btn.btn-orange{
   background-color: #e67e22;
   color: white;
   border: none;
@@ -308,7 +316,7 @@ input:focus ~ .highlight {
   font-weight: 500;
   border-radius: 10px;
 }
-.group.select .btn.btn-red{
+.group.select .btn.btn-red, .group:hover .btn.btn-red{
   background-color: #e74c3c;
   color: white;
   border: none;

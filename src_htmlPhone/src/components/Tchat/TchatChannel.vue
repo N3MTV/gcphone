@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_DARKTCHAT_TITLE')" backgroundColor="#090f20" />
+    <PhoneTitle :title="IntlString('APP_DARKTCHAT_TITLE')" backgroundColor="#090f20" @back="onBack" />
     <div class="elements">
         <div class="element" v-for='(elem, key) in tchatChannels' 
           v-bind:key="elem.channel"
@@ -37,7 +37,6 @@ export default {
     ...mapActions(['tchatAddChannel', 'tchatRemoveChannel']),
     scrollIntoViewIfNeeded () {
       this.$nextTick(() => {
-        window.DDD = this.$el
         const $select = this.$el.querySelector('.select')
         if ($select !== null) {
           $select.scrollIntoViewIfNeeded()
@@ -100,13 +99,15 @@ export default {
       this.$router.push({ name: 'home' })
     },
     async addChannelOption () {
-      const rep = await this.$phoneAPI.getReponseText({limit: 20})
-      let channel = (rep || {}).text || ''
-      channel = channel.toLowerCase().replace(/[^a-z]/g, '')
-      if (channel.length > 0) {
-        this.currentSelect = 0
-        this.tchatAddChannel({ channel })
-      }
+      try {
+        const rep = await this.$phoneAPI.getReponseText({limit: 20, title: 'Ajouter un channel'})
+        let channel = (rep || {}).text || ''
+        channel = channel.toLowerCase().replace(/[^a-z]/g, '')
+        if (channel.length > 0) {
+          this.currentSelect = 0
+          this.tchatAddChannel({ channel })
+        }
+      } catch (e) {}
     },
     async removeChannelOption () {
       const channel = this.tchatChannels[this.currentSelect].channel
@@ -132,9 +133,6 @@ export default {
 </script>
 
 <style scoped>
-.infobare{
-  background-color: ;
-}
 .list{
   height: 100%;
 }
@@ -144,7 +142,6 @@ export default {
   height: 54px;
   line-height: 34px;
   font-weight: 700;
-  background-color: #0;
   color: white;
 }
 

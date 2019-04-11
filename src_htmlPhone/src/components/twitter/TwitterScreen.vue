@@ -35,7 +35,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString']),
+    ...mapGetters(['IntlString', 'useMouse']),
     screen () {
       return [
         {
@@ -80,13 +80,19 @@ export default {
       this.currentScreenIndex = index
     },
     quit () {
-      this.$router.push({ name: 'home' })
+      if (this.currentScreenIndex === 0) {
+        this.$router.push({ name: 'home' })
+      } else {
+        this.currentScreenIndex = 0
+      }
     }
   },
   created: function () {
-    this.$bus.$on('keyUpArrowLeft', this.onLeft)
-    this.$bus.$on('keyUpArrowRight', this.onRight)
-    this.$bus.$on('twitterHomme', this.home)
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowLeft', this.onLeft)
+      this.$bus.$on('keyUpArrowRight', this.onRight)
+      this.$bus.$on('twitterHomme', this.home)
+    }
   },
   mounted () {
   },

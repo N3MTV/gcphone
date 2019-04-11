@@ -8,7 +8,7 @@ const state = {
   coque: JSON.parse(window.localStorage['gc_coque'] || null),
   zoom: window.localStorage['gc_zoom'] || '100%',
   volume: parseFloat(window.localStorage['gc_volume']) || 1,
-  mouse: window.localStorage['gc_mouse'] || false,
+  mouse: window.localStorage['gc_mouse'] !== 'false',
   lang: window.localStorage['gc_language'] || 'fr_FR',
   config: {
     reseau: 'Gannon',

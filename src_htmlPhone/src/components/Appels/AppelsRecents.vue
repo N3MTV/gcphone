@@ -120,7 +120,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'appelsHistorique', 'contacts']),
+    ...mapGetters(['IntlString', 'useMouse', 'appelsHistorique', 'contacts']),
     historique () {
       let grpHist = groupBy(this.appelsHistorique, 'num')
       let hist = []
@@ -148,12 +148,16 @@ export default {
       return hist
     }
   },
-  created: function () {
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpEnter', this.onEnter)
+  created () {
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowDown', this.onDown)
+      this.$bus.$on('keyUpArrowUp', this.onUp)
+      this.$bus.$on('keyUpEnter', this.onEnter)
+    } else {
+      this.selectIndex = -1
+    }
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpEnter', this.onEnter)
