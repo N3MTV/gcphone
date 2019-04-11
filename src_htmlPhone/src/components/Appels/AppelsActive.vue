@@ -75,9 +75,7 @@ export default {
       }
     },
     raccrocher () {
-      if (this.status === 0) {
-        this.onRejectCall()
-      }
+      this.onRejectCall()
     },
     deccrocher () {
       if (this.status === 0) {

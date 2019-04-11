@@ -37,10 +37,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['nbMessagesUnread', 'backgroundURL', 'Apps'])
+    ...mapGetters(['nbMessagesUnread', 'backgroundURL', 'Apps', 'useMouse'])
   },
   methods: {
-    ...mapGetters(['closePhone', 'useMouse']),
+    ...mapGetters(['closePhone']),
     onLeft: function () {
       const l = Math.floor(this.currentSelect / 4)
       const newS = (this.currentSelect + 4 - 1) % 4 + l * 4
@@ -76,7 +76,8 @@ export default {
       this.$router.push({ name: app.routeName })
     },
     onEnter () {
-      this.openApp(this.AppsHome[this.currentSelect])
+      console.log(this.Apps[this.currentSelect])
+      this.openApp(this.Apps[this.currentSelect])
     },
     onBack: function () {
       this.$router.push({ name: 'home' })

@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div style="height: 100vh; width: 100vw;" @click="closePhone">
     <notification />
-    <div v-if="show === true" :style="{zoom: zoom}">
+    <div v-if="show === true" :style="{zoom: zoom}" @click.stop>
       <div class="phone_wrapper">
         <div class="phone_coque" :style="{backgroundImage: 'url(/html/static/img/coque/' + coque.value + ')'}"></div>
         <div id="app" class="phone_screen">
@@ -27,7 +27,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['loadConfig', 'rejectCall'])
+    ...mapActions(['loadConfig', 'rejectCall']),
+    closePhone () {
+      this.$phoneAPI.closePhone()
+    }
   },
   computed: {
     ...mapGetters(['show', 'zoom', 'coque', 'appelsInfo', 'myPhoneNumber', 'volume'])

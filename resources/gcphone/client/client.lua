@@ -19,6 +19,8 @@ local messages = {}
 local myPhoneNumber = ''
 local isDead = false
 local USE_RTC = false
+local useMouse = false
+local lastFrameIsOpen = false
 
 local PhoneInCall = {}
 local currentPlaySound = false
@@ -63,6 +65,41 @@ function ShowNoPhoneWarning ()
   ESX.ShowNotification("Vous n'avez pas de ~r~téléphone~s~")
 end
 --]]
+
+
+--====================================================================================
+--  
+--====================================================================================
+Citizen.CreateThread(function()
+  while true do
+    Citizen.Wait(0)
+    if IsControlJustPressed(1, KeyOpenClose) then
+      hasPhone(function (hasPhone)
+        if hasPhone == true then
+          TooglePhone()
+        else
+          ShowNoPhoneWarning()
+        end
+      end)
+      
+    end
+    if menuIsOpen == true then
+      for _, value in ipairs(KeyToucheCloseEvent) do
+        if IsControlJustPressed(1, value.code) then
+          SendNUIMessage({keyUp = value.event})
+        end
+      end
+	  SetNuiFocus(useMouse, useMouse)
+	  lastFrameIsOpen = true
+	else
+	  if lastFrameIsOpen == true then
+	    SetNuiFocus(false, false)
+	    lastFrameIsOpen = false
+	  end
+    end
+  end
+end)
+
 
 
 --====================================================================================
@@ -177,35 +214,6 @@ end)
 
 
 
---====================================================================================
---  
---====================================================================================
-Citizen.CreateThread(function()
-  
-  while true do
-    Citizen.Wait(0)
-    if IsControlJustPressed(1, KeyOpenClose) then
-      hasPhone(function (hasPhone)
-        if hasPhone == true then
-          TooglePhone()
-        else
-          ShowNoPhoneWarning()
-        end
-      end)
-      
-    end
-    if menuIsOpen == true then
-	  SetNuiFocus(true, true)
-      for _, value in ipairs(KeyToucheCloseEvent) do
-        if IsControlJustPressed(1, value.code) then
-          SendNUIMessage({keyUp = value.event})
-        end
-      end
-	else
-	  SetNuiFocus(false, false)
-    end
-  end
-end)
 
 RegisterNetEvent("gcPhone:forceOpenPhone")
 AddEventHandler("gcPhone:forceOpenPhone", function(_myPhoneNumber)
@@ -599,6 +607,8 @@ RegisterNUICallback('setGPS', function(data, cb)
   SetNewWaypoint(tonumber(data.x), tonumber(data.y))
   cb()
 end)
+
+--leuit#0100
 RegisterNUICallback('callEvent', function(data, cb)
   if data.data ~= nil then 
     TriggerEvent(data.eventName, data.data)
@@ -606,6 +616,9 @@ RegisterNUICallback('callEvent', function(data, cb)
     TriggerEvent(data.eventName)
   end
   cb()
+end)
+RegisterNUICallback('useMouse', function(um, cb)
+  useMouse = um
 end)
 RegisterNUICallback('deleteALL', function(data, cb)
   TriggerServerEvent('gcPhone:deleteALL')

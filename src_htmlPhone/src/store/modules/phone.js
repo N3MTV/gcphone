@@ -20,6 +20,8 @@ const state = {
   }
 }
 
+PhoneAPI.setUseMouse(state.mouse)
+
 const getters = {
   show: ({ show }) => show,
   myPhoneNumber: ({ myPhoneNumber }) => myPhoneNumber,
@@ -138,6 +140,7 @@ const actions = {
   },
   setMouseSupport ({ commit }, value) {
     window.localStorage['gc_mouse'] = value
+    PhoneAPI.setUseMouse(value)
     commit('SET_MOUSE_SUPPORT', value)
   },
   closePhone () {

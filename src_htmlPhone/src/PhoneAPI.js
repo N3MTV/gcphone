@@ -84,6 +84,9 @@ class PhoneAPI {
   async closePhone () {
     return this.post('closePhone')
   }
+  async setUseMouse (useMouse) {
+    return this.post('useMouse', useMouse)
+  }
   async setGPS (x, y) {
     return this.post('setGPS', {x, y})
   }
