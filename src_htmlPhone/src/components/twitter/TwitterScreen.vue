@@ -8,8 +8,10 @@
       <div
         v-for="(s, i) in screen"
         :key="i"
-        class="twitter_menu-item">
-        <i class="fa" :class="s.icon" :style="{color: i === currentScreenIndex ? '#1da1f2' : '#303030'}"></i>
+        class="twitter_menu-item"
+        :class="{select: i === currentScreenIndex}"
+        @click="openMenu(i)">
+        <i class="fa" :class="s.icon"></i>
       </div>
     </div>
   </div>
@@ -65,7 +67,7 @@ export default {
   watch: {
   },
   methods: {
-    onLeft: function () {
+    onLeft () {
       this.currentScreenIndex = Math.max(0, this.currentScreenIndex - 1)
     },
     onRight () {
@@ -73,6 +75,9 @@ export default {
     },
     home () {
       this.currentScreenIndex = 0
+    },
+    openMenu (index) {
+      this.currentScreenIndex = index
     },
     quit () {
       this.$router.push({ name: 'home' })
@@ -106,5 +111,12 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #303030;
+}
+.twitter_menu-item.select {
+  color: #1da1f2;
+}
+.twitter_menu-item:hover {
+  color: #0084b4;
 }
 </style>

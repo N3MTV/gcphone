@@ -1,11 +1,13 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="IntlString('APP_CONFIG_TITLE')" />
+    <PhoneTitle :title="IntlString('APP_CONFIG_TITLE')" @back="onBackspace"/>
     <div class='phone_content elements'>
       <div class='element'
           v-for='(elem, key) in paramList' 
           v-bind:class="{ select: key === currentSelect}"
-          v-bind:key="key">
+          v-bind:key="key"
+          @click="onPressItem(key)"  
+        >
         <i class="fa" v-bind:class="elem.icons" v-bind:style="{color: elem.color}"></i>
         <div class="element-content">
           <span class="element-title">{{elem.title}}</span>
@@ -125,7 +127,7 @@ export default {
         document.querySelector('.select').scrollIntoViewIfNeeded()
       })
     },
-    onBackspace: function () {
+    onBackspace () {
       if (this.ignoreControls === true) return
       this.$router.push({ name: 'home' })
     },
@@ -153,7 +155,11 @@ export default {
         param.onLeft(param)
       }
     },
-    onEnter: function () {
+    onPressItem (index) {
+      this.currentSelect = index
+      this.onEnter()
+    },
+    onEnter () {
       if (this.ignoreControls === true) return
       let param = this.paramList[this.currentSelect]
       if (param.values !== undefined) {

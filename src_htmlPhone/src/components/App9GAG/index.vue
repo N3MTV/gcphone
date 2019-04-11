@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="'9 GAG (' + currentSelectPost + ')'" backgroundColor="#000"/>  
+    <PhoneTitle :title="'9 GAG (' + currentSelectPost + ')'" backgroundColor="#000" @back="quit"/>  
     <div class='phone_content'>
       <div class="post" v-if="currentPost !== undefined">
         <h1 class="post-title">{{ currentPost.title }}</h1>
@@ -58,7 +58,7 @@ export default {
         }
       }, 200)
     },
-    cancel: function () {
+    quit: function () {
       this.$router.push({ name: 'home' })
     }
   },
@@ -74,12 +74,12 @@ export default {
   created: function () {
     this.$bus.$on('keyUpArrowLeft', this.previewPost)
     this.$bus.$on('keyUpArrowRight', this.nextPost)
-    this.$bus.$on('keyUpBackspace', this.cancel)
+    this.$bus.$on('keyUpBackspace', this.quit)
   },
   beforeDestroy: function () {
     this.$bus.$off('keyUpArrowLeft', this.previewPost)
     this.$bus.$off('keyUpArrowRight', this.nextPost)
-    this.$bus.$off('keyUpBackspace', this.cancel)
+    this.$bus.$off('keyUpBackspace', this.quit)
   }
 }
 </script>

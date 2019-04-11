@@ -1,6 +1,6 @@
 <template>
   <div class="contact">
-    <list :list='lcontacts' :disable="disableList" :title="IntlString('APP_CONTACT_TITLE')" @select='onSelect' @option='onOption'></list>
+    <list :list='lcontacts' :disable="disableList" :title="IntlString('APP_CONTACT_TITLE')" @back="back" @select='onSelect' @option='onOption'></list>
   </div>
 </template>
 

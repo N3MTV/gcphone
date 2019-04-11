@@ -1,12 +1,14 @@
 <template>
   <div class="phone_app messages">
-    <PhoneTitle :title="displayContact" :backgroundColor="color"/>
-    <div class="img-fullscreen" v-if="imgZoom !== undefined" >
+    <PhoneTitle :title="displayContact" :backgroundColor="color" @back="quit"/>
+    <div class="img-fullscreen" v-if="imgZoom !== undefined" @click="imgZoom = undefined">
       <img :src="imgZoom" />
     </div>
     
     <div id='sms_list'>
-        <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesList' v-bind:key="mess.id">
+        <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesList' v-bind:key="mess.id"
+          @click="onActionMessage(mess)"
+        >
             <span class='sms_message sms_me' 
               v-bind:class="{ sms_other : mess.owner === 0}" :style="colorSmsOwner[mess.owner]">
               <img v-if="isSMSImage(mess)" class="sms-img" :src="mess.message">
@@ -18,12 +20,12 @@
     </div>
 
     <div id='sms_write'>
-        <input type="text" :placeholder="IntlString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')">
-        <div class="sms_send">
+        <input type="text" :placeholder="IntlString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')" v-model="message">
+        <div class="sms_send" @click="send">
           <svg height="24" viewBox="0 0 24 24" width="24">
-    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-    <path d="M0 0h24v24H0z" fill="none"/>
-</svg>
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+          </svg>
         </div>
     </div>
   </div>
@@ -42,7 +44,8 @@ export default {
       selectMessage: -1,
       display: '',
       phoneNumber: '',
-      imgZoom: undefined
+      imgZoom: undefined,
+      message: ''
     }
   },
   components: {
@@ -65,6 +68,9 @@ export default {
         }
       })
     },
+    quit () {
+      this.$router.push({path: '/messages'})
+    },
     onUp: function () {
       if (this.ignoreControls === true) return
       if (this.selectMessage === -1) {
@@ -86,7 +92,7 @@ export default {
     onEnter () {
       if (this.ignoreControls === true) return
       if (this.selectMessage !== -1) {
-        this.onActionMessage()
+        this.onActionMessage(this.messagesList[this.selectMessage])
       } else {
         this.$phoneAPI.getReponseText().then(data => {
           let message = data.text.trim()
@@ -99,11 +105,20 @@ export default {
         })
       }
     },
+    send () {
+      const message = this.message.trim()
+      if (message === '') return
+      this.message = ''
+      this.sendMessage({
+        phoneNumber: this.phoneNumber,
+        message
+      })
+    },
     isSMSImage (mess) {
       return /^https?:\/\/.*\.(png|jpg|jpeg|gif)/.test(mess.message)
     },
-    onActionMessage () {
-      let message = this.messagesList[this.selectMessage]
+    onActionMessage (message) {
+      // let message = this.messagesList[this.selectMessage]
       let isGPS = /^GPS: -?\d*(\.\d+), -?\d*(\.\d+)/.test(message.message)
       let hasNumber = /#([0-9]+)/.test(message.message)
       let isSMSImage = this.isSMSImage(message)
@@ -165,7 +180,7 @@ export default {
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
       } else {
-        this.$router.push({path: '/messages'})
+        this.quit()
       }
     },
     onRight: function () {
@@ -328,12 +343,12 @@ export default {
   width: 100%;
   height: 100%;
 }
-.sms.select .sms_message{
+.sms.select .sms_message, .sms:hover .sms_message{
   background-color: rgb(0, 0, 0) !important;
   color: #d4d4d4 !important;
 }
 
-.sms.select .sms_message .sms_time {
+.sms.select .sms_message .sms_time, .sms:hover .sms_message .sms_time{
   background-color: inherit !important;
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="title" :showInfoBare="showInfoBare" v-if="showHeader"/>
+    <PhoneTitle :title="title" :showInfoBare="showInfoBare" v-if="showHeader" @back="back"/>
     <!-- <InfoBare v-if="showInfoBare"/>
     <div v-if="title !== ''" class="phone_title" v-bind:style="styleTitle()">{{title}}</div>
     -->
@@ -123,6 +123,9 @@ export default {
     },
     optionItem (item) {
       this.$emit('option', item)
+    },
+    back () {
+      this.$emit('back')
     },
     onRight: function () {
       if (this.disable === true) return

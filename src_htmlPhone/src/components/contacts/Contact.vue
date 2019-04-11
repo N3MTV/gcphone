@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="contact.display" />  
+    <PhoneTitle :title="contact.display" @back="cancel"/>  
     <div class='phone_content content inputText'>
         
         <div class="group select" data-type="text" data-model='display' data-maxlength = '64'>      
