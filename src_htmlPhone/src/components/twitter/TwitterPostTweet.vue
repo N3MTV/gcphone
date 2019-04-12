@@ -4,6 +4,7 @@
         <textarea
           class="textarea-input"
           v-model.trim="message"
+          v-autofocus
           :placeholder="IntlString('APP_TWITTER_PLACEHOLDER_MESSAGE')"
         ></textarea>
         <span class='tweet_send' @click="tweeter">{{ IntlString('APP_TWITTER_BUTTON_ACTION_TWEETER') }}</span>

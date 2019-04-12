@@ -5,7 +5,7 @@
       <img :src="imgZoom" />
     </div>
     
-    <div id='sms_list'>
+    <div id='sms_list' @contextmenu.prevent="showSendGPS">
         <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesList' v-bind:key="mess.id"
           @click="onActionMessage(mess)"
         >
@@ -19,11 +19,12 @@
         </div>
     </div>
 
-    <div id='sms_write'>
+    <div id='sms_write' @contextmenu.prevent="showSendGPS">
         <input
           type="text"
           v-model="message"
           :placeholder="IntlString('APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE')"
+          v-autofocus
           @keyup.enter.prevent="send"
         >
         <div class="sms_send" @click="send">
@@ -111,7 +112,6 @@ export default {
       }
     },
     send () {
-      console.log('sendsendsendsend')
       const message = this.message.trim()
       if (message === '') return
       this.message = ''
@@ -189,22 +189,25 @@ export default {
         this.quit()
       }
     },
+    showSendGPS () {
+      this.ignoreControls = true
+      Modal.CreateModal({choix: [
+        {id: 1, title: this.IntlString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
+        {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo'}
+      ]}).then(data => {
+        if (data.id === 1) {
+          this.sendMessage({
+            phoneNumber: this.phoneNumber,
+            message: '%pos%'
+          })
+        }
+        this.ignoreControls = false
+      })
+    },
     onRight: function () {
       if (this.ignoreControls === true) return
       if (this.selectMessage === -1) {
-        this.ignoreControls = true
-        Modal.CreateModal({choix: [
-          {id: 1, title: this.IntlString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
-          {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo'}
-        ]}).then(data => {
-          if (data.id === 1) {
-            this.sendMessage({
-              phoneNumber: this.phoneNumber,
-              message: '%pos%'
-            })
-          }
-          this.ignoreControls = false
-        })
+        this.showSendGPS()
       }
     }
   },

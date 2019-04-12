@@ -7,7 +7,7 @@
           <h2 :style="{color}">{{ title }}</h2>
           <textarea 
             class="modal-textarea"
-            :autofocus="'autofocus'"
+            v-autofocus
             :style="{borderColor: color}" v-model="inputText"
             :maxlength="limits"
           ></textarea>
@@ -50,7 +50,7 @@ export default {
     },
     text: {
       type: String,
-      default: () => 'text'
+      default: () => ''
     },
     limits: {
       type: Number,
@@ -158,6 +158,7 @@ export default {
       font-size: 18px;
       font-weight: 700;
       padding: 6px 12px;
+      outline: none;
     }
     .botton-container button:hover {
       background-color: rgba(0, 0, 0, .1);

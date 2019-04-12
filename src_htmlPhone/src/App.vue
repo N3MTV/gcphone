@@ -84,6 +84,9 @@ export default {
       if (keyValid.indexOf(event.key) !== -1) {
         this.$bus.$emit('keyUp' + event.key)
       }
+      if (event.key === 'Escape') {
+        this.$phoneAPI.closePhone()
+      }
     })
   }
 }

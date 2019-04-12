@@ -6,6 +6,8 @@ import VueTimeago from './TimeAgo'
 import PhoneAPI from './PhoneAPI'
 import Notification from './Notification'
 
+import AutoFocus from './directives/autofocus'
+
 Vue.use(VueTimeago)
 Vue.use(Notification)
 Vue.config.productionTip = false
@@ -16,6 +18,8 @@ Vue.prototype.$phoneAPI = PhoneAPI
 window.VueTimeago = VueTimeago
 window.Vue = Vue
 window.store = store
+
+Vue.directive('autofocus', AutoFocus)
 
 /* eslint-disable no-new */
 window.APP = new Vue({

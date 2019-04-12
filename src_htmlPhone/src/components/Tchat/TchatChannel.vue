@@ -1,10 +1,11 @@
 <template>
   <div class="phone_app">
     <PhoneTitle :title="IntlString('APP_DARKTCHAT_TITLE')" backgroundColor="#090f20" @back="onBack" />
-    <div class="elements">
+    <div class="elements" @contextmenu.prevent="addChannelOption">
         <div class="element" v-for='(elem, key) in tchatChannels' 
           v-bind:key="elem.channel"
           v-bind:class="{ select: key === currentSelect}"
+          @click="showChannel(elem.channel)"
           >
             <div class="elem-title"><span class="diese">#</span> {{elem.channel}}</div>
         </div>
@@ -31,7 +32,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'tchatChannels', 'Apps'])
+    ...mapGetters(['IntlString', 'useMouse', 'tchatChannels', 'Apps'])
   },
   methods: {
     ...mapActions(['tchatAddChannel', 'tchatRemoveChannel']),
@@ -91,8 +92,11 @@ export default {
         }
       } else {
         const channel = this.tchatChannels[this.currentSelect].channel
-        this.$router.push({ name: 'tchat.channel.show', params: { channel } })
+        this.showChannel(channel)
       }
+    },
+    showChannel (channel) {
+      this.$router.push({ name: 'tchat.channel.show', params: { channel } })
     },
     onBack () {
       if (this.ignoreControls === true) return
@@ -100,7 +104,7 @@ export default {
     },
     async addChannelOption () {
       try {
-        const rep = await this.$phoneAPI.getReponseText({limit: 20, title: 'Ajouter un channel'})
+        const rep = await Modal.CreateTextModal({limit: 20, title: 'Ajouter un channel'})
         let channel = (rep || {}).text || ''
         channel = channel.toLowerCase().replace(/[^a-z]/g, '')
         if (channel.length > 0) {
@@ -115,14 +119,18 @@ export default {
       this.tchatRemoveChannel({ channel })
     }
   },
-  created: function () {
-    this.$bus.$on('keyUpArrowDown', this.onDown)
-    this.$bus.$on('keyUpArrowUp', this.onUp)
-    this.$bus.$on('keyUpArrowRight', this.onRight)
-    this.$bus.$on('keyUpEnter', this.onEnter)
-    this.$bus.$on('keyUpBackspace', this.onBack)
+  created () {
+    if (!this.useMouse) {
+      this.$bus.$on('keyUpArrowDown', this.onDown)
+      this.$bus.$on('keyUpArrowUp', this.onUp)
+      this.$bus.$on('keyUpArrowRight', this.onRight)
+      this.$bus.$on('keyUpEnter', this.onEnter)
+      this.$bus.$on('keyUpBackspace', this.onBack)
+    } else {
+      this.currentSelect = -1
+    }
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpArrowRight', this.onRight)
@@ -172,14 +180,14 @@ export default {
   line-height: 40px;
 }
 
-.element.select{
+.element.select, .element:hover{
    background-color: #FFC629;
    color: black;
 }
-.element.select  .elem-title {
+.element.select .elem-title, .element:hover .elem-title {
    margin-left: 12px;
 }
-.element.select .elem-title .diese {
+.element.select .elem-title .diese, .element:hover .elem-title .diese {
    color:#5e0576;
 }
  .elements::-webkit-scrollbar-track
