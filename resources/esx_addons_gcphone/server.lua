@@ -16,6 +16,19 @@ TriggerEvent('esx:getSharedObject', function(obj)
 end)
 
 
+RegisterServerEvent('gcPhone:sendMessage')
+AddEventHandler('gcPhone:sendMessage', function(number, message)
+    local sourcePlayer = tonumber(source)
+    if PhoneNumbers[number] ~= nil then
+      getPhoneNumber(source, function (phone) 
+        notifyAlertSMS(number, {
+          message = message,
+          numero = phone,
+        }, PhoneNumbers[number].sources)
+      end)
+    end
+end)
+
 function notifyAlertSMS (number, alert, listSrc)
   if PhoneNumbers[number] ~= nil then
     for k, _ in pairs(listSrc) do
