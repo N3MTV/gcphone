@@ -66,7 +66,7 @@ export default {
   computed: {
     ...mapGetters(['favoriteTweets', 'IntlString', 'useMouse']),
     tweets () {
-      this.favoriteTweets
+      return this.favoriteTweets
     }
   },
   watch: {
