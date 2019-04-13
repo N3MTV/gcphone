@@ -72,7 +72,7 @@ export default {
       }
     }
   },
-  mounted: function () {
+  mounted () {
     this.loadConfig()
     window.addEventListener('message', (event) => {
       if (event.data.keyUp !== undefined) {

@@ -116,6 +116,7 @@ export default {
     async reply (tweet) {
       const authorName = tweet.author
       try {
+        this.ignoreControls = true
         const rep = await Modal.CreateTextModal({
           title: 'Répondre',
           text: `@${authorName} `
@@ -126,7 +127,10 @@ export default {
             this.twitterPostTweet({ message })
           }
         }
-      } catch (e) {}
+      } catch (e) {
+      } finally {
+        this.ignoreControls = false
+      }
     },
     resetScroll () {
       this.$nextTick(() => {
@@ -170,6 +174,7 @@ export default {
       }
     },
     onBack () {
+      console.log('onBackonBackonBackonBack')
       if (this.imgZoom !== undefined) {
         this.imgZoom = undefined
         return
@@ -178,7 +183,8 @@ export default {
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
       } else {
-        this.$router.push({ name: 'home' })
+        console.log('emit')
+        this.$bus.$emit('twitterHome')
       }
     },
     formatTime (time) {
@@ -191,8 +197,8 @@ export default {
       this.$bus.$on('keyUpArrowDown', this.onDown)
       this.$bus.$on('keyUpArrowUp', this.onUp)
       this.$bus.$on('keyUpEnter', this.onEnter)
-      this.$bus.$on('keyUpBackspace', this.onBack)
     }
+    this.$bus.$on('keyUpBackspace', this.onBack)
   },
   mounted () {
     this.fetchFavoriteTweets()

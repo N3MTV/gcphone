@@ -77,7 +77,6 @@ export default {
       const numero = item.num
       const isValid = numero.startsWith('#') === false
       this.ignoreControls = true
-      console.log('set ignore', this.ignoreControls)
       let choix = [
         {id: 1, title: this.IntlString('APP_PHONE_DELETE'), icons: 'fa-circle-o', color: 'orange'},
         {id: 2, title: this.IntlString('APP_PHONE_DELETE_ALL'), icons: 'fa-circle-o', color: 'red'},

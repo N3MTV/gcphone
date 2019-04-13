@@ -183,6 +183,7 @@ export default {
         return
       }
       if (this.ignoreControls === true) return
+      if (this.useMouse === true && document.activeElement.tagName !== 'BODY') return
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
       } else {
@@ -251,9 +252,9 @@ export default {
       this.$bus.$on('keyUpArrowDown', this.onDown)
       this.$bus.$on('keyUpArrowUp', this.onUp)
       this.$bus.$on('keyUpEnter', this.onEnter)
-      this.$bus.$on('keyUpBackspace', this.onBackspace)
       this.$bus.$on('keyUpArrowRight', this.onRight)
     }
+    this.$bus.$on('keyUpBackspace', this.onBackspace)
   },
   beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)

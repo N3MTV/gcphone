@@ -253,7 +253,7 @@ export default {
       if (this.state !== this.STATES.MENU) {
         this.state = this.STATES.MENU
       } else {
-        this.$bus.$emit('twitterHomme')
+        this.$bus.$emit('twitterHome')
       }
     },
     setLocalAccount ($event, key) {

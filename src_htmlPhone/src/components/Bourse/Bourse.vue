@@ -66,14 +66,14 @@ export default {
       this.scrollIntoViewIfNeeded()
     }
   },
-  created: function () {
+  created () {
     if (!this.useMouse) {
       this.$bus.$on('keyUpArrowDown', this.onDown)
       this.$bus.$on('keyUpArrowUp', this.onUp)
-      this.$bus.$on('keyUpBackspace', this.onBackspace)
     }
+    this.$bus.$on('keyUpBackspace', this.onBackspace)
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)
     this.$bus.$off('keyUpArrowUp', this.onUp)
     this.$bus.$off('keyUpBackspace', this.onBackspace)

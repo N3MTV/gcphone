@@ -106,7 +106,7 @@ export default {
         },
         {
           icons: 'fa-mouse-pointer',
-          title: this.IntlString('MOUSE_SUPPORT'),
+          title: this.IntlString('APP_CONFIG_MOUSE_SUPPORT'),
           onValid: 'onChangeMouseSupport',
           values: {
             'Yes': true,
@@ -263,10 +263,10 @@ export default {
       this.$bus.$on('keyUpArrowDown', this.onDown)
       this.$bus.$on('keyUpArrowUp', this.onUp)
       this.$bus.$on('keyUpEnter', this.onEnter)
-      this.$bus.$on('keyUpBackspace', this.onBackspace)
     } else {
       this.currentSelect = -1
     }
+    this.$bus.$on('keyUpBackspace', this.onBackspace)
   },
   beforeDestroy () {
     this.$bus.$off('keyUpArrowRight', this.onRight)

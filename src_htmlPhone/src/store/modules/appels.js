@@ -9,6 +9,9 @@ const getters = {
   appelsHistorique: ({ appelsHistorique }) => appelsHistorique,
   appelsInfo: ({ appelsInfo }) => appelsInfo,
   appelsDisplayName (state, getters) {
+    if (state.appelsInfo === null) {
+      return 'ERROR'
+    }
     if (state.appelsInfo.hidden === true) {
       return getters.IntlString('APP_PHONE_NUMBER_HIDDEN')
     }
@@ -17,6 +20,9 @@ const getters = {
     return contact.display || getters.IntlString('APP_PHONE_NUMBER_UNKNOWN')
   },
   appelsDisplayNumber (state, getters) {
+    if (state.appelsInfo === null) {
+      return 'ERROR'
+    }
     if (getters.isInitiatorCall === true) {
       return state.appelsInfo.receiver_num
     }

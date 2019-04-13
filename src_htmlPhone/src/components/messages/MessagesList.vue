@@ -109,9 +109,7 @@ export default {
     }
   },
   created () {
-    if (!this.useMouse) {
-      this.$bus.$on('keyUpBackspace', this.back)
-    }
+    this.$bus.$on('keyUpBackspace', this.back)
   },
   beforeDestroy () {
     this.$bus.$off('keyUpBackspace', this.back)

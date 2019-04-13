@@ -70,10 +70,10 @@ export default {
       this.$bus.$on('keyUpArrowDown', this.onDown)
       this.$bus.$on('keyUpArrowUp', this.onUp)
       this.$bus.$on('keyUpEnter', this.onEnter)
-      this.$bus.$on('keyUpBackspace', this.cancel)
     } else {
       this.currentSelect = -1
     }
+    this.$bus.$on('keyUpBackspace', this.cancel)
   },
   beforeDestroy () {
     this.$bus.$off('keyUpArrowDown', this.onDown)

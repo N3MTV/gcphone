@@ -41,6 +41,7 @@
 </template>
 
 <script>
+// eslint-disable-next-line
 import { mapGetters, mapActions } from 'vuex'
 import InfoBare from './../InfoBare'
 
@@ -57,7 +58,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['appelsInfo', 'acceptCall', 'rejectCall', 'ignoreCall']),
+    ...mapActions(['acceptCall', 'rejectCall', 'ignoreCall']),
     onBackspace () {
       if (this.status === 1) {
         this.onRejectCall()
@@ -139,9 +140,10 @@ export default {
   },
 
   mounted () {
-    if (this.appelsInfo.initiator === true) {
+    if (this.appelsInfo !== null && this.appelsInfo.initiator === true) {
       this.status = 1
     }
+    this.status = 0
   },
 
   created: function () {

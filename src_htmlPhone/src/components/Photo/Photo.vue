@@ -1,7 +1,7 @@
 <script>
 import PhoneAPI from './../../PhoneAPI'
 export default {
-  created: function () {
+  created () {
     PhoneAPI.takePhoto()
   }
 }

@@ -142,7 +142,7 @@ export default {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  state.tweets = [{
+  state.favoriteTweets = [{
     id: 1,
     message: 'https://pbs.twimg.com/profile_images/702982240184107008/tUKxvkcs_400x400.jpg',
     author: 'Gannon',

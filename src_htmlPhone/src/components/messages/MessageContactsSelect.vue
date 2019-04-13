@@ -7,6 +7,7 @@
 <script>
 import List from './../List.vue'
 import { mapGetters } from 'vuex'
+import Modal from '@/components/Modal/index.js'
 
 export default {
   components: {
@@ -31,7 +32,8 @@ export default {
   methods: {
     onSelect (contact) {
       if (contact.num === -1) {
-        this.$phoneAPI.getReponseText({
+        Modal.CreateTextModal({
+          title: this.IntlString('APP_PHONE_ENTER_NUMBER'),
           limit: 10
         }).then(data => {
           let message = data.text.trim()
@@ -54,9 +56,7 @@ export default {
     }
   },
   created () {
-    if (!this.useMouse) {
-      this.$bus.$on('keyUpBackspace', this.back)
-    }
+    this.$bus.$on('keyUpBackspace', this.back)
   },
 
   beforeDestroy () {

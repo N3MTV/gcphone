@@ -38,7 +38,6 @@ export default {
           const message = rep.text.trim()
           if (message.length !== 0) {
             this.twitterPostTweet({ message })
-            this.$bus.$emit('twitterHomme')
           }
         }
       } catch (e) {}
@@ -49,14 +48,15 @@ export default {
       this.message = ''
     },
     onBack () {
-      this.$bus.$emit('twitterHomme')
+      if (this.useMouse === true && document.activeElement.tagName !== 'BODY') return
+      this.$bus.$emit('twitterHome')
     }
   },
   created () {
     if (!this.useMouse) {
-      this.$bus.$on('keyUpBackspace', this.onBack)
       this.$bus.$on('keyUpEnter', this.onEnter)
     }
+    this.$bus.$on('keyUpBackspace', this.onBack)
   },
   async mounted () {
   },

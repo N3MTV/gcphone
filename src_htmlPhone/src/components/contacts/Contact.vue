@@ -4,7 +4,7 @@
     <div class='phone_content content inputText'>
         
         <div class="group select" data-type="text" data-model='display' data-maxlength = '64'>      
-            <input type="text" v-model="contact.display">
+            <input type="text" v-model="contact.display" v-autofocus>
             <span class="highlight"></span>
             <span class="bar"></span>
             <label>{{ IntlString('APP_CONTACT_LABEL_NAME') }}</label>
@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     ...mapActions(['updateContact', 'addContact']),
-    onUp: function () {
+    onUp () {
       if (this.ignoreControls === true) return
       let select = document.querySelector('.group.select')
       if (select.previousElementSibling !== null) {
@@ -69,7 +69,7 @@ export default {
         }
       }
     },
-    onDown: function () {
+    onDown () {
       if (this.ignoreControls === true) return
       let select = document.querySelector('.group.select')
       if (select.nextElementSibling !== null) {
@@ -83,7 +83,7 @@ export default {
         }
       }
     },
-    onEnter: function () {
+    onEnter () {
       if (this.ignoreControls === true) return
       let select = document.querySelector('.group.select')
       if (select.dataset.type === 'text') {
@@ -99,7 +99,7 @@ export default {
         this[select.dataset.action]()
       }
     },
-    save: function () {
+    save () {
       if (this.id !== -1) {
         this.updateContact({
           id: this.id,
@@ -114,11 +114,12 @@ export default {
       }
       history.back()
     },
-    cancel: function () {
+    cancel () {
       if (this.ignoreControls === true) return
+      if (this.useMouse === true && document.activeElement.tagName !== 'BODY') return
       history.back()
     },
-    deleteC: function () {
+    deleteC () {
       if (this.id !== -1) {
         this.ignoreControls = true
         let choix = [{title: 'Annuler'}, {title: 'Annuler'}, {title: 'Supprimer', color: 'red'}, {title: 'Annuler'}, {title: 'Annuler'}]
@@ -139,10 +140,10 @@ export default {
       this.$bus.$on('keyUpArrowDown', this.onDown)
       this.$bus.$on('keyUpArrowUp', this.onUp)
       this.$bus.$on('keyUpEnter', this.onEnter)
-      this.$bus.$on('keyUpBackspace', this.cancel)
     } else {
       this.currentSelect = -1
     }
+    this.$bus.$on('keyUpBackspace', this.cancel)
     this.id = parseInt(this.$route.params.id)
     this.contact.display = this.IntlString('APP_CONTACT_NEW')
     if (this.id !== -1) {

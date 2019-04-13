@@ -87,19 +87,19 @@ export default {
       }
     }
   },
-  created: function () {
+  created () {
     if (!this.useMouse) {
       this.$bus.$on('keyUpArrowLeft', this.onLeft)
       this.$bus.$on('keyUpArrowRight', this.onRight)
-      this.$bus.$on('twitterHomme', this.home)
     }
+    this.$bus.$on('twitterHome', this.home)
   },
   mounted () {
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$bus.$off('keyUpArrowLeft', this.onLeft)
     this.$bus.$off('keyUpArrowRight', this.onRight)
-    this.$bus.$off('twitterHomme', this.home)
+    this.$bus.$off('twitterHome', this.home)
   }
 }
 </script>

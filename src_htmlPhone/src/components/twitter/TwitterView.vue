@@ -113,6 +113,7 @@ export default {
     async reply (tweet) {
       const authorName = tweet.author
       try {
+        this.ignoreControls = true
         const rep = await Modal.CreateTextModal({
           title: 'Répondre',
           text: `@${authorName} `
@@ -123,7 +124,10 @@ export default {
             this.twitterPostTweet({ message })
           }
         }
-      } catch (e) {}
+      } catch (e) {
+      } finally {
+        this.ignoreControls = false
+      }
     },
     resetScroll () {
       this.$nextTick(() => {
@@ -140,7 +144,7 @@ export default {
         }
       })
     },
-    onUp: function () {
+    onUp () {
       if (this.ignoreControls === true) return
       if (this.selectMessage === -1) {
         this.selectMessage = 0
@@ -188,8 +192,8 @@ export default {
       this.$bus.$on('keyUpArrowDown', this.onDown)
       this.$bus.$on('keyUpArrowUp', this.onUp)
       this.$bus.$on('keyUpEnter', this.onEnter)
-      this.$bus.$on('keyUpBackspace', this.onBack)
     }
+    this.$bus.$on('keyUpBackspace', this.onBack)
   },
   mounted () {
     this.fetchTweets()

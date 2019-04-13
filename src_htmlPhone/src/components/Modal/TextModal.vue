@@ -7,9 +7,11 @@
           <h2 :style="{color}">{{ title }}</h2>
           <textarea 
             class="modal-textarea"
-            v-autofocus
-            :style="{borderColor: color}" v-model="inputText"
-            :maxlength="limits"
+            :class="{oneline: limit <= 18}"
+            ref="textarea"
+            :style="{borderColor: color}"
+            v-model="inputText"
+            :maxlength="limit"
           ></textarea>
           <div class="botton-container">
             <button
@@ -52,7 +54,7 @@ export default {
       type: String,
       default: () => ''
     },
-    limits: {
+    limit: {
       type: Number,
       default: 255
     }
@@ -94,6 +96,11 @@ export default {
   },
   created () {
     this.inputText = this.text
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.$refs.textarea.focus()
+    })
   },
   beforeDestroy () {
   }
@@ -143,6 +150,9 @@ export default {
       border-bottom: 3px solid red;
       outline: none;
       font-size: 18px;
+    }
+    .modal-textarea.oneline {
+      height: 38px;
     }
 
 
