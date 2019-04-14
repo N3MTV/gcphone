@@ -608,12 +608,17 @@ RegisterNUICallback('setGPS', function(data, cb)
   cb()
 end)
 
---leuit#0100
+-- Add security for event (leuit#0100)
 RegisterNUICallback('callEvent', function(data, cb)
-  if data.data ~= nil then 
-    TriggerEvent(data.eventName, data.data)
+  local eventName = data.eventName or ''
+  if string.match(eventName, 'gcphone') then
+    if data.data ~= nil then 
+      TriggerEvent(data.eventName, data.data)
+    else
+      TriggerEvent(data.eventName)
+    end
   else
-    TriggerEvent(data.eventName)
+    print('Event not allowed')
   end
   cb()
 end)
