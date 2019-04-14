@@ -1,17 +1,17 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="contact.display" @back="cancel"/>  
+    <PhoneTitle :title="contact.display" @back="forceCancel"/>  
     <div class='phone_content content inputText'>
         
         <div class="group select" data-type="text" data-model='display' data-maxlength = '64'>      
-            <input type="text" v-model="contact.display" v-autofocus>
+            <input type="text" v-model="contact.display" maxlength="64" v-autofocus>
             <span class="highlight"></span>
             <span class="bar"></span>
             <label>{{ IntlString('APP_CONTACT_LABEL_NAME') }}</label>
         </div>
         
         <div class="group inputText" data-type="text" data-model='number' data-maxlength='10'>      
-            <input type="text" v-model="contact.number">
+            <input type="text" v-model="contact.number" maxlength="10">
             <span class="highlight"></span>
             <span class="bar"></span>
             <label>{{ IntlString('APP_CONTACT_LABEL_NUMBER') }}</label>
@@ -19,8 +19,8 @@
         <div style="margin-top: 56px;" class="group " data-type="button" data-action='save' @click.stop="save">      
             <input type='button' class="btn btn-green" :value="IntlString('APP_CONTACT_SAVE')" @click.stop="save"/>
         </div>
-        <div class="group" data-type="button" data-action='cancel' @click.stop="cancel">      
-            <input type='button' class="btn btn-orange" :value="IntlString('APP_CONTACT_CANCEL')" @click.stop="cancel"/>
+        <div class="group" data-type="button" data-action='cancel' @click.stop="forceCancel">      
+            <input type='button' class="btn btn-orange" :value="IntlString('APP_CONTACT_CANCEL')" @click.stop="forceCancel"/>
         </div>
         <div class="group" data-type="button" data-action='deleteC' @click.stop="deleteC">      
             <input type='button' class="btn btn-red" :value="IntlString('APP_CONTACT_DELETE')" @click.stop="deleteC"/>
@@ -117,6 +117,9 @@ export default {
     cancel () {
       if (this.ignoreControls === true) return
       if (this.useMouse === true && document.activeElement.tagName !== 'BODY') return
+      history.back()
+    },
+    forceCancel () {
       history.back()
     },
     deleteC () {
