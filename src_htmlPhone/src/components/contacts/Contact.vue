@@ -16,14 +16,14 @@
             <span class="bar"></span>
             <label>{{ IntlString('APP_CONTACT_LABEL_NUMBER') }}</label>
         </div>
-        <div style="margin-top: 56px;" class="group " data-type="button" data-action='save' @click="save">      
-            <input type='button' class="btn btn-green" :value="IntlString('APP_CONTACT_SAVE')" />
+        <div style="margin-top: 56px;" class="group " data-type="button" data-action='save' @click.stop="save">      
+            <input type='button' class="btn btn-green" :value="IntlString('APP_CONTACT_SAVE')" @click.stop="save"/>
         </div>
-        <div class="group" data-type="button" data-action='cancel' @click="cancel">      
-            <input type='button' class="btn btn-orange" :value="IntlString('APP_CONTACT_CANCEL')" />
+        <div class="group" data-type="button" data-action='cancel' @click.stop="cancel">      
+            <input type='button' class="btn btn-orange" :value="IntlString('APP_CONTACT_CANCEL')" @click.stop="cancel"/>
         </div>
-        <div class="group" data-type="button" data-action='deleteC' @click="deleteC">      
-            <input type='button' class="btn btn-red" :value="IntlString('APP_CONTACT_DELETE')" />
+        <div class="group" data-type="button" data-action='deleteC' @click.stop="deleteC">      
+            <input type='button' class="btn btn-red" :value="IntlString('APP_CONTACT_DELETE')" @click.stop="deleteC"/>
         </div>
     </div>
   </div>

@@ -5,9 +5,9 @@
         <div class="element" v-for='(elem, key) in tchatChannels' 
           v-bind:key="elem.channel"
           v-bind:class="{ select: key === currentSelect}"
-          @click="showChannel(elem.channel)"
+          @click.stop="showChannel(elem.channel)"
           >
-            <div class="elem-title"><span class="diese">#</span> {{elem.channel}}</div>
+            <div class="elem-title" @click.stop="showChannel(elem.channel)"><span class="diese">#</span> {{elem.channel}}</div>
         </div>
     </div>
   </div>

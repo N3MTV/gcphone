@@ -10,8 +10,8 @@
         :key="i"
         class="twitter_menu-item"
         :class="{select: i === currentScreenIndex}"
-        @click="openMenu(i)">
-        <i class="fa" :class="s.icon"></i>
+        @click.stop="openMenu(i)">
+        <i class="fa" :class="s.icon" @click.stop="openMenu(i)"></i>
       </div>
     </div>
   </div>
@@ -77,6 +77,7 @@ export default {
       this.currentScreenIndex = 0
     },
     openMenu (index) {
+      console.log('Click detect index => ' + index)
       this.currentScreenIndex = index
     },
     quit () {

@@ -101,6 +101,7 @@ if (process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line
   state.appelsHistorique = [{"id":1,"incoming":0,"num":"336-4557","owner":"336-4557","accepts":0,"time":1528374759000},{"id":2,"incoming":0,"num":"police","owner":"336-4557","accepts":1,"time":1528374787000},{"id":3,"incoming":1,"num":"555-5555","owner":"336-4557","accepts":1,"time":1528374566000},{"id":4,"incoming":1,"num":"555-5555","owner":"336-4557","accepts":0,"time":1528371227000}]
   state.appelsInfo = {
+    initiator: false,
     id: 5,
     transmitter_src: 5,
     // transmitter_num: '###-####',

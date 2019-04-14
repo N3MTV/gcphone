@@ -8,16 +8,16 @@
         <div class="element" v-for='(elem, key) in list' 
           v-bind:key="elem[keyDispay]"
           v-bind:class="{ select: key === currentSelect}"
-          @click="selectItem(elem)"
+          @click.stop="selectItem(elem)"
           @contextmenu.prevent="optionItem(elem)"
           >
-            <div class="elem-pic" v-bind:style="stylePuce(elem)">
+            <div class="elem-pic" v-bind:style="stylePuce(elem)" @click.stop="selectItem(elem)">
               {{elem.letter || elem[keyDispay][0]}}
             </div>
-            <div v-if="elem.puce !== undefined && elem.puce !== 0" class="elem-puce">{{elem.puce}}</div>
-            <div v-if="elem.keyDesc === undefined || elem.keyDesc === ''" class="elem-title">{{elem[keyDispay]}}</div>
-            <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-title-has-desc">{{elem[keyDispay]}}</div>
-            <div v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{elem.keyDesc}}</div>
+            <div @click.stop="selectItem(elem)" v-if="elem.puce !== undefined && elem.puce !== 0" class="elem-puce">{{elem.puce}}</div>
+            <div @click.stop="selectItem(elem)" v-if="elem.keyDesc === undefined || elem.keyDesc === ''" class="elem-title">{{elem[keyDispay]}}</div>
+            <div @click.stop="selectItem(elem)" v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-title-has-desc">{{elem[keyDispay]}}</div>
+            <div @click.stop="selectItem(elem)" v-if="elem.keyDesc !== undefined && elem.keyDesc !== ''" class="elem-description">{{elem.keyDesc}}</div>
         </div>
     </div>
   </div>

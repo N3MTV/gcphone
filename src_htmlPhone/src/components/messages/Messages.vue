@@ -1,20 +1,21 @@
 <template>
   <div class="phone_app messages">
     <PhoneTitle :title="displayContact" :backgroundColor="color" @back="quit"/>
-    <div class="img-fullscreen" v-if="imgZoom !== undefined" @click="imgZoom = undefined">
+    <div class="img-fullscreen" v-if="imgZoom !== undefined" @click.stop="imgZoom = undefined">
       <img :src="imgZoom" />
     </div>
     
     <div id='sms_list' @contextmenu.prevent="showSendGPS">
         <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesList' v-bind:key="mess.id"
-          @click="onActionMessage(mess)"
+          @click.stop="onActionMessage(mess)"
         >
-            <span class='sms_message sms_me' 
+            <span class='sms_message sms_me'
+              @click.stop="onActionMessage(mess)"
               v-bind:class="{ sms_other : mess.owner === 0}" :style="colorSmsOwner[mess.owner]">
-              <img v-if="isSMSImage(mess)" class="sms-img" :src="mess.message">
-              <span v-else>{{mess.message}}</span>
+              <img v-if="isSMSImage(mess)" @click.stop="onActionMessage(mess)" class="sms-img" :src="mess.message">
+              <span v-else @click.stop="onActionMessage(mess)" >{{mess.message}}</span>
                 
-                <span ><timeago class="sms_time" :since='mess.time' :auto-update="20" :style="colorSmsOwner[mess.owner]"></timeago></span>
+                <span @click.stop="onActionMessage(mess)" ><timeago class="sms_time" :since='mess.time' :auto-update="20" :style="colorSmsOwner[mess.owner]"></timeago></span>
             </span>
         </div>
     </div>
@@ -27,8 +28,8 @@
           v-autofocus
           @keyup.enter.prevent="send"
         >
-        <div class="sms_send" @click="send">
-          <svg height="24" viewBox="0 0 24 24" width="24">
+        <div class="sms_send" @click.stop="send">
+          <svg height="24" viewBox="0 0 24 24" width="24" @click.stop="send">
               <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
               <path d="M0 0h24v24H0z" fill="none"/>
           </svg>

@@ -11,7 +11,7 @@
               v-bind:style="{color: val.color}"
               @click.stop="selectItem(val)"
             >
-                <i class="fa" :class="val.icons" ></i>{{val.title}}
+                <i @click.stop="selectItem(val)" class="fa" :class="val.icons" ></i>{{val.title}}
             </div>
           
 

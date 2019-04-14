@@ -6,12 +6,12 @@
           v-for='(elem, key) in paramList' 
           v-bind:class="{ select: key === currentSelect}"
           v-bind:key="key"
-          @click="onPressItem(key)"  
+          @click.stop="onPressItem(key)"  
         >
-        <i class="fa" v-bind:class="elem.icons" v-bind:style="{color: elem.color}"></i>
-        <div class="element-content">
-          <span class="element-title">{{elem.title}}</span>
-          <span v-if="elem.value" class="element-value">{{elem.value}}</span>
+        <i class="fa" v-bind:class="elem.icons" v-bind:style="{color: elem.color}" @click.stop="onPressItem(key)"></i>
+        <div class="element-content" @click.stop="onPressItem(key)">
+          <span class="element-title" @click.stop="onPressItem(key)">{{elem.title}}</span>
+          <span v-if="elem.value" class="element-value" @click.stop="onPressItem(key)">{{elem.value}}</span>
         </div>
       </div>
     </div>

@@ -12,8 +12,8 @@
         :key="i"
         @click="swapMenu(i)"
       >
-        <i class="subMenu-icon fa" :class="['fa-' + Comp.icon]"></i>
-        <span class="subMenu-name">{{Comp.name}}</span>
+        <i class="subMenu-icon fa" :class="['fa-' + Comp.icon]" @click.stop="swapMenu(i)"></i>
+        <span class="subMenu-name" @click.stop="swapMenu(i)">{{Comp.name}}</span>
       </div>
     </div>
    </div>
