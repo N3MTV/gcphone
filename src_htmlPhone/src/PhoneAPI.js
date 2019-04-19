@@ -131,8 +131,12 @@ class PhoneAPI {
     return this.config
   }
 
-  onsetEnableApp (data) {
+  async onsetEnableApp (data) {
     store.dispatch('setEnableApp', data)
+  }
+
+  async setIgnoreFocus (ignoreFocus) {
+    this.post('setIgnoreFocus', { ignoreFocus })
   }
 
   // === App Tchat
