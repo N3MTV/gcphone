@@ -188,7 +188,8 @@ export default {
     async onChangeBackground (param, data) {
       let val = data.value
       if (val === 'URL') {
-        this.$phoneAPI.getReponseText({
+        this.ignoreControls = true
+        Modal.CreateTextModal({
           text: 'https://i.imgur.com/'
         }).then(valueText => {
           if (valueText.text !== '' && valueText.text !== undefined && valueText.text !== null && valueText.text !== 'https://i.imgur.com/') {
@@ -197,6 +198,8 @@ export default {
               value: valueText.text
             })
           }
+        }).finally(() => {
+          this.ignoreControls = false
         })
       } else {
         this.setBackground({
