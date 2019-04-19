@@ -20,6 +20,7 @@ local myPhoneNumber = ''
 local isDead = false
 local USE_RTC = false
 local useMouse = false
+local ignoreFocus = false
 local lastFrameIsOpen = false
 
 local PhoneInCall = {}
@@ -89,7 +90,8 @@ Citizen.CreateThread(function()
           SendNUIMessage({keyUp = value.event})
         end
       end
-	  SetNuiFocus(useMouse, useMouse)
+	  local nuiFocus = useMouse and not ignoreFocus
+	  SetNuiFocus(nuiFocus, nuiFocus)
 	  lastFrameIsOpen = true
 	else
 	  if lastFrameIsOpen == true then
@@ -333,13 +335,12 @@ end
 --====================================================================================
 --  Function client | Appels
 --====================================================================================
-local inCall = false
 local aminCall = false
+local inCall = false
 
 RegisterNetEvent("gcPhone:waitingCall")
 AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
   SendNUIMessage({event = 'waitingCall', infoCall = infoCall, initiator = initiator})
-  print('---------------------', initiator)
   if initiator == true then
     PhonePlayCall()
     if menuIsOpen == false then
@@ -380,6 +381,14 @@ AddEventHandler("gcPhone:historiqueCall", function(historique)
 end)
 
 
+function startCall (phone_number, rtcOffer, extraData)
+  TriggerServerEvent('gcPhone:startCall', phone_number, rtcOffer, extraData)
+end
+
+function acceptCall (infoCall, rtcAnswer)
+  TriggerServerEvent('gcPhone:acceptCall', infoCall, rtcAnswer)
+end
+
 function rejectCall(infoCall)
   TriggerServerEvent('gcPhone:rejectCall', infoCall)
 end
@@ -404,18 +413,12 @@ end
 --====================================================================================
 --  Event NUI - Appels
 --====================================================================================
-function startCall (phone_number, rtcOffer, extraData)
-  TriggerServerEvent('gcPhone:startCall', phone_number, rtcOffer, extraData)
-end
+
 RegisterNUICallback('startCall', function (data, cb)
-  print(json.encode(data))
   startCall(data.numero, data.rtcOffer, data.extraData)
   cb()
 end)
 
-function acceptCall (infoCall, rtcAnswer)
-  TriggerServerEvent('gcPhone:acceptCall', infoCall, rtcAnswer)
-end
 RegisterNUICallback('acceptCall', function (data, cb)
   acceptCall(data.infoCall, data.rtcAnswer)
   cb()
@@ -457,7 +460,6 @@ end)
 RegisterNetEvent('gcphone:autoCall')
 AddEventHandler('gcphone:autoCall', function(number, extraData)
   if number ~= nil then
-    print('number', number)
     SendNUIMessage({ event = "autoStartCall", number = number, extraData = extraData})
   end
 end)
@@ -682,3 +684,7 @@ AddEventHandler('onClientResourceStart', function(res)
 end)
 
 
+RegisterNUICallback('setIgnoreFocus', function (data, cb)
+  ignoreFocus = data.ignoreFocus
+  cb()
+end)
