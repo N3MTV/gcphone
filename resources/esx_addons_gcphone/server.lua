@@ -64,24 +64,6 @@ AddEventHandler('esx_addons_gcphone:removeSource', function(number, source)
 	PhoneNumbers[number].sources[tostring(source)] = nil
 end)
 
-
-RegisterServerEvent('esx_addons_gcphone:startCall')
-AddEventHandler('esx_addons_gcphone:startCall', function (number, message, coords)
-  local source = source
-  if PhoneNumbers[number] ~= nil then
-    getPhoneNumber(source, function (phone) 
-      notifyAlertSMS(number, {
-        message = message,
-        coords = coords,
-        numero = phone,
-      }, PhoneNumbers[number].sources)
-    end)
-  else
-    print('Appels sur un service non enregistre => numero : ' .. number)
-  end
-end)
-
-
 RegisterServerEvent('gcPhone:sendMessage')
 AddEventHandler('gcPhone:sendMessage', function(number, message)
     local sourcePlayer = tonumber(source)
