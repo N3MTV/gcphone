@@ -126,7 +126,7 @@ export default {
     },
     onActionMessage (message) {
       // let message = this.messagesList[this.selectMessage]
-      let isGPS = /-?\d*(\.\d+)?, -?\d*(\.\d+)?/.test(message.message)
+      let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
       let hasNumber = /#([0-9]+)/.test(message.message)
       let isSMSImage = this.isSMSImage(message)
       let choix = [{
@@ -166,7 +166,7 @@ export default {
         if (data.id === 'delete') {
           this.deleteMessage({ id: message.id })
         } else if (data.id === 'gps') {
-          let val = message.message.match(/(-?\d*(\.\d+)?), (-?\d*(\.\d+)?)/)
+          let val = message.message.match(/(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/)
           this.$phoneAPI.setGPS(val[1], val[3])
         } else if (data.id === 'num') {
           this.phoneNumber = data.number
