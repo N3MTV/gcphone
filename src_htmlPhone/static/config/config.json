@@ -33,6 +33,10 @@
     }]
   },
 
+  "//": "REQUIRE https://github.com/citizenfx/screenshot-basic or set false",
+  "enableTakePhoto": true,
+  "fileUploadService_Url": "https://wew.wtf/upload.php",
+  "fileUploadService_Field": "files[]",
 
   "background": {
     "Calvin & Hobbes": "back001.jpg",
@@ -256,6 +260,7 @@
       "APP_MESSAGE_ERASE_CONVERSATION": "Effacer la conversation",
       "APP_MESSAGE_ERASE_ALL_CONVERSATIONS": "Effacer toutes les conv.",
       "APP_MESSAGE_SEND_GPS": "Envoyer Coord GPS",
+      "APP_MESSAGE_SEND_PHOTO": "Envoyer une photo",
       "APP_MESSAGE_SET_GPS": "Position GPS",
       "APP_MESSAGE_ZOOM_IMG": "Zoom",
       "APP_MESSAGE_DELETE": "Effacer",

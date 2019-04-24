@@ -2,7 +2,7 @@
 import PhoneAPI from './../../PhoneAPI'
 export default {
   created () {
-    PhoneAPI.takePhoto()
+    PhoneAPI.faketakePhoto()
   }
 }
 </script>

@@ -91,7 +91,10 @@ class PhoneAPI {
     return this.post('setGPS', {x, y})
   }
   async takePhoto () {
-    return this.post('takePhoto')
+    store.commit('SET_TEMPO_HIDE', true)
+    const data = await this.post('takePhoto', { url: this.config.fileUploadService_Url, field: this.config.fileUploadService_Field })
+    store.commit('SET_TEMPO_HIDE', false)
+    return data
   }
   async getReponseText (data) {
     if (process.env.NODE_ENV === 'production') {
@@ -100,6 +103,11 @@ class PhoneAPI {
       return {text: window.prompt()}
     }
   }
+
+  async faketakePhoto () {
+    return this.post('faketakePhoto')
+  }
+
   async callEvent (eventName, data) {
     return this.post('callEvent', {eventName, data})
   }

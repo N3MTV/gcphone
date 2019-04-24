@@ -3,6 +3,7 @@ import PhoneAPI from './../../PhoneAPI'
 
 const state = {
   show: process.env.NODE_ENV !== 'production',
+  tempoHide: false,
   myPhoneNumber: '###-####',
   background: JSON.parse(window.localStorage['gc_background'] || null),
   coque: JSON.parse(window.localStorage['gc_coque'] || null),
@@ -24,8 +25,10 @@ PhoneAPI.setUseMouse(state.mouse)
 
 const getters = {
   show: ({ show }) => show,
+  tempoHide: ({ tempoHide }) => tempoHide,
   myPhoneNumber: ({ myPhoneNumber }) => myPhoneNumber,
   volume: ({ volume }) => volume,
+  enableTakePhoto: ({ config }) => config.enableTakePhoto === true,
   background: ({ background, config }) => {
     if (background === null) {
       if (config.background_default !== undefined) {
@@ -167,6 +170,10 @@ const mutations = {
   },
   SET_PHONE_VISIBILITY (state, show) {
     state.show = show
+    state.tempoHide = false
+  },
+  SET_TEMPO_HIDE (state, hide) {
+    state.tempoHide = hide
   },
   SET_MY_PHONE_NUMBER (state, myPhoneNumber) {
     state.myPhoneNumber = myPhoneNumber

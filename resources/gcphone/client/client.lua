@@ -21,6 +21,7 @@ local isDead = false
 local USE_RTC = false
 local useMouse = false
 local ignoreFocus = false
+local takePhoto = false
 local lastFrameIsOpen = false
 
 local PhoneInCall = {}
@@ -74,30 +75,31 @@ end
 Citizen.CreateThread(function()
   while true do
     Citizen.Wait(0)
-    if IsControlJustPressed(1, KeyOpenClose) then
-      hasPhone(function (hasPhone)
-        if hasPhone == true then
-          TooglePhone()
-        else
-          ShowNoPhoneWarning()
-        end
-      end)
-      
-    end
-    if menuIsOpen == true then
-      for _, value in ipairs(KeyToucheCloseEvent) do
-        if IsControlJustPressed(1, value.code) then
-          SendNUIMessage({keyUp = value.event})
-        end
+    if takePhoto ~= true then
+      if IsControlJustPressed(1, KeyOpenClose) then
+        hasPhone(function (hasPhone)
+          if hasPhone == true then
+            TooglePhone()
+          else
+            ShowNoPhoneWarning()
+          end
+        end)
       end
-	  local nuiFocus = useMouse and not ignoreFocus
-	  SetNuiFocus(nuiFocus, nuiFocus)
-	  lastFrameIsOpen = true
-	else
-	  if lastFrameIsOpen == true then
-	    SetNuiFocus(false, false)
-	    lastFrameIsOpen = false
-	  end
+      if menuIsOpen == true then
+        for _, value in ipairs(KeyToucheCloseEvent) do
+          if IsControlJustPressed(1, value.code) then
+            SendNUIMessage({keyUp = value.event})
+          end
+        end
+      local nuiFocus = useMouse and not ignoreFocus
+      SetNuiFocus(nuiFocus, nuiFocus)
+      lastFrameIsOpen = true
+    else
+      if lastFrameIsOpen == true then
+        SetNuiFocus(false, false)
+        lastFrameIsOpen = false
+      end
+      end
     end
   end
 end)
@@ -643,7 +645,7 @@ function TooglePhone()
     PhonePlayOut()
   end
 end
-RegisterNUICallback('takePhoto', function(data, cb)
+RegisterNUICallback('faketakePhoto', function(data, cb)
   menuIsOpen = false
   SendNUIMessage({show = false})
   cb()
@@ -687,4 +689,58 @@ end)
 RegisterNUICallback('setIgnoreFocus', function (data, cb)
   ignoreFocus = data.ignoreFocus
   cb()
+end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RegisterNUICallback('takePhoto', function(data, cb)
+	CreateMobilePhone(1)
+  CellCamActivate(true, true)
+  print(json.encode(data))
+  takePhoto = true
+	while takePhoto do
+    Citizen.Wait(0)
+    SetNuiFocus(false, false)
+
+		if IsControlJustPressed(1, 27) then -- Toogle Mode
+			frontCam = not frontCam
+			CellFrontCamActivate(frontCam)
+    elseif IsControlJustPressed(1, 177) then -- CANCEL
+      DestroyMobilePhone()
+      CellCamActivate(false, false)
+      cb(json.encode({ url = nil }))
+      takePhoto = false
+      break
+    elseif IsControlJustPressed(1, 176) then -- TAKE.. PIC
+			exports['screenshot-basic']:requestScreenshotUpload(data.url, data.field, function(data)
+        local resp = json.decode(data)
+        DestroyMobilePhone()
+        CellCamActivate(false, false)
+        print(json.encode(resp))
+        cb(json.encode({ url = resp.files[1].url }))
+        
+      end)
+      takePhoto = false
+		end
+		HideHudComponentThisFrame(7)
+		HideHudComponentThisFrame(8)
+		HideHudComponentThisFrame(9)
+		HideHudComponentThisFrame(6)
+		HideHudComponentThisFrame(19)
+    HideHudAndRadarThisFrame()
+  end
+  Citizen.Wait(1000)
+  PhonePlayAnim('text', false, true)
 end)

@@ -7,7 +7,7 @@
 
     <textarea ref="copyTextarea" class="copyTextarea"/>
     
-    <div id='sms_list' @contextmenu.prevent="showSendGPS">
+    <div id='sms_list' @contextmenu.prevent="showOptions">
         <div class="sms" v-bind:class="{ select: key === selectMessage}" v-for='(mess, key) in messagesList' v-bind:key="mess.id"
           @click.stop="onActionMessage(mess)"
         >
@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <div id='sms_write' @contextmenu.prevent="showSendGPS">
+    <div id='sms_write' @contextmenu.prevent="showOptions">
         <input
           type="text"
           v-model="message"
@@ -248,30 +248,51 @@ export default {
         this.quit()
       }
     },
-    showSendGPS () {
-      this.ignoreControls = true
-      Modal.CreateModal({choix: [
-        {id: 1, title: this.IntlString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
-        {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo'}
-      ]}).then(data => {
+    async showOptions () {
+      try {
+        this.ignoreControls = true
+        let choix = [
+          {id: 1, title: this.IntlString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
+          {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo'}
+        ]
+        if (this.enableTakePhoto) {
+          choix = [
+            {id: 1, title: this.IntlString('APP_MESSAGE_SEND_GPS'), icons: 'fa-location-arrow'},
+            {id: 2, title: this.IntlString('APP_MESSAGE_SEND_PHOTO'), icons: 'fa-picture-o'},
+            {id: -1, title: this.IntlString('CANCEL'), icons: 'fa-undo'}
+          ]
+        }
+        const data = await Modal.CreateModal({ choix })
         if (data.id === 1) {
           this.sendMessage({
             phoneNumber: this.phoneNumber,
             message: '%pos%'
           })
         }
+        if (data.id === 2) {
+          const { url } = await this.$phoneAPI.takePhoto()
+          if (url !== null && url !== undefined) {
+            this.sendMessage({
+              phoneNumber: this.phoneNumber,
+              message: url
+            })
+          }
+        }
         this.ignoreControls = false
-      })
+      } catch (e) {
+      } finally {
+        this.ignoreControls = false
+      }
     },
     onRight: function () {
       if (this.ignoreControls === true) return
       if (this.selectMessage === -1) {
-        this.showSendGPS()
+        this.showOptions()
       }
     }
   },
   computed: {
-    ...mapGetters(['IntlString', 'messages', 'contacts', 'useMouse']),
+    ...mapGetters(['IntlString', 'messages', 'contacts', 'useMouse', 'enableTakePhoto']),
     messagesList () {
       return this.messages.filter(e => e.transmitter === this.phoneNumber).sort((a, b) => a.time - b.time)
     },

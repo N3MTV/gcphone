@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100vh; width: 100vw;" @contextmenu="closePhone">
     <notification />
-    <div v-if="show === true" :style="{zoom: zoom}" @contextmenu.stop>
+    <div v-if="show === true && tempoHide === false" :style="{zoom: zoom}" @contextmenu.stop>
       <div class="phone_wrapper">
         <div class="phone_coque" :style="{backgroundImage: 'url(/html/static/img/coque/' + coque.value + ')'}"></div>
         <div id="app" class="phone_screen">
@@ -33,7 +33,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['show', 'zoom', 'coque', 'appelsInfo', 'myPhoneNumber', 'volume'])
+    ...mapGetters(['show', 'zoom', 'coque', 'appelsInfo', 'myPhoneNumber', 'volume', 'tempoHide'])
   },
   watch: {
     appelsInfo (newValue, oldValue) {
