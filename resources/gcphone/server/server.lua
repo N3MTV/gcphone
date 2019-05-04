@@ -7,10 +7,24 @@ math.randomseed(os.time())
 
 --- Pour les numero du style XXX-XXXX
 function getPhoneRandomNumber()
-    local numBase0 = math.random(100,999)
-    local numBase1 = math.random(0,9999)
-    local num = string.format("%03d-%04d", numBase0, numBase1 )
-	return num
+    local foundNumber, num = false, nil
+
+    while not foundNumber do
+        Citizen.Wait(100)
+
+        local numBase0 = math.random(100,999)
+        local numBase1 = math.random(0,9999)
+        num = string.format("%03d-%04d", numBase0, numBase1 )
+
+        local result = MySQL.Sync.fetchAll('SELECT COUNT(*) as count FROM users WHERE phone_number = @phoneNumber', {
+            ['@phoneNumber'] = num
+        })
+
+        if tonumber(result[1].count) == 0 then
+            foundNumber = true
+        end
+    end
+    return num
 end
 
 --- Exemple pour les numero du style 06XXXXXXXX
