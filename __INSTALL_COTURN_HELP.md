@@ -27,7 +27,7 @@ run turnserver
 Edit config.json
 ```json
 {
-  "useWebRTCVocal": false,
+  "useWebRTCVocal": true,
   "RTCConfig": {
     "iceServers": [{
       "urls": ["turn:mycitygta.com"],
