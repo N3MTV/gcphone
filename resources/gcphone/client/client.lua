@@ -91,14 +91,16 @@ Citizen.CreateThread(function()
             SendNUIMessage({keyUp = value.event})
           end
         end
-      local nuiFocus = useMouse and not ignoreFocus
-      SetNuiFocus(nuiFocus, nuiFocus)
-      lastFrameIsOpen = true
-    else
-      if lastFrameIsOpen == true then
-        SetNuiFocus(false, false)
-        lastFrameIsOpen = false
-      end
+        local nuiFocus = useMouse and not ignoreFocus
+        if nuiFocus == true then
+          SetNuiFocus(nuiFocus, nuiFocus)
+          lastFrameIsOpen = true
+        end
+      else
+        if lastFrameIsOpen == true then
+          SetNuiFocus(false, false)
+          lastFrameIsOpen = false
+        end
       end
     end
   end
