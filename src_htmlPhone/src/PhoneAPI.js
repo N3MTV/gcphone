@@ -21,6 +21,7 @@ class PhoneAPI {
     })
     this.config = null
     this.voiceRTC = null
+    this.soundList = {}
   }
 
   async post (method, data) {
@@ -307,6 +308,31 @@ class PhoneAPI {
       message: store.getters.IntlString(data.message),
       icon: 'twitter'
     })
+  }
+
+  onplaySound ({ sound, volume = 1 }) {
+    if (!sound) return
+    if (this.soundList[sound] !== undefined) {
+      this.soundList[sound].volume = volume
+    } else {
+      this.soundList[sound] = new Audio('/html/static/sound/' + sound)
+      this.soundList[sound].loop = true
+      this.soundList[sound].volume = volume
+      this.soundList[sound].play()
+    }
+  }
+
+  onsetSoundVolume ({ sound, volume = 1 }) {
+    if (this.soundList[sound] !== undefined) {
+      this.soundList[sound].volume = volume
+    }
+  }
+
+  onstopSound ({ sound }) {
+    if (this.soundList[sound] !== undefined) {
+      this.soundList[sound].pause()
+      delete this.soundList[sound]
+    }
   }
 
 }

@@ -26,7 +26,7 @@ local lastFrameIsOpen = false
 
 local PhoneInCall = {}
 local currentPlaySound = false
-local soundId = 1485
+local soundDistanceMax = 8.0
 
 
 --====================================================================================
@@ -168,18 +168,21 @@ end
  
 
 Citizen.CreateThread(function ()
+  local mod = 0
   while true do 
     local playerPed   = PlayerPedId()
     local coords      = GetEntityCoords(playerPed)
     local inRangeToActivePhone = false
+    local inRangedist = 0
     for i, _ in pairs(PhoneInCall) do 
         local dist = GetDistanceBetweenCoords(
           PhoneInCall[i].coords.x, PhoneInCall[i].coords.y, PhoneInCall[i].coords.z,
           coords.x, coords.y, coords.z, 1)
-        if (dist <= 5.0) then
+        if (dist <= soundDistanceMax) then
           DrawMarker(1, PhoneInCall[i].coords.x, PhoneInCall[i].coords.y, PhoneInCall[i].coords.z,
               0,0,0, 0,0,0, 0.1,0.1,0.1, 0,255,0,255, 0,0,0,0,0,0,0)
           inRangeToActivePhone = true
+          inRangedist = dist
           if (dist <= 1.5) then 
             SetTextComponentFormat("STRING")
             AddTextComponentString("~INPUT_PICKUP~ Décrocher")
@@ -188,7 +191,7 @@ Citizen.CreateThread(function ()
               PhonePlayCall(true)
               TakeAppel(PhoneInCall[i])
               PhoneInCall = {}
-              StopSound(soundId)
+              StopSoundJS('ring2.ogg')
             end
           end
           break
@@ -198,17 +201,34 @@ Citizen.CreateThread(function ()
       showFixePhoneHelper(coords)
     end
     if inRangeToActivePhone == true and currentPlaySound == false then
-      PlaySound(soundId, "Remote_Ring", "Phone_SoundSet_Michael", 0, 0, 1)
+      PlaySoundJS('ring2.ogg', 0.2 + (inRangedist - soundDistanceMax) / -soundDistanceMax * 0.8 )
       currentPlaySound = true
+    elseif inRangeToActivePhone == true then
+      mod = mod + 1
+      if (mod == 15) then
+        mod = 0
+        SetSoundVolumeJS('ring2.ogg', 0.2 + (inRangedist - soundDistanceMax) / -soundDistanceMax * 0.8 )
+      end
     elseif inRangeToActivePhone == false and currentPlaySound == true then
       currentPlaySound = false
-      StopSound(soundId)
+      StopSoundJS('ring2.ogg')
     end
     Citizen.Wait(0)
   end
 end)
 
 
+function PlaySoundJS (sound, volume)
+  SendNUIMessage({ event = 'playSound', sound = sound, volume = volume })
+end
+
+function SetSoundVolumeJS (sound, volume)
+  SendNUIMessage({ event = 'setSoundVolume', sound = sound, volume = volume})
+end
+
+function StopSoundJS (sound)
+  SendNUIMessage({ event = 'stopSound', sound = sound})
+end
 
 
 
