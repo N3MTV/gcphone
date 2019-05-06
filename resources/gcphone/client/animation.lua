@@ -86,7 +86,6 @@ function PhonePlayAnim (status, freeze, force)
 	loadAnimDict(dict)
 
 	local anim = ANIMS[dict][currentStatus][status]
-	print('PhonePlayAnim', currentStatus, status, anim)
 	if currentStatus ~= 'out' then
 		StopAnimTask(myPedId, lastDict, lastAnim, 1.0)
 	end
