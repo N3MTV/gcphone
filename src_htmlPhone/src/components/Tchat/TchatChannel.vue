@@ -59,7 +59,7 @@ export default {
       this.ignoreControls = true
       let choix = [
         {id: 1, title: this.IntlString('APP_DARKTCHAT_NEW_CHANNEL'), icons: 'fa-plus', color: 'green'},
-        {id: 2, title: this.IntlString('APP_DARKTCHAT_DELETE_CHANNEL'), icons: 'fa-circle-o', color: 'orange'},
+        {id: 2, title: this.IntlString('APP_DARKTCHAT_DELETE_CHANNEL'), icons: 'fa-minus', color: 'orange'},
         {id: 3, title: this.IntlString('APP_DARKTCHAT_CANCEL'), icons: 'fa-undo'}
       ]
       if (this.tchatChannels.length === 0) {
@@ -104,7 +104,7 @@ export default {
     },
     async addChannelOption () {
       try {
-        const rep = await Modal.CreateTextModal({limit: 20, title: 'Ajouter un channel'})
+        const rep = await Modal.CreateTextModal({limit: 20, title: this.IntlString('APP_DARKTCHAT_NEW_CHANNEL')})
         let channel = (rep || {}).text || ''
         channel = channel.toLowerCase().replace(/[^a-z]/g, '')
         if (channel.length > 0) {

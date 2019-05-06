@@ -78,7 +78,8 @@ export default {
       })
     },
     quit () {
-      this.$router.push({path: '/messages'})
+      // this.$router.push({path: '/messages'})
+      this.$router.go(-1)
     },
     onUp: function () {
       if (this.ignoreControls === true) return

@@ -460,7 +460,6 @@ end)
 RegisterNUICallback('notififyUseRTC', function (use, cb)
   USE_RTC = use
   if USE_RTC == true and inCall == true then
-    print('USE RTC ON')
     inCall = false
     Citizen.InvokeNative(0xE036A705F989E049)
     NetworkSetTalkerProximity(2.5)
@@ -730,7 +729,6 @@ end)
 RegisterNUICallback('takePhoto', function(data, cb)
 	CreateMobilePhone(1)
   CellCamActivate(true, true)
-  print(json.encode(data))
   takePhoto = true
 	while takePhoto do
     Citizen.Wait(0)
@@ -750,9 +748,7 @@ RegisterNUICallback('takePhoto', function(data, cb)
         local resp = json.decode(data)
         DestroyMobilePhone()
         CellCamActivate(false, false)
-        print(json.encode(resp))
-        cb(json.encode({ url = resp.files[1].url }))
-        
+        cb(json.encode({ url = resp.files[1].url }))   
       end)
       takePhoto = false
 		end

@@ -103,7 +103,7 @@
       "number": "police",
       "display": "Police",
       "backgroundColor": "blue",
-      "letter": "J"
+      "letter": "P"
     }
   ],
 
@@ -216,8 +216,8 @@
       "routeName": "9gag"
     }
   ],
+  "defaultLanguage": "en_US",
   "language": {
-
      "fr_FR": {
       "NAME": "Français",
       "PHONE_WARNING_MESSAGE": "Saturation mémoires !",
@@ -235,6 +235,7 @@
       "APP_CONFIG_RESET": "Formater",
       "APP_CONFIG_RESET_CONFIRM": "TOUT SUPPRIMER",
       "APP_PHONE_CALL": "Appeler",
+      "APP_PHONE_CALL_ANONYMOUS": "Appeler en anomyne",
       "APP_PHONE_DELETE": "Effacer",
       "APP_PHONE_DELETE_ALL": "Effacer TOUT.",
       "APP_PHONE_TITLE": "Téléphone",

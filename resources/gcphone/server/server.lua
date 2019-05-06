@@ -387,13 +387,11 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
     local srcIdentifier = getPlayerID(source)
 
     local srcPhone = ''
-    print(json.encode(extraData))
     if extraData ~= nil and extraData.useNumber ~= nil then
         srcPhone = extraData.useNumber
     else
         srcPhone = getNumberPhone(srcIdentifier)
     end
-    print('CALL WITH NUMBER ' .. srcPhone)
     local destPlayer = getIdentifierByPhoneNumber(phone_number)
     local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier
     AppelsEnCours[indexCall] = {
@@ -436,14 +434,14 @@ end)
 
 RegisterServerEvent('gcPhone:candidates')
 AddEventHandler('gcPhone:candidates', function (callId, candidates)
-    print('send cadidate', callId, candidates)
+    -- print('send cadidate', callId, candidates)
     if AppelsEnCours[callId] ~= nil then
         local source = source
         local to = AppelsEnCours[callId].transmitter_src
         if source == to then 
             to = AppelsEnCours[callId].receiver_src
         end
-        print('TO', to)
+        -- print('TO', to)
         TriggerClientEvent('gcPhone:candidates', to, candidates)
     end
 end)
