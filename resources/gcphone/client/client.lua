@@ -89,16 +89,15 @@ Citizen.CreateThread(function()
         for _, value in ipairs(KeyToucheCloseEvent) do
           if IsControlJustPressed(1, value.code) then
             SendNUIMessage({keyUp = value.event})
-            print(value.event)
           end
         end
-        local nuiFocus = useMouse and not ignoreFocus
-        if hasFocus == true and ignoreFocus == true then
+        if useMouse == true and hasFocus == ignoreFocus then
+          local nuiFocus = not hasFocus
+          SetNuiFocus(nuiFocus, nuiFocus)
+          hasFocus = nuiFocus
+        elseif useMouse == false and hasFocus == true then
           SetNuiFocus(false, false)
           hasFocus = false
-        elseif nuiFocus == true then
-          SetNuiFocus(nuiFocus, nuiFocus)
-          hasFocus = true
         end
       else
         if hasFocus == true then
@@ -734,9 +733,13 @@ RegisterNUICallback('takePhoto', function(data, cb)
 	CreateMobilePhone(1)
   CellCamActivate(true, true)
   takePhoto = true
+  Citizen.Wait(0)
+  if hasFocus == true then
+    SetNuiFocus(false, false)
+    hasFocus = false
+  end
 	while takePhoto do
     Citizen.Wait(0)
-    SetNuiFocus(false, false)
 
 		if IsControlJustPressed(1, 27) then -- Toogle Mode
 			frontCam = not frontCam
