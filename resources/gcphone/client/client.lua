@@ -22,7 +22,7 @@ local USE_RTC = false
 local useMouse = false
 local ignoreFocus = false
 local takePhoto = false
-local lastFrameIsOpen = false
+local hasFocus = false
 
 local PhoneInCall = {}
 local currentPlaySound = false
@@ -89,17 +89,21 @@ Citizen.CreateThread(function()
         for _, value in ipairs(KeyToucheCloseEvent) do
           if IsControlJustPressed(1, value.code) then
             SendNUIMessage({keyUp = value.event})
+            print(value.event)
           end
         end
         local nuiFocus = useMouse and not ignoreFocus
-        if nuiFocus == true then
+        if hasFocus == true and ignoreFocus == true then
+          SetNuiFocus(false, false)
+          hasFocus = false
+        elseif nuiFocus == true then
           SetNuiFocus(nuiFocus, nuiFocus)
-          lastFrameIsOpen = true
+          hasFocus = true
         end
       else
-        if lastFrameIsOpen == true then
+        if hasFocus == true then
           SetNuiFocus(false, false)
-          lastFrameIsOpen = false
+          hasFocus = false
         end
       end
     end
