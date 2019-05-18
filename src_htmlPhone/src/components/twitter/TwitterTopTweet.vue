@@ -174,7 +174,6 @@ export default {
       }
     },
     onBack () {
-      console.log('onBackonBackonBackonBack')
       if (this.imgZoom !== undefined) {
         this.imgZoom = undefined
         return
@@ -183,7 +182,6 @@ export default {
       if (this.selectMessage !== -1) {
         this.selectMessage = -1
       } else {
-        console.log('emit')
         this.$bus.$emit('twitterHome')
       }
     },

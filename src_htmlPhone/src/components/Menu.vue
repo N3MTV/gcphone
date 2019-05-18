@@ -76,7 +76,6 @@ export default {
       this.$router.push({ name: app.routeName })
     },
     onEnter () {
-      console.log(this.Apps[this.currentSelect])
       this.openApp(this.Apps[this.currentSelect])
     },
     onBack: function () {

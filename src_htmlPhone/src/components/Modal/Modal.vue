@@ -11,7 +11,7 @@
               v-bind:style="{color: val.color}"
               @click.stop="selectItem(val)"
             >
-                <i @click.stop="selectItem(val)" class="fa" :class="val.icons" ></i>{{val.title}}
+                <i @click.stop="selectItem(val)" class="fas" :class="val.icons" ></i>{{val.title}}
             </div>
           
 
@@ -126,7 +126,7 @@ export default {
         font-weight: 400;
         font-size: 22px;
     }
-    .modal-choix .fa {
+    .modal-choix .fa, .modal-choix .fas {
         font-size: 18px;
         line-height: 24px;
         margin-left: 12px;

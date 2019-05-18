@@ -10,7 +10,7 @@ const state = {
   zoom: window.localStorage['gc_zoom'] || '100%',
   volume: parseFloat(window.localStorage['gc_volume']) || 1,
   mouse: window.localStorage['gc_mouse'] === 'true',
-  lang: window.localStorage['gc_language'] || 'fr_FR',
+  lang: window.localStorage['gc_language'],
   config: {
     reseau: 'Gannon',
     useFormatNumberFrance: false,
@@ -88,6 +88,7 @@ const getters = {
     return AvailableLanguage
   },
   IntlString ({ config, lang }) {
+    lang = lang || config.defaultLanguage
     if (config.language[lang] === undefined) {
       return (LABEL) => LABEL
     }

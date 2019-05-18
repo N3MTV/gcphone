@@ -1,6 +1,6 @@
 <template>
   <div class="phone_app">
-    <PhoneTitle :title="channelName" backgroundColor="#090f20" @back="onBack"/>
+    <PhoneTitle :title="channelName" backgroundColor="#090f20" @back="onQuit"/>
     <div class="phone_content">
       <div class="elements" ref="elementsDiv">
           <div class="element" v-for='(elem) in tchatMessages' 
@@ -91,6 +91,10 @@ export default {
       }
     },
     onBack () {
+      if (this.useMouse === true && document.activeElement.tagName !== 'BODY') return
+      this.onQuit()
+    },
+    onQuit () {
       this.$router.push({ name: 'tchat.channel' })
     },
     formatTime (time) {
@@ -103,10 +107,10 @@ export default {
       this.$bus.$on('keyUpArrowDown', this.onDown)
       this.$bus.$on('keyUpArrowUp', this.onUp)
       this.$bus.$on('keyUpEnter', this.onEnter)
-      this.$bus.$on('keyUpBackspace', this.onBack)
     } else {
       this.currentSelect = -1
     }
+    this.$bus.$on('keyUpBackspace', this.onBack)
     this.setChannel(this.$route.params.channel)
   },
   mounted () {

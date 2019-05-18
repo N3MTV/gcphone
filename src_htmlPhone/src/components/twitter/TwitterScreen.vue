@@ -77,7 +77,6 @@ export default {
       this.currentScreenIndex = 0
     },
     openMenu (index) {
-      console.log('Click detect index => ' + index)
       this.currentScreenIndex = index
     },
     quit () {
