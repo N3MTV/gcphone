@@ -6,7 +6,7 @@ import emoji from './emoji.json'
 const keyEmoji = Object.keys(emoji)
 
 let USE_VOICE_RTC = false
-const BASE_URL = 'http://gcphone/'
+const BASE_URL = 'http://mythic_phone/'
 
 /* eslint-disable camelcase */
 class PhoneAPI {

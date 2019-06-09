@@ -29,12 +29,6 @@ local PhoneInCall = {}
 local currentPlaySound = false
 local soundDistanceMax = 8.0
 
---[[
-  Ouverture du téphone lié a un item
-  Un solution ESC basé sur la solution donnée par HalCroves
-  https://forum.fivem.net/t/tutorial-for-gcphone-with-call-and-job-message-other/177904
---]]
-
 function hasPhone(cb)
   TriggerEvent('mythic_inventory:client:CheckItemCount', 26, 1, function(hasPhone)
     cb(hasPhone)
@@ -93,8 +87,8 @@ end)
 --====================================================================================
 --  Active ou Deactive une application (appName => config.json)
 --====================================================================================
-RegisterNetEvent('gcPhone:setEnableApp')
-AddEventHandler('gcPhone:setEnableApp', function(appName, enable)
+RegisterNetEvent('mythic_phone:client:setEnableApp')
+AddEventHandler('mythic_phone:client:setEnableApp', function(appName, enable)
   SendNUIMessage({event = 'setEnableApp', appName = appName, enable = enable })
 end)
 
@@ -112,7 +106,7 @@ function startFixeCall (fixeNumber)
     number =  GetOnscreenKeyboardResult()
   end
   if number ~= '' then
-    TriggerEvent('gcphone:autoCall', number, {
+    TriggerEvent('mythic_phone:client:autoCall', number, {
       useNumber = fixeNumber
     })
     PhonePlayCall(true)
@@ -120,11 +114,11 @@ function startFixeCall (fixeNumber)
 end
 
 function TakeAppel (infoCall)
-  TriggerEvent('gcphone:autoAcceptCall', infoCall)
+  TriggerEvent('mythic_phone:client:autoAcceptCall', infoCall)
 end
 
-RegisterNetEvent("gcPhone:notifyFixePhoneChange")
-AddEventHandler("gcPhone:notifyFixePhoneChange", function(_PhoneInCall)
+RegisterNetEvent("mythic_phone:client:notifyFixePhoneChange")
+AddEventHandler("mythic_phone:client:notifyFixePhoneChange", function(_PhoneInCall)
   PhoneInCall = _PhoneInCall
 end)
 
@@ -212,8 +206,8 @@ function StopSoundJS (sound)
   SendNUIMessage({ event = 'stopSound', sound = sound})
 end
 
-RegisterNetEvent("gcPhone:forceOpenPhone")
-AddEventHandler("gcPhone:forceOpenPhone", function(_myPhoneNumber)
+RegisterNetEvent("mythic_phone:client:forceOpenPhone")
+AddEventHandler("mythic_phone:client:forceOpenPhone", function(_myPhoneNumber)
   if menuIsOpen == false then
     TooglePhone()
   end
@@ -222,48 +216,45 @@ end)
 --====================================================================================
 --  Events
 --====================================================================================
-RegisterNetEvent("gcPhone:myPhoneNumber")
-AddEventHandler("gcPhone:myPhoneNumber", function(_myPhoneNumber)
+RegisterNetEvent("mythic_phone:client:myPhoneNumber")
+AddEventHandler("mythic_phone:client:myPhoneNumber", function(_myPhoneNumber)
   myPhoneNumber = _myPhoneNumber
   SendNUIMessage({event = 'updateMyPhoneNumber', myPhoneNumber = myPhoneNumber})
 end)
 
-RegisterNetEvent("gcPhone:contactList")
-AddEventHandler("gcPhone:contactList", function(_contacts)
+RegisterNetEvent("mythic_phone:client:contactList")
+AddEventHandler("mythic_phone:client:contactList", function(_contacts)
   SendNUIMessage({event = 'updateContacts', contacts = _contacts})
   contacts = _contacts
 end)
 
-RegisterNetEvent("gcPhone:allMessage")
-AddEventHandler("gcPhone:allMessage", function(allmessages)
+RegisterNetEvent("mythic_phone:client:allMessage")
+AddEventHandler("mythic_phone:client:allMessage", function(allmessages)
   SendNUIMessage({event = 'updateMessages', messages = allmessages})
   messages = allmessages
 end)
 
-RegisterNetEvent("gcPhone:getBourse")
-AddEventHandler("gcPhone:getBourse", function(bourse)
+RegisterNetEvent("mythic_phone:client:getBourse")
+AddEventHandler("mythic_phone:client:getBourse", function(bourse)
   SendNUIMessage({event = 'updateBourse', bourse = bourse})
 end)
 
-RegisterNetEvent("gcPhone:receiveMessage")
-AddEventHandler("gcPhone:receiveMessage", function(message)
+RegisterNetEvent("mythic_phone:client:receiveMessage")
+AddEventHandler("mythic_phone:client:receiveMessage", function(message)
   -- SendNUIMessage({event = 'updateMessages', messages = messages})
   SendNUIMessage({event = 'newMessage', message = message})
   table.insert(messages, message)
   if message.owner == 0 then
-    local text = '~o~Nouveau message'
-    if ShowNumberNotification == true then
-      text = '~o~Nouveau message du ~y~'.. message.transmitter
-      for _,contact in pairs(contacts) do
-        if contact.number == message.transmitter then
-          text = '~o~Nouveau message de ~g~'.. contact.display
-          break
-        end
+    local text = 'New Text Message From '.. message.transmitter
+    for _,contact in pairs(contacts) do
+      if contact.number == message.transmitter then
+        text = 'New Text Message From '.. contact.display
+        break
       end
     end
-    SetNotificationTextEntry("STRING")
-    AddTextComponentString(text)
-    DrawNotification(false, false)
+
+    exports['mythic_notify']:DoHudText('inform', text)
+    
     PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
     Citizen.Wait(300)
     PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
@@ -276,21 +267,21 @@ end)
 --  Function client | Contacts
 --====================================================================================
 function addContact(display, num) 
-    TriggerServerEvent('gcPhone:addContact', display, num)
+    TriggerServerEvent('mythic_phone:server:addContact', display, num)
 end
 
 function deleteContact(num) 
-    TriggerServerEvent('gcPhone:deleteContact', num)
+    TriggerServerEvent('mythic_phone:server:deleteContact', num)
 end
 --====================================================================================
 --  Function client | Messages
 --====================================================================================
 function sendMessage(num, message)
-  TriggerServerEvent('gcPhone:sendMessage', num, message)
+  TriggerServerEvent('mythic_phone:server:sendMessage', num, message)
 end
 
 function deleteMessage(msgId)
-  TriggerServerEvent('gcPhone:deleteMessage', msgId)
+  TriggerServerEvent('mythic_phone:server:deleteMessage', msgId)
   for k, v in ipairs(messages) do 
     if v.id == msgId then
       table.remove(messages, k)
@@ -301,15 +292,15 @@ function deleteMessage(msgId)
 end
 
 function deleteMessageContact(num)
-  TriggerServerEvent('gcPhone:deleteMessageNumber', num)
+  TriggerServerEvent('mythic_phone:server:deleteMessageNumber', num)
 end
 
 function deleteAllMessage()
-  TriggerServerEvent('gcPhone:deleteAllMessage')
+  TriggerServerEvent('mythic_phone:server:deleteAllMessage')
 end
 
 function setReadMessageNumber(num)
-  TriggerServerEvent('gcPhone:setReadMessageNumber', num)
+  TriggerServerEvent('mythic_phone:server:setReadMessageNumber', num)
   for k, v in ipairs(messages) do 
     if v.transmitter == num then
       v.isRead = 1
@@ -318,11 +309,11 @@ function setReadMessageNumber(num)
 end
 
 function requestAllMessages()
-  TriggerServerEvent('gcPhone:requestAllMessages')
+  TriggerServerEvent('mythic_phone:server:requestAllMessages')
 end
 
 function requestAllContact()
-  TriggerServerEvent('gcPhone:requestAllContact')
+  TriggerServerEvent('mythic_phone:server:requestAllContact')
 end
 
 
@@ -333,8 +324,8 @@ end
 local aminCall = false
 local inCall = false
 
-RegisterNetEvent("gcPhone:waitingCall")
-AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
+RegisterNetEvent("mythic_phone:client:waitingCall")
+AddEventHandler("mythic_phone:client:waitingCall", function(infoCall, initiator)
   SendNUIMessage({event = 'waitingCall', infoCall = infoCall, initiator = initiator})
   if initiator == true then
     PhonePlayCall()
@@ -344,8 +335,8 @@ AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
   end
 end)
 
-RegisterNetEvent("gcPhone:acceptCall")
-AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
+RegisterNetEvent("mythic_phone:client:acceptCall")
+AddEventHandler("mythic_phone:client:acceptCall", function(infoCall, initiator)
   if inCall == false and USE_RTC == false then
     inCall = true
     NetworkSetVoiceChannel(infoCall.id + 1)
@@ -358,8 +349,8 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
   SendNUIMessage({event = 'acceptCall', infoCall = infoCall, initiator = initiator})
 end)
 
-RegisterNetEvent("gcPhone:rejectCall")
-AddEventHandler("gcPhone:rejectCall", function(infoCall)
+RegisterNetEvent("mythic_phone:client:rejectCall")
+AddEventHandler("mythic_phone:client:rejectCall", function(infoCall)
   if inCall == true then
     inCall = false
     Citizen.InvokeNative(0xE036A705F989E049)
@@ -370,38 +361,38 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
 end)
 
 
-RegisterNetEvent("gcPhone:historiqueCall")
-AddEventHandler("gcPhone:historiqueCall", function(historique)
+RegisterNetEvent("mythic_phone:client:historiqueCall")
+AddEventHandler("mythic_phone:client:historiqueCall", function(historique)
   SendNUIMessage({event = 'historiqueCall', historique = historique})
 end)
 
 
 function startCall (phone_number, rtcOffer, extraData)
-  TriggerServerEvent('gcPhone:startCall', phone_number, rtcOffer, extraData)
+  TriggerServerEvent('mythic_phone:server:startCall', phone_number, rtcOffer, extraData)
 end
 
 function acceptCall (infoCall, rtcAnswer)
-  TriggerServerEvent('gcPhone:acceptCall', infoCall, rtcAnswer)
+  TriggerServerEvent('mythic_phone:server:acceptCall', infoCall, rtcAnswer)
 end
 
 function rejectCall(infoCall)
-  TriggerServerEvent('gcPhone:rejectCall', infoCall)
+  TriggerServerEvent('mythic_phone:server:rejectCall', infoCall)
 end
 
 function ignoreCall(infoCall)
-  TriggerServerEvent('gcPhone:ignoreCall', infoCall)
+  TriggerServerEvent('mythic_phone:server:ignoreCall', infoCall)
 end
 
 function requestHistoriqueCall() 
-  TriggerServerEvent('gcPhone:getHistoriqueCall')
+  TriggerServerEvent('mythic_phone:server:getHistoriqueCall')
 end
 
 function appelsDeleteHistorique (num)
-  TriggerServerEvent('gcPhone:appelsDeleteHistorique', num)
+  TriggerServerEvent('mythic_phone:server:appelsDeleteHistorique', num)
 end
 
 function appelsDeleteAllHistorique ()
-  TriggerServerEvent('gcPhone:appelsDeleteAllHistorique')
+  TriggerServerEvent('mythic_phone:server:appelsDeleteAllHistorique')
 end
   
 
@@ -440,93 +431,33 @@ end)
 
 
 RegisterNUICallback('onCandidates', function (data, cb)
-  TriggerServerEvent('gcPhone:candidates', data.id, data.candidates)
+  TriggerServerEvent('mythic_phone:server:candidates', data.id, data.candidates)
   cb()
 end)
 
-RegisterNetEvent("gcPhone:candidates")
-AddEventHandler("gcPhone:candidates", function(candidates)
+RegisterNetEvent("mythic_phone:client:candidates")
+AddEventHandler("mythic_phone:client:candidates", function(candidates)
   SendNUIMessage({event = 'candidatesAvailable', candidates = candidates})
 end)
 
 
 
-RegisterNetEvent('gcphone:autoCall')
-AddEventHandler('gcphone:autoCall', function(number, extraData)
+RegisterNetEvent('mythic_phone:client:autoCall')
+AddEventHandler('mythic_phone:client:autoCall', function(number, extraData)
   if number ~= nil then
     SendNUIMessage({ event = "autoStartCall", number = number, extraData = extraData})
   end
 end)
 
-RegisterNetEvent('gcphone:autoCallNumber')
-AddEventHandler('gcphone:autoCallNumber', function(data)
-  TriggerEvent('gcphone:autoCall', data.number)
+RegisterNetEvent('mythic_phone:client:autoCallNumber')
+AddEventHandler('mythic_phone:client:autoCallNumber', function(data)
+  TriggerEvent('mythic_phone:client:autoCall', data.number)
 end)
 
-RegisterNetEvent('gcphone:autoAcceptCall')
-AddEventHandler('gcphone:autoAcceptCall', function(infoCall)
+RegisterNetEvent('mythic_phone:client:autoAcceptCall')
+AddEventHandler('mythic_phone:client:autoAcceptCall', function(infoCall)
   SendNUIMessage({ event = "autoAcceptCall", infoCall = infoCall})
 end)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 --====================================================================================
 --  Gestion des evenements NUI
@@ -567,7 +498,8 @@ RegisterNUICallback('sendMessage', function(data, cb)
     local myPos = GetEntityCoords(PlayerPedId())
     data.message = 'GPS: ' .. myPos.x .. ', ' .. myPos.y
   end
-  TriggerServerEvent('gcPhone:sendMessage', data.phoneNumber, data.message)
+
+  sendMessage(data.phoneNumber, data.message)
 end)
 
 RegisterNUICallback('deleteMessage', function(data, cb)
@@ -593,15 +525,15 @@ end)
 --  Event - Contacts
 --====================================================================================
 RegisterNUICallback('addContact', function(data, cb) 
-  TriggerServerEvent('gcPhone:addContact', data.display, data.phoneNumber)
+  TriggerServerEvent('mythic_phone:server:addContact', data.display, data.phoneNumber)
 end)
 
 RegisterNUICallback('updateContact', function(data, cb)
-  TriggerServerEvent('gcPhone:updateContact', data.id, data.display, data.phoneNumber)
+  TriggerServerEvent('mythic_phone:server:updateContact', data.id, data.display, data.phoneNumber)
 end)
 
 RegisterNUICallback('deleteContact', function(data, cb)
-  TriggerServerEvent('gcPhone:deleteContact', data.id)
+  TriggerServerEvent('mythic_phone:server:deleteContact', data.id)
 end)
 
 RegisterNUICallback('getContacts', function(data, cb)
@@ -616,14 +548,14 @@ end)
 -- Add security for event (leuit#0100)
 RegisterNUICallback('callEvent', function(data, cb)
   local eventName = data.eventName or ''
-  if string.match(eventName, 'gcphone') then
+  if string.match(eventName, 'mythic_phone:client') then
     if data.data ~= nil then 
       TriggerEvent(data.eventName, data.data)
     else
       TriggerEvent(data.eventName)
     end
   else
-    print('Event not allowed')
+    print('Event Not Allowed')
   end
   cb()
 end)
@@ -633,7 +565,7 @@ RegisterNUICallback('useMouse', function(um, cb)
 end)
 
 RegisterNUICallback('deleteALL', function(data, cb)
-  TriggerServerEvent('gcPhone:deleteALL')
+  TriggerServerEvent('mythic_phone:server:deleteALL')
   cb()
 end)
 
@@ -688,12 +620,12 @@ end)
 ----------------------------------
 AddEventHandler('onClientResourceStart', function(res)
   DoScreenFadeIn(300)
-  if res == "gcphone" then
+  if res == "mythic_phone" then
     while exports['mythic_base']:GetIfChoosing() do
       Citizen.Wait(1)
     end
 
-    TriggerServerEvent('gcPhone:allUpdate')
+    TriggerServerEvent('mythic_phone:server:allUpdate')
   end
 end)
 
@@ -702,20 +634,6 @@ RegisterNUICallback('setIgnoreFocus', function (data, cb)
   ignoreFocus = data.ignoreFocus
   cb()
 end)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 RegisterNUICallback('takePhoto', function(data, cb)
 	CreateMobilePhone(1)

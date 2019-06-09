@@ -17,7 +17,7 @@ const getters = {
     }
     const num = getters.appelsDisplayNumber
     const contact = getters.contacts.find(e => e.number === num) || {}
-    return contact.display || getters.IntlString('APP_PHONE_NUMBER_UNKNOWN')
+    return contact.display || num
   },
   appelsDisplayNumber (state, getters) {
     if (state.appelsInfo === null) {

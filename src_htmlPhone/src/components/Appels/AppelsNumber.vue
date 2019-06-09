@@ -123,7 +123,9 @@ export default {
         return this.numero
       }
       const l = this.numero.startsWith('#') ? 4 : 3
-      if (this.numero.length > l) {
+      if (this.numero.length > l + 3) {
+        return this.numero.slice(0, l) + '-' + this.numero.slice(3, l + 3) + '-' + this.numero.slice(6)
+      } else if (this.numero.length > l) {
         return this.numero.slice(0, l) + '-' + this.numero.slice(l)
       } else {
         return this.numero

@@ -10,8 +10,8 @@
             <label>{{ IntlString('APP_CONTACT_LABEL_NAME') }}</label>
         </div>
         
-        <div class="group inputText" data-type="text" data-model='number' data-maxlength='10'>      
-            <input type="text" v-model="contact.number" maxlength="10">
+        <div class="group inputText" data-type="text" data-model='number' data-maxlength='12'>      
+            <input type="text" v-model="contact.number" maxlength="12">
             <span class="highlight"></span>
             <span class="bar"></span>
             <label>{{ IntlString('APP_CONTACT_LABEL_NUMBER') }}</label>

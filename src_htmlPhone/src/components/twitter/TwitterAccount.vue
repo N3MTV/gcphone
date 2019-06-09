@@ -3,17 +3,12 @@
     <template v-if="state === STATES.MENU">
       <template>
         <img :src="twitterAvatarUrl" height="128" width="128" style="align-self: center;">
-
         <div class="group" data-type="button" @click.stop="state = STATES.ACCOUNT">      
           <input type='button' class="btn btn-blue" @click.stop="state = STATES.ACCOUNT" :value="IntlString('APP_TWITTER_ACCOUNT_PARAM')" />
         </div>
 
         <div class="group" data-type="button" @click.stop="state = STATES.NOTIFICATION">      
           <input type='button' class="btn btn-blue" @click.stop="state = STATES.NOTIFICATION" :value="IntlString('APP_TWITTER_NOTIFICATION')" />
-        </div>
-
-        <div class="group bottom" data-type="button" @click.stop="logout">      
-          <input type='button' class="btn btn-red" @click.stop="logout" :value="IntlString('APP_TWITTER_ACCOUNT_LOGOUT')" />
         </div>
       </template>
     </template>
@@ -61,44 +56,6 @@
         <input type='button' class="btn btn-blue" :value="IntlString('APP_TWITTER_ACCOUNT_AVATAR')" @click.stop="onPressChangeAvartar" />
       </div>
 
-      <div class="group" data-type="button" @click.stop="changePassword">      
-        <input type='button' class="btn btn-red" :value="IntlString('APP_TWITTER_ACCOUNT_CHANGE_PASSWORD')" @click.stop="changePassword"/>
-      </div>
-
-    </template>
-
-    <template v-else-if="state === STATES.NEW_ACCOUNT">
-  
-      <div class="group inputText" data-type="text" data-maxlength='64' data-defaultValue="">      
-          <input type="text" :value="localAccount.username" @change="setLocalAccount($event, 'username')">
-          <span class="highlight"></span>
-          <span class="bar"></span>
-          <label>{{ IntlString('APP_TWITTER_NEW_ACCOUNT_USERNAME') }}</label>
-      </div>
-      
-      <div class="group inputText" data-type="text" data-model='password' data-maxlength='30'>      
-          <input autocomplete="new-password" type="password" :value="localAccount.password" @change="setLocalAccount($event, 'password')">
-          <span class="highlight"></span>
-          <span class="bar"></span>
-          <label>{{ IntlString('APP_TWITTER_NEW_ACCOUNT_PASSWORD') }}</label>
-      </div>
-     
-
-      <div class="group inputText" data-type="text" data-model='password' data-maxlength='30'>      
-          <input autocomplete="new-password" type="password" :value="localAccount.passwordConfirm" @change="setLocalAccount($event, 'passwordConfirm')">
-          <span class="highlight"></span>
-          <span class="bar"></span>
-          <label>{{ IntlString('APP_TWITTER_NEW_ACCOUNT_PASSWORD_CONFIRM') }}</label>
-      </div>
-      
-      <div style="margin-top: 42px; margin-bottom: 42px;" class="group img" data-type="button" @click.stop="setLocalAccountAvartar($event)">      
-        <img :src="localAccount.avatarUrl" height="128" width="128" @click.stop="setLocalAccountAvartar($event)">
-        <input type='button' class="btn btn-blue" :value="IntlString('APP_TWITTER_NEW_ACCOUNT_AVATAR')" @click.stop="setLocalAccountAvartar($event)"/>
-      </div>
-
-      <div class="group" data-type="button" @click.stop="createAccount">      
-        <input type='button' class="btn" :class="validAccount ? 'btn-blue' : 'btn-gray'" :value="IntlString('APP_TWIITER_ACCOUNT_CREATE')" @click.stop="createAccount"/>
-      </div>
     </template>
 
   </div>

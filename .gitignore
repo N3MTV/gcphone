@@ -57,8 +57,8 @@ typings/
 # dotenv environment variables file
 .env
 
-resources/gcphone/html
+resources/mythic_phone/html
 **/node_modules/
 **/package-lock.json
 
-gcphone.zip
+mythic_phone.zip

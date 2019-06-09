@@ -1,25 +1,16 @@
 local PhoneNumbers        = {}
 
--- PhoneNumbers = {
---   ambulance = {
---     type  = "ambulance",
---     sources = {
---        ['1'] = true
---     }
---   }
--- }
-
 function notifyAlertSMS (number, alert, listSrc)
   if PhoneNumbers[number] ~= nil then
-	local mess = 'De #' .. alert.numero  .. ' : ' .. alert.message
-	if alert.coords ~= nil then
-		mess = mess .. ' ' .. alert.coords.x .. ', ' .. alert.coords.y 
-	end
+    local mess = 'From ' .. alert.numero  .. ' : ' .. alert.message
+    if alert.coords ~= nil then
+      mess = mess .. ' ' .. alert.coords.x .. ', ' .. alert.coords.y 
+    end
     for k, _ in pairs(listSrc) do
       getPhoneNumber(tonumber(k), function (n)
         if n ~= nil then
-          TriggerEvent('gcPhone:_internalAddMessage', number, n, mess, 0, function (smsMess)
-            TriggerClientEvent("gcPhone:receiveMessage", tonumber(k), smsMess)
+          TriggerEvent('mythic_phone:server:_internalAddMessage', number, n, mess, 0, function (smsMess)
+            TriggerClientEvent("mythic_phone:client:receiveMessage", tonumber(k), smsMess)
           end)
         end
       end)
@@ -27,8 +18,8 @@ function notifyAlertSMS (number, alert, listSrc)
   end
 end
 
-AddEventHandler('mythic_phone_component:server:registerNumber', function(number, type, sharePos, hasDispatch, hideNumber, hidePosIfAnon)
-  print('= INFO = Enregistrement du telephone ' .. number .. ' => ' .. type)
+AddEventHandler('mythic_phone:server:RegisterServiceNumber', function(number, type, sharePos, hasDispatch, hideNumber, hidePosIfAnon)
+  print("^7[^8MYTHIC_PHONE ^7: ^8Service Number Register^7] " .. number .. ' => ' .. type)
 	local hideNumber    = hideNumber    or false
 	local hidePosIfAnon = hidePosIfAnon or false
 
@@ -58,8 +49,8 @@ AddEventHandler('mythic_phone_component:server:removeSource', function(number, s
 	PhoneNumbers[number].sources[tostring(source)] = nil
 end)
 
-RegisterServerEvent('gcPhone:sendMessage')
-AddEventHandler('gcPhone:sendMessage', function(number, message)
+RegisterServerEvent('mythic_phone:server:sendMessage')
+AddEventHandler('mythic_phone:server:sendMessage', function(number, message)
     local sourcePlayer = tonumber(source)
     if PhoneNumbers[number] ~= nil then
       getPhoneNumber(source, function (phone) 
@@ -83,7 +74,7 @@ AddEventHandler('mythic_phone_component:server:startCall', function (number, mes
       }, PhoneNumbers[number].sources)
     end)
   else
-    print('= WARNING = Appels sur un service non enregistre => numero : ' .. number)
+    print("^7[^8MYTHIC_PHONE ^7: ^8Service Number Register^7] Call Attempted To A Non-Service Number - " .. number)
   end
 end)
 
@@ -91,7 +82,7 @@ RegisterServerEvent('mythic_characters:server:CharacterSpawned')
 AddEventHandler('mythic_characters:server:CharacterSpawned', function()
   local char = exports['mythic_base']:getPlayerFromId(source).getChar()
   local cData = char.getCharData()
-  if PhoneNumbers[cData.phone_number] ~= nil then
+  if PhoneNumbers[cData.job.base] ~= nil then
     TriggerEvent('mythic_phone_component:server:addSource', cData.job.base, source)
   end
 end)
@@ -110,7 +101,7 @@ function getPhoneNumber (source, callback)
   local char = exports['mythic_base']:getPlayerFromId(source).getChar()
   local cData = char.getCharData()
 
-  callback(cData.phone_number)
+  callback(cData.phone)
 end
 
 

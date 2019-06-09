@@ -1,5 +1,5 @@
-RegisterNetEvent('mythic_phone_component:client:call')
-AddEventHandler('mythic_phone_component:client:call', function(data)
+RegisterNetEvent('mythic_phone:client:call')
+AddEventHandler('mythic_phone:client:call', function(data)
   local playerPed   = GetPlayerPed(-1)
   local coords      = GetEntityCoords(playerPed)
   local message     = data.message
@@ -15,7 +15,7 @@ AddEventHandler('mythic_phone_component:client:call', function(data)
     end
   end
   if message ~= nil and message ~= "" then
-    TriggerServerEvent('mythic_phone_component:client:startCall', number, message, {
+    TriggerServerEvent('mythic_phone_component:server:startCall', number, message, {
       x = coords.x,
       y = coords.y,
       z = coords.z

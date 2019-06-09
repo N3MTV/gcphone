@@ -1,3 +1,10 @@
+resource_manifest_version '44febabe-d386-4d18-afbe-5e627f4af937'
+
+name 'Mythic Framework GCPhone Port'
+description 'GCPhone Port To Mythic Roleplay\'s Custom Framework'
+author 'Alzar - https://github.com/Alzar'
+version 'v1.0.0'
+url 'https://github.com/mythicrp/mythic_phone'
 
 ui_page 'html/index.html'
 
@@ -55,6 +62,7 @@ client_script {
 	"config.lua",
 	"client/animation.lua",
 	"client/client.lua",
+	"client/extension.lua",
 
 	"client/photo.lua",
 	"client/app_tchat.lua",
@@ -66,6 +74,7 @@ server_script {
 	'@mysql-async/lib/MySQL.lua',
 	"config.lua",
 	"server/server.lua",
+	"server/extension.lua",
 
 	"server/app_tchat.lua",
 	"server/twitter.lua",

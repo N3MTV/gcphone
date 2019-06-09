@@ -2,10 +2,10 @@ import PhoneAPI from './../../PhoneAPI'
 import Vue from 'vue'
 
 const state = {
-  twitterUsername: localStorage['gcphone_twitter_username'],
-  twitterAvatarUrl: localStorage['gcphone_twitter_avatarUrl'],
-  twitterNotification: localStorage['gcphone_twitter_notif'] ? parseInt(localStorage['gcphone_twitter_notif']) : 1,
-  twitterNotificationSound: localStorage['gcphone_twitter_notif_sound'] !== 'false',
+  twitterUsername: localStorage['mythic_phone_twitter_username'],
+  twitterAvatarUrl: localStorage['mythic_phone_twitter_avatarUrl'],
+  twitterNotification: localStorage['mythic_phone_twitter_notif'] ? parseInt(localStorage['mythic_phone_twitter_notif']) : 1,
+  twitterNotificationSound: localStorage['mythic_phone_twitter_notif_sound'] !== 'false',
   tweets: [],
   favoriteTweets: []
 }
@@ -21,8 +21,8 @@ const getters = {
 
 const actions = {
   twitterLogout ({ commit }) {
-    localStorage.removeItem('gcphone_twitter_username')
-    localStorage.removeItem('gcphone_twitter_avatarUrl')
+    localStorage.removeItem('mythic_phone_twitter_username')
+    localStorage.removeItem('mythic_phone_twitter_avatarUrl')
     commit('UPDATE_ACCOUNT', {
       username: undefined,
       avatarUrl: undefined
@@ -42,8 +42,8 @@ const actions = {
     PhoneAPI.twitter_toggleLikeTweet(tweetId)
   },
   setAccount ({ commit }, data) {
-    localStorage['gcphone_twitter_username'] = data.username
-    localStorage['gcphone_twitter_avatarUrl'] = data.avatarUrl
+    localStorage['mythic_phone_twitter_username'] = data.username
+    localStorage['mythic_phone_twitter_avatarUrl'] = data.avatarUrl
     commit('UPDATE_ACCOUNT', data)
   },
   addTweet ({ commit, state }, tweet) {
@@ -68,11 +68,11 @@ const actions = {
     PhoneAPI.twitter_getFavoriteTweets(state.twitterUsername)
   },
   setTwitterNotification ({ commit }, value) {
-    localStorage['gcphone_twitter_notif'] = value
+    localStorage['mythic_phone_twitter_notif'] = value
     commit('SET_TWITTER_NOTIFICATION', { notification: value })
   },
   setTwitterNotificationSound ({ commit }, value) {
-    localStorage['gcphone_twitter_notif_sound'] = value
+    localStorage['mythic_phone_twitter_notif_sound'] = value
     commit('SET_TWITTER_NOTIFICATION_SOUND', { notificationSound: value })
   }
 }

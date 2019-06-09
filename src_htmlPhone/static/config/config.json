@@ -61,55 +61,181 @@
 
 
   "serviceCall": [{
-      "display": "Police",
-      "icon": "/html/static/img/icons_app/police.png",
+      "display": "Los Santos Police",
+      "backgroundColor": "blue",
+      "letter": "LSP",
       "subMenu": [{
-          "title": "Text",
-          "eventName": "mythic_phone_component:client:call",
-          "type": {
-            "number": "police"
-          }
-        },
-        {
-          "title": "Call",
-          "eventName": "gcphone:autoCallNumber",
-          "type": {
-            "number": "police"
-          }
+        "title": "Call",
+        "eventName": "mythic_phone:client:autoCallNumber",
+        "type": {
+          "number": "police"
         }
-      ]
+      },
+      {
+        "title": "Text",
+        "eventName": "mythic_phone:client:call",
+        "type": {
+          "number": "police"
+        }
+      }]
     },
     {
-      "display": "Ambulance",
+      "display": "Emergency Medical Services",
       "backgroundColor": "red",
+      "letter": "EMS",
       "subMenu": [{
-        "title": "Text",
-        "eventName": "mythic_phone_component:client:call",
+        "title": "Call",
+        "eventName": "mythic_phone:client:autoCallNumber",
         "type": {
           "number": "ems"
         }
       },
       {
-        "title": "Call",
-        "eventName": "gcphone:autoCallNumber",
+        "title": "Text",
+        "eventName": "mythic_phone:client:call",
         "type": {
           "number": "ems"
+        }
+      }]
+    },
+    {
+      "display": "Mechanic",
+      "backgroundColor": "grey",
+      "letter": "M",
+      "subMenu": [{
+        "title": "Call",
+        "eventName": "mythic_phone:client:autoCallNumber",
+        "type": {
+          "number": "mechanic"
+        }
+      },
+      {
+        "title": "Text",
+        "eventName": "mythic_phone:client:call",
+        "type": {
+          "number": "mechanic"
+        }
+      }]
+    },
+    {
+      "display": "Tow Truck",
+      "backgroundColor": "green",
+      "letter": "TT",
+      "subMenu": [{
+        "title": "Call",
+        "eventName": "mythic_phone:client:autoCallNumber",
+        "type": {
+          "number": "towtruck"
+        }
+      },
+      {
+        "title": "Text",
+        "eventName": "mythic_phone:client:call",
+        "type": {
+          "number": "towtruck"
+        }
+      }]
+    },
+    {
+      "display": "Taxi",
+      "backgroundColor": "yellow",
+      "letter": "T",
+      "subMenu": [{
+        "title": "Call",
+        "eventName": "mythic_phone:client:autoCallNumber",
+        "type": {
+          "number": "taxi"
+        }
+      },
+      {
+        "title": "Text",
+        "eventName": "mythic_phone:client:call",
+        "type": {
+          "number": "taxi"
+        }
+      }]
+    },
+    {
+      "display": "Lawyer",
+      "backgroundColor": "orange",
+      "letter": "L",
+      "subMenu": [{
+        "title": "Call",
+        "eventName": "mythic_phone:client:autoCallNumber",
+        "type": {
+          "number": "lawyer"
+        }
+      },
+      {
+        "title": "Text",
+        "eventName": "mythic_phone:client:call",
+        "type": {
+          "number": "lawyer"
+        }
+      }]
+    },
+    {
+      "display": "Real Estate Agent",
+      "backgroundColor": "purple",
+      "letter": "REA",
+      "subMenu": [{
+        "title": "Call",
+        "eventName": "mythic_phone:client:autoCallNumber",
+        "type": {
+          "number": "realestate"
+        }
+      },
+      {
+        "title": "Text",
+        "eventName": "mythic_phone:client:call",
+        "type": {
+          "number": "realestate"
         }
       }]
     }
   ],
 
   "defaultContacts": [{
-      "number": "ems",
-      "display": "EMS",
-      "backgroundColor": "red",
-      "letter": "E"
+      "number": "police",
+      "display": "Los Santos Police",
+      "backgroundColor": "blue",
+      "letter": "LSP"
     },
     {
-      "number": "police",
-      "display": "Police",
-      "backgroundColor": "blue",
-      "letter": "P"
+      "number": "ems",
+      "display": "Emergency Medical Services",
+      "backgroundColor": "red",
+      "letter": "EMS"
+    },
+    {
+      "number": "mechanic",
+      "display": "Mechanic",
+      "backgroundColor": "grey",
+      "letter": "M"
+    },
+    {
+      "number": "towtruck",
+      "display": "Tow Truck",
+      "backgroundColor": "green",
+      "letter": "TT"
+    },
+    {
+      "number": "taxi",
+      "display": "Taxi",
+      "backgroundColor": "yellow",
+      "letter": "T"
+    },
+    {
+      "number": "lawyer",
+      "display": "Lawyer",
+      "backgroundColor": "orange",
+      "letter": "L"
+    },
+    {
+      "number": "realestate",
+      "display": "Real Estate Agent",
+      "backgroundColor": "purple",
+      "letter": "REA"
     }
   ],
 
@@ -185,7 +311,7 @@
       "CONFIRM": "Accept",
       "CANCEL": "Cancel",
       "APP_CONFIG_TITLE": "Settings",
-      "APP_CONFIG_MY_MUNBER": "My number",
+      "APP_CONFIG_MY_MUNBER": "My Phone Number",
       "APP_CONFIG_WALLPAPER": "Wallpaper",
       "APP_CONFIG_CASE": "Phone Skin",
       "APP_CONFIG_ZOOM": "Zoom",
@@ -193,15 +319,18 @@
       "APP_CONFIG_LANGUAGE": "Language",
       "APP_CONFIG_MOUSE_SUPPORT": "Mouse Control",
       "APP_CONFIG_RESET": "Format Phone",
-      "APP_CONFIG_RESET_CONFIRM": "DELETE ALL",
+      "APP_CONFIG_RESET_CONFIRM": "Format Phone",
       "APP_PHONE_CALL": "Call",
       "APP_PHONE_DELETE": "Delete",
-      "APP_PHONE_DELETE_ALL": "Delete All.",
+      "APP_PHONE_NUMBER_UNKNOWN": "Unkown Player",
+      "APP_PHONE_NUMBER_HIDDEN": "Hidden Number",
+      "APP_PHONE_DELETE_ALL": "Delete All",
       "APP_PHONE_TITLE": "Phone",
       "APP_PHONE_MENU_FAVORITES": "Favorites",
       "APP_PHONE_MENU_RECENTS": "Newest",
       "APP_PHONE_MENU_CONTACTS": "Contacts",
-      "APP_PHONE_ENTER_NUMBER": "Enter a number",
+      "APP_PHONE_ENTER_NUMBER": "Enter a Number",
+      "APP_PHONE_CALL_IGNORE": "Ignore",
       "APP_BANK_TITLE": "Bank",
       "APP_BOURSE_TITLE": "Stock Exchange",
       "APP_CONTACT_TITLE": "Contact Details",
@@ -210,64 +339,46 @@
       "APP_CONTACT_SAVE": "Save Contact",
       "APP_CONTACT_CANCEL": "Cancel",
       "APP_CONTACT_DELETE": "Delete",
-      "APP_CONTACT_LABEL_NAME": "First Name - Last Name",
+      "APP_CONTACT_LABEL_NAME": "Name",
       "APP_CONTACT_LABEL_NUMBER": "Number",
       "APP_MESSAGE_TITLE": "Text Messages",
       "APP_MESSAGE_NEW_MESSAGE": "New Message",
-      "APP_MESSAGE_ERASE_CONVERSATION": "Delete the call",
-      "APP_MESSAGE_ERASE_ALL_CONVERSATIONS": "Delete all conv.",
-      "APP_MESSAGE_SEND_GPS": "Send GPS coupling",
-      "APP_MESSAGE_SET_GPS": "GPS position",
+      "APP_MESSAGE_ERASE_CONVERSATION": "Delete",
+      "APP_MESSAGE_ERASE_ALL_CONVERSATIONS": "Delete All",
+      "APP_MESSAGE_SEND_GPS": "Send GPS Coordinates",
+      "APP_MESSAGE_SET_GPS": "GPS Position",
       "APP_MESSAGE_ZOOM_IMG": "Enlarge",
       "APP_MESSAGE_DELETE": "Delete",
       "APP_MESSAGE_SMS": "Text Message",
       "APP_MESSAGE_CONTACT_TITLE": "Contacts",
-      "APP_MESSAGE_CONTRACT_ENTER_NUMBER": "Enter a number",
-      "APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE": "Send a message",
+      "APP_MESSAGE_CONTRACT_ENTER_NUMBER": "Enter a Number",
+      "APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE": "Send a Message",
+      "APP_MESSAGE_MESS_NUMBER ": "Number ",
+      "APP_MESSAGE_MESS_SMS": "Text",
+      "APP_MESSAGE_MESS_CALL": "Call",
+      "APP_MESSAGE_MESS_COPY": "Copy Number",
       "APP_DARKTCHAT_TITLE": "Dark Chat",
-      "APP_DARKTCHAT_NEW_CHANNEL": "Add a channel",
-      "APP_DARKTCHAT_DELETE_CHANNEL": "Delete the channel",
-      "APP_DARKTCHAT_CANCEL": "abort",
-      "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Enter a message",
+      "APP_DARKTCHAT_NEW_CHANNEL": "Add a Channel",
+      "APP_DARKTCHAT_DELETE_CHANNEL": "Delete Channel",
+      "APP_DARKTCHAT_CANCEL": "Cancel",
+      "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Enter a Message",
       "APP_TWITTER_NAME": "Twitter",
       "APP_TWITTER_VIEW_TWITTER": "Twitter",
       "APP_TWITTER_VIEW_TOP_TWEETS": "Top Tweets",
       "APP_TWITTER_VIEW_TWEETER": "Tweets",
       "APP_TWITTER_VIEW_SETTING": "Settings",
-      "APP_TWITTER_NEW_ACCOUNT_USERNAME": "Username (>= 4)",
-      "APP_TWITTER_NEW_ACCOUNT_PASSWORD": "Password (>= 6)",
-      "APP_TWITTER_NEW_ACCOUNT_PASSWORD_CONFIRM": "Confirm password",
-      "APP_TWITTER_NEW_ACCOUNT_AVATAR": "URL of your avatar",
-      "APP_TWITTER_PLACEHOLDER_MESSAGE": "What's the matter with you?",
+      "APP_TWITTER_PLACEHOLDER_MESSAGE": "What's Happening?",
       "APP_TWITTER_BUTTON_ACTION_TWEETER": "Tweet",
-      "APP_TWITTER_ACCOUNT_LOGIN": "Log in to the website",
-      "APP_TWITTER_ACCOUNT_LOGOUT": "Disconnect from location",
-      "APP_TWITTER_ACCOUNT_PARAM": "My account",
-      "APP_TWITTER_ACCOUNT_AVATAR": "Changing the Avatar",
-      "APP_TWITTER_ACCOUNT_CHANGE_PASSWORD": "Change password",
-      "APP_TWITTER_ACCOUNT_NEW": "New account",
-      "APP_TWIITER_ACCOUNT_SAVE": "registration",
-      "APP_TWIITER_ACCOUNT_CREATE": "Create the account",
-      "APP_TWIITER_ACCOUNT_CANCEL": "abort",
-      "APP_TWITTER_ACCOUNT_USERNAME": "username",
-      "APP_TWITTER_ACCOUNT_PASSWORD": "password",
-      "APP_TWITTER_NOTIFICATION": "notification",
-      "APP_TWITTER_NOTIFICATION_WHEN": "To be notified",
-      "APP_TWITTER_NOTIFICATION_ALL": "All News",
-      "APP_TWITTER_NOTIFICATION_MENTION": "Just mention",
-      "APP_TWITTER_NOTIFICATION_NEVER": "Nobody",
-      "APP_TWITTER_NOTIFICATION_SOUND": "Play a sound",
+      "APP_TWITTER_ACCOUNT_PARAM": "Account Settings",
+      "APP_TWITTER_ACCOUNT_AVATAR": "Update Avatar",
+      "APP_TWITTER_NOTIFICATION": "Notifications",
+      "APP_TWITTER_NOTIFICATION_WHEN": "Notify When",
+      "APP_TWITTER_NOTIFICATION_ALL": "Anyone Tweets",
+      "APP_TWITTER_NOTIFICATION_MENTION": "Someone Mentions Me",
+      "APP_TWITTER_NOTIFICATION_NEVER": "Never",
+      "APP_TWITTER_NOTIFICATION_SOUND": "Play Notification Sound?",
       "APP_TWITTER_NOTIFICATION_SOUND_YES": "Yes",
       "APP_TWITTER_NOTIFICATION_SOUND_NO": "No",
-      "APP_TWITTER_NOTIF_ACCOUNT_CREATE_SUCCESS": "Your Twitter account has been created.",
-      "APP_TWITTER_NOTIF_ACCOUNT_CREATE_ERROR": "Your Twitter account could not be created (username already used?)",
-      "APP_TWITTER_NOTIF_LOGIN_SUCCESS": "You are connected to Twitter.",
-      "APP_TWITTER_NOTIF_LOGIN_ERROR": "Invalid account / passwords",
-      "APP_TWITTER_NOTIF_AVATAR_SUCCESS": "Your avatar has been changed!",
-      "APP_TWITTER_NOTIF_NEW_PASSWORD_SUCCESS": "Your password has been changed.",
-      "APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR": "Oops.... Your password could not be changed.",
-      "APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH": "Passwords do not match",
-      "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Password too short",
 
       "TIMEAGO": [
         "just now",

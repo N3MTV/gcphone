@@ -49,7 +49,6 @@ function getUser(id, cb)
   MySQL.Async.fetchScalar("SELECT avatar_url as authorIcon FROM twitter_accounts WHERE twitter_accounts.id = @id", {
     ['@id'] = id
   }, function (avatar)
-    print(avatar)
     cb(avatar)
   end)
 end
@@ -67,8 +66,8 @@ function TwitterPostTweet(char, message, cb)
         tweet = tweets[1]
         tweet['author'] = user.author
         tweet['authorIcon'] = user.authorIcon
-        TriggerClientEvent('gcPhone:twitter_newTweets', -1, tweet)
-        TriggerEvent('gcPhone:twitter_newTweets', char, tweet)
+        TriggerClientEvent('mythic_phone:client:twitter_newTweets', -1, tweet)
+        TriggerEvent('mythic_phone:server:twitter_newTweets', char, tweet)
       end)
     end)
   end)
@@ -93,9 +92,9 @@ function TwitterToogleLike(char, tweetId)
           MySQL.Async.execute('UPDATE `twitter_tweets` SET `likes`= likes + 1 WHERE id = @id', {
             ['@id'] = tweet.id
           }, function ()
-            TriggerClientEvent('gcPhone:twitter_updateTweetLikes', -1, tweet.id, tweet.likes + 1)
-            TriggerClientEvent('gcPhone:twitter_setTweetLikes', cData.source, tweet.id, true)
-            TriggerEvent('gcPhone:twitter_updateTweetLikes', tweet.id, tweet.likes + 1)
+            TriggerClientEvent('mythic_phone:client:twitter_updateTweetLikes', -1, tweet.id, tweet.likes + 1)
+            TriggerClientEvent('mythic_phone:client:twitter_setTweetLikes', cData.source, tweet.id, true)
+            TriggerEvent('mythic_phone:server:twitter_updateTweetLikes', tweet.id, tweet.likes + 1)
           end)    
         end)
       else
@@ -105,9 +104,9 @@ function TwitterToogleLike(char, tweetId)
           MySQL.Async.execute('UPDATE `twitter_tweets` SET `likes`= likes - 1 WHERE id = @id', {
             ['@id'] = tweet.id
           }, function ()
-            TriggerClientEvent('gcPhone:twitter_updateTweetLikes', -1, tweet.id, tweet.likes - 1)
-            TriggerClientEvent('gcPhone:twitter_setTweetLikes', cData.source, tweet.id, false)
-            TriggerEvent('gcPhone:twitter_updateTweetLikes', tweet.id, tweet.likes - 1)
+            TriggerClientEvent('mythic_phone:client:twitter_updateTweetLikes', -1, tweet.id, tweet.likes - 1)
+            TriggerClientEvent('mythic_phone:client:twitter_setTweetLikes', cData.source, tweet.id, false)
+            TriggerEvent('mythic_phone:server:twitter_updateTweetLikes', tweet.id, tweet.likes - 1)
           end)
         end)
       end
@@ -124,9 +123,8 @@ end
 
 -- ALTER TABLE `twitter_accounts`	CHANGE COLUMN `username` `username` VARCHAR(50) NOT NULL DEFAULT '0' COLLATE 'utf8_general_ci';
 
-RegisterServerEvent('gcPhone:twitter_login')
-AddEventHandler('gcPhone:twitter_login', function()
-  print('fucking login cunt')
+RegisterServerEvent('mythic_phone:server:twitter_login')
+AddEventHandler('mythic_phone:server:twitter_login', function()
   local char = exports['mythic_base']:getPlayerFromId(source).getChar()
   local cData = char.getCharData()
   getUser(cData.id, function (user)
@@ -134,48 +132,48 @@ AddEventHandler('gcPhone:twitter_login', function()
       TwitterCreateAccount(cData.id, 'https://pbs.twimg.com/profile_images/1114565338346078214/HZSe7qxC_400x400.jpg')
       getUser(cData.id, function (user2)
         TriggerClientEvent('mythic_notify:client:SendAlert', cData.source, { type = 'success', text = 'Logged Into Twitter'})
-        TriggerClientEvent('gcPhone:twitter_setAccount', cData.source, username, user2.authorIcon)
+        TriggerClientEvent('mythic_phone:client:twitter_setAccount', cData.source, username, user2.authorIcon)
       end)
     else
       TriggerClientEvent('mythic_notify:client:SendAlert', cData.source, { type = 'success', text = 'Logged Into Twitter'})
-      TriggerClientEvent('gcPhone:twitter_setAccount', cData.source, username, user.authorIcon)
+      TriggerClientEvent('mythic_phone:client:twitter_setAccount', cData.source, username, user.authorIcon)
     end
   end)
 end)
 
-RegisterServerEvent('gcPhone:twitter_getTweets')
-AddEventHandler('gcPhone:twitter_getTweets', function()
+RegisterServerEvent('mythic_phone:server:twitter_getTweets')
+AddEventHandler('mythic_phone:server:twitter_getTweets', function()
   local char = exports['mythic_base']:getPlayerFromId(source).getChar()
   local cData = char.getCharData()
   TwitterGetTweets(cData.id, function (tweets)
-    TriggerClientEvent('gcPhone:twitter_getTweets', cData.source, tweets)
+    TriggerClientEvent('mythic_phone:client:twitter_getTweets', cData.source, tweets)
   end)
 end)
 
-RegisterServerEvent('gcPhone:twitter_getFavoriteTweets')
-AddEventHandler('gcPhone:twitter_getFavoriteTweets', function()
+RegisterServerEvent('mythic_phone:server:twitter_getFavoriteTweets')
+AddEventHandler('mythic_phone:server:twitter_getFavoriteTweets', function()
   local char = exports['mythic_base']:getPlayerFromId(source).getChar()
   local cData = char.getCharData()
   TwitterGetFavotireTweets(cData.id, function (tweets)
-    TriggerClientEvent('gcPhone:twitter_getFavoriteTweets', cData.source, tweets)
+    TriggerClientEvent('mythic_phone:client:twitter_getFavoriteTweets', cData.source, tweets)
   end)
 end)
 
-RegisterServerEvent('gcPhone:twitter_postTweets')
-AddEventHandler('gcPhone:twitter_postTweets', function(message)
+RegisterServerEvent('mythic_phone:server:twitter_postTweets')
+AddEventHandler('mythic_phone:server:twitter_postTweets', function(message)
   local char = exports['mythic_base']:getPlayerFromId(source).getChar()
   TwitterPostTweet(char, message)
 end)
 
-RegisterServerEvent('gcPhone:twitter_toogleLikeTweet')
-AddEventHandler('gcPhone:twitter_toogleLikeTweet', function(tweetId)
+RegisterServerEvent('mythic_phone:server:twitter_toogleLikeTweet')
+AddEventHandler('mythic_phone:server:twitter_toogleLikeTweet', function(tweetId)
   local char = exports['mythic_base']:getPlayerFromId(source).getChar()
   TwitterToogleLike(char, tweetId)
 end)
 
 
-RegisterServerEvent('gcPhone:twitter_setAvatarUrl')
-AddEventHandler('gcPhone:twitter_setAvatarUrl', function(avatarUrl)
+RegisterServerEvent('mythic_phone:server:twitter_setAvatarUrl')
+AddEventHandler('mythic_phone:server:twitter_setAvatarUrl', function(avatarUrl)
   local char = exports['mythic_base']:getPlayerFromId(source).getChar()
   local cData = char.getCharData()
   MySQL.Async.execute("UPDATE `twitter_accounts` SET `avatar_url`= @avatarUrl WHERE twitter_accounts.id = @id", {
@@ -185,7 +183,7 @@ AddEventHandler('gcPhone:twitter_setAvatarUrl', function(avatarUrl)
     if (result == 1) then
       local un = cData.firstName .. cData.lastName .. cData.id 
 
-      TriggerClientEvent('gcPhone:twitter_setAccount', cData.source, un, avatarUrl)
+      TriggerClientEvent('mythic_phone:client:twitter_setAccount', cData.source, un, avatarUrl)
       TriggerClientEvent('mythic_notify:client:SendAlert', cData.source, { type = 'success', text = 'Twitter Avatar Updated'})
     else
       TriggerClientEvent('mythic_notify:client:SendAlert', cData.source, { type = 'error', text = 'Something Is Wrong, You\'re Not Logged In'})
@@ -198,7 +196,7 @@ end)
   Discord WebHook
   set discord_webhook 'https//....' in config.cfg
 --]]
-AddEventHandler('gcPhone:twitter_newTweets', function (char, tweet)
+AddEventHandler('mythic_phone:server:twitter_newTweets', function (char, tweet)
   local cData = char.getCharData()
   -- print(json.encode(tweet))
   local discord_webhook = GetConvar('discord_webhook', '')

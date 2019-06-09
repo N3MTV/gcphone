@@ -22,11 +22,11 @@ end
 --  Utils
 --====================================================================================
 function getCharIDByPhoneNumber(phone_number) 
-    local result = MySQL.Sync.fetchAll("SELECT characters.id FROM characters WHERE characters.phone_number = @phone_number", {
+    local result = MySQL.Sync.fetchScalar("SELECT characters.id FROM characters WHERE characters.phone_number = @phone_number", {
         ['@phone_number'] = phone_number
     })
-    if result[1] ~= nil then
-        return result[1].id
+    if result ~= nil then
+        return result
     end
     return nil
 end
@@ -93,23 +93,23 @@ end
 
 function notifyContactChange(char)
     local cData = char.getCharData()
-    TriggerClientEvent("gcPhone:contactList", cData.source, getContacts(char))
+    TriggerClientEvent("mythic_phone:client:contactList", cData.source, getContacts(char))
 end
 
-RegisterServerEvent('gcPhone:addContact')
-AddEventHandler('gcPhone:addContact', function(display, phoneNumber)
+RegisterServerEvent('mythic_phone:server:addContact')
+AddEventHandler('mythic_phone:server:addContact', function(display, phoneNumber)
     local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     addContact(char, phoneNumber, display)
 end)
 
-RegisterServerEvent('gcPhone:updateContact')
-AddEventHandler('gcPhone:updateContact', function(id, display, phoneNumber)
+RegisterServerEvent('mythic_phone:server:updateContact')
+AddEventHandler('mythic_phone:server:updateContact', function(id, display, phoneNumber)
     local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     updateContact(char, id, phoneNumber, display)
 end)
 
-RegisterServerEvent('gcPhone:deleteContact')
-AddEventHandler('gcPhone:deleteContact', function(id)
+RegisterServerEvent('mythic_phone:server:deleteContact')
+AddEventHandler('mythic_phone:server:deleteContact', function(id)
     local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     deleteContact(char, id)
 end)
@@ -126,8 +126,8 @@ function getMessages(char)
     --return MySQLQueryTimeStamp("SELECT phone_messages.* FROM phone_messages LEFT JOIN characters ON characters.id = @charid WHERE phone_messages.receiver = characters.phone_number", {['@charid'] = cData.id})
 end
 
-RegisterServerEvent('gcPhone:_internalAddMessage')
-AddEventHandler('gcPhone:_internalAddMessage', function(transmitter, receiver, message, owner, cb)
+RegisterServerEvent('mythic_phone:server:_internalAddMessage')
+AddEventHandler('mythic_phone:server:_internalAddMessage', function(transmitter, receiver, message, owner, cb)
     cb(_internalAddMessage(transmitter, receiver, message, owner))
 end)
 
@@ -154,12 +154,12 @@ function addMessage(char, phone_number, message)
         local tomess = _internalAddMessage(cData.phone, phone_number, message, 0)
         local oSrc = exports['mythic_base']:getPlayerFromCharId(oCharId)
         if tonumber(oSrc) ~= nil then 
-            -- TriggerClientEvent("gcPhone:allMessage", oSrc, getMessages(oCharId))
-            TriggerClientEvent("gcPhone:receiveMessage", tonumber(oSrc), tomess)
+            -- TriggerClientEvent("mythic_phone:client:allMessage", oSrc, getMessages(oCharId))
+            TriggerClientEvent("mythic_phone:client:receiveMessage", tonumber(oSrc), tomess)
         end
     end
-    local memess = _internalAddMessage(cData.phone, phone_number, message, 1)
-    TriggerClientEvent("gcPhone:receiveMessage", cData.source, memess)
+    local memess = _internalAddMessage(phone_number, cData.phone, message, 1)
+    TriggerClientEvent("mythic_phone:client:receiveMessage", cData.source, memess)
 end
 
 function setReadMessageNumber(char, num)
@@ -188,51 +188,51 @@ function deleteAllMessage(char)
     })
 end
 
-RegisterServerEvent('gcPhone:sendMessage')
-AddEventHandler('gcPhone:sendMessage', function(phoneNumber, message)
+RegisterServerEvent('mythic_phone:server:sendMessage')
+AddEventHandler('mythic_phone:server:sendMessage', function(phoneNumber, message)
     local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     addMessage(char, phoneNumber, message)
 end)
 
-RegisterServerEvent('gcPhone:deleteMessage')
-AddEventHandler('gcPhone:deleteMessage', function(msgId)
+RegisterServerEvent('mythic_phone:server:deleteMessage')
+AddEventHandler('mythic_phone:server:deleteMessage', function(msgId)
     deleteMessage(msgId)
 end)
 
-RegisterServerEvent('gcPhone:deleteMessageNumber')
-AddEventHandler('gcPhone:deleteMessageNumber', function(number)
+RegisterServerEvent('mythic_phone:server:deleteMessageNumber')
+AddEventHandler('mythic_phone:server:deleteMessageNumber', function(number)
     local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     deleteAllMessageFromPhoneNumber(char, number)
-    -- TriggerClientEvent("gcphone:allMessage", source, getMessages(char))
+    -- TriggerClientEvent("mythic_phone:client:allMessage", source, getMessages(char))
 end)
 
-RegisterServerEvent('gcPhone:deleteAllMessage')
-AddEventHandler('gcPhone:deleteAllMessage', function()
+RegisterServerEvent('mythic_phone:server:deleteAllMessage')
+AddEventHandler('mythic_phone:server:deleteAllMessage', function()
     local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     deleteAllMessage(char)
 end)
 
-RegisterServerEvent('gcPhone:setReadMessageNumber')
-AddEventHandler('gcPhone:setReadMessageNumber', function(num)
+RegisterServerEvent('mythic_phone:server:setReadMessageNumber')
+AddEventHandler('mythic_phone:server:setReadMessageNumber', function(num)
     local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     setReadMessageNumber(char, num)
 end)
 
-RegisterServerEvent('gcPhone:deleteALL')
-AddEventHandler('gcPhone:deleteALL', function()
+RegisterServerEvent('mythic_phone:server:deleteALL')
+AddEventHandler('mythic_phone:server:deleteALL', function()
     local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     deleteAllMessage(char)
     deleteAllContact(char)
     appelsDeleteAllHistorique(char)
-    TriggerClientEvent("gcPhone:contactList", source, {})
-    TriggerClientEvent("gcPhone:allMessage", source, {})
+    TriggerClientEvent("mythic_phone:client:contactList", source, {})
+    TriggerClientEvent("mythic_phone:client:allMessage", source, {})
     TriggerClientEvent("appelsDeleteAllHistorique", source, {})
 end)
 
 --====================================================================================
 --  Gestion des appels
 --====================================================================================
-local AppelsEnCours = {}
+local CallsInProgress = {}
 local PhoneFixeInfo = {}
 local lastIndexCall = 10
 
@@ -243,12 +243,13 @@ function getHistoriqueCall (num)
     return result
 end
 
-function sendHistoriqueCall (src, num) 
-    local histo = getHistoriqueCall(num)
-    TriggerClientEvent('gcPhone:historiqueCall', src, histo)
+function sendHistoriqueCall (char)
+    local cData = char.getCharData()
+    local histo = getHistoriqueCall(cData.phone)
+    TriggerClientEvent('mythic_phone:client:historiqueCall', cData.source, histo)
 end
 
-function saveAppels(appelInfo)
+function saveCallRecord(appelInfo)     
     if appelInfo.extraData == nil or appelInfo.extraData.useNumber == nil then
         MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
             ['@owner'] = appelInfo.transmitter_num,
@@ -256,13 +257,14 @@ function saveAppels(appelInfo)
             ['@incoming'] = 1,
             ['@accepts'] = appelInfo.is_accepts
         }, function()
-            notifyNewAppelsHisto(appelInfo.transmitter_src, appelInfo.transmitter_num)
+            local char = exports['mythic_base']:getPlayerFromId(appelInfo.transmitter_src)
+            notifyNewAppelsHisto(char)
         end)
     end
     if appelInfo.is_valid == true then
         local num = appelInfo.transmitter_num
         if appelInfo.hidden == true then
-            num = "###-####"
+            num = "Hidden #"
         end
 
         MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
@@ -272,26 +274,26 @@ function saveAppels(appelInfo)
             ['@accepts'] = appelInfo.is_accepts
         }, function()
             if appelInfo.receiver_src ~= nil then
-                notifyNewAppelsHisto(appelInfo.receiver_src, appelInfo.receiver_num)
+                local char = exports['mythic_base']:getPlayerFromId(appelInfo.receiver_src)
+                notifyNewAppelsHisto(char)
             end
         end)
     end
 end
 
-function notifyNewAppelsHisto (src, num) 
-    sendHistoriqueCall(src, num)
+function notifyNewAppelsHisto (char) 
+    sendHistoriqueCall(char)
 end
 
-RegisterServerEvent('gcPhone:getHistoriqueCall')
-AddEventHandler('gcPhone:getHistoriqueCall', function()
+RegisterServerEvent('mythic_phone:server:getHistoriqueCall')
+AddEventHandler('mythic_phone:server:getHistoriqueCall', function()
     local char = exports['mythic_base']:getPlayerFromId(source).getChar()
-    local cData = char.getCharData()
-    sendHistoriqueCall(source, cData.phone)
+    sendHistoriqueCall(char)
 end)
 
 
-RegisterServerEvent('gcPhone:internal_startCall')
-AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtcOffer, extraData)
+RegisterServerEvent('mythic_phone:server:internal_startCall')
+AddEventHandler('mythic_phone:server:internal_startCall', function(source, phone_number, rtcOffer, extraData)
     if FixePhone[phone_number] ~= nil then
         onCallFixePhone(source, phone_number, rtcOffer, extraData)
         return
@@ -313,88 +315,87 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
 
     local char = exports['mythic_base']:getPlayerFromId(source)
     local cData = char.getCharData()
-    local destCharId = getCharIDByPhoneNumber(phone_number)
-    local dSource = exports['mythic_base']:getPlayerFromCharId(destCharId)
-    local dChar = exports['mythic_base']:getPlayerFromId(dSource)
-    if dChar ~= nil then
-        local dData = dChar.getCharData()
+    local dSource = exports['mythic_base']:getPlayerFromCharId(getCharIDByPhoneNumber(phone_number))
 
-        local srcPhone = ''
-        if extraData ~= nil and extraData.useNumber ~= nil then
-            srcPhone = extraData.useNumber
-        else
-            srcPhone = cData.phone
-        end
+    local is_valid = dSource ~= nil
+    if dSource ~= nil then
+        local dChar = exports['mythic_base']:getPlayerFromId(dSource).getChar()
 
-        print(cData.phone)
-        local is_valid = dChar ~= nil and dData.id ~= cData.id
-        AppelsEnCours[indexCall] = {
-            id = indexCall,
-            transmitter_src = cData.source,
-            transmitter_num = srcPhone,
-            receiver_src = nil,
-            receiver_num = phone_number,
-            is_valid = dChar ~= nil,
-            is_accepts = false,
-            hidden = hidden,
-            rtcOffer = rtcOffer,
-            extraData = extraData
-        }
-        
+        if dChar ~= nil then
+            local dData = dChar.getCharData()
 
-        if is_valid == true then
-            if dData.source ~= nill then
-                AppelsEnCours[indexCall].receiver_src = dData.source
-                TriggerEvent('gcPhone:addCall', AppelsEnCours[indexCall])
-                TriggerClientEvent('gcPhone:waitingCall', cData.source, AppelsEnCours[indexCall], true)
-                TriggerClientEvent('gcPhone:waitingCall', dData.source, AppelsEnCours[indexCall], false)
+            local srcPhone = ''
+            if extraData ~= nil and extraData.useNumber ~= nil then
+                srcPhone = extraData.useNumber
             else
-                TriggerEvent('gcPhone:addCall', AppelsEnCours[indexCall])
-                TriggerClientEvent('gcPhone:waitingCall', cData.source, AppelsEnCours[indexCall], true)
+                srcPhone = cData.phone
             end
-        else
-            TriggerEvent('gcPhone:addCall', AppelsEnCours[indexCall])
-            TriggerClientEvent('gcPhone:waitingCall', cData.source, AppelsEnCours[indexCall], true)
+
+            CallsInProgress[indexCall] = {
+                id = indexCall,
+                transmitter_src = cData.source,
+                transmitter_num = srcPhone,
+                receiver_src = nil,
+                receiver_num = phone_number,
+                is_valid = dChar ~= nil,
+                is_accepts = false,
+                hidden = hidden,
+                rtcOffer = rtcOffer,
+                extraData = extraData
+            }
         end
-
     end
+
+    if is_valid == true then
+        if dSource ~= nil then
+            CallsInProgress[indexCall].receiver_src = dSource
+            TriggerEvent('mythic_phone:server:addCall', CallsInProgress[indexCall])
+            TriggerClientEvent('mythic_phone:client:waitingCall', cData.source, CallsInProgress[indexCall], true)
+            TriggerClientEvent('mythic_phone:client:waitingCall', dSource, CallsInProgress[indexCall], false)
+            return
+        end
+    end
+
+    TriggerEvent('mythic_phone:server:addCall', CallsInProgress[indexCall])
+    TriggerClientEvent('mythic_phone:client:waitingCall', cData.source, CallsInProgress[indexCall], true)
+    TriggerClientEvent('mythic_phone:client:waitingCall', source, CallsInProgress[indexCall], false)
 end)
 
-RegisterServerEvent('gcPhone:startCall')
-AddEventHandler('gcPhone:startCall', function(phone_number, rtcOffer, extraData)
-    TriggerEvent('gcPhone:internal_startCall',source, phone_number, rtcOffer, extraData)
+RegisterServerEvent('mythic_phone:server:startCall')
+AddEventHandler('mythic_phone:server:startCall', function(phone_number, rtcOffer, extraData)
+    TriggerEvent('mythic_phone:server:internal_startCall',source, phone_number, rtcOffer, extraData)
 end)
 
-RegisterServerEvent('gcPhone:candidates')
-AddEventHandler('gcPhone:candidates', function (callId, candidates)
+RegisterServerEvent('mythic_phone:server:candidates')
+AddEventHandler('mythic_phone:server:candidates', function (callId, candidates)
     -- print('send cadidate', callId, candidates)
-    if AppelsEnCours[callId] ~= nil then
+    if CallsInProgress[callId] ~= nil then
         local source = source
-        local to = AppelsEnCours[callId].transmitter_src
+        local to = CallsInProgress[callId].transmitter_src
         if source == to then 
-            to = AppelsEnCours[callId].receiver_src
+            to = CallsInProgress[callId].receiver_src
         end
         -- print('TO', to)
-        TriggerClientEvent('gcPhone:candidates', to, candidates)
+        TriggerClientEvent('mythic_phone:client:candidates', to, candidates)
     end
 end)
 
 
-RegisterServerEvent('gcPhone:acceptCall')
-AddEventHandler('gcPhone:acceptCall', function(infoCall, rtcAnswer)
+RegisterServerEvent('mythic_phone:server:acceptCall')
+AddEventHandler('mythic_phone:server:acceptCall', function(infoCall, rtcAnswer)
     local id = infoCall.id
-    if AppelsEnCours[id] ~= nil then
+    if CallsInProgress[id] ~= nil then
         if PhoneFixeInfo[id] ~= nil then
             onAcceptFixePhone(source, infoCall, rtcAnswer)
             return
         end
-        AppelsEnCours[id].receiver_src = infoCall.receiver_src or AppelsEnCours[id].receiver_src
-        if AppelsEnCours[id].transmitter_src ~= nil and AppelsEnCours[id].receiver_src~= nil then
-            AppelsEnCours[id].is_accepts = true
-            AppelsEnCours[id].rtcAnswer = rtcAnswer
-            TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].transmitter_src, AppelsEnCours[id], true)
-            TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].receiver_src, AppelsEnCours[id], false)
-            saveAppels(AppelsEnCours[id])
+        CallsInProgress[id].receiver_src = infoCall.receiver_src or CallsInProgress[id].receiver_src
+        if CallsInProgress[id].transmitter_src ~= nil and CallsInProgress[id].receiver_src~= nil then
+            CallsInProgress[id].is_accepts = true
+            CallsInProgress[id].rtcAnswer = rtcAnswer
+            TriggerClientEvent('mythic_phone:client:acceptCall', CallsInProgress[id].transmitter_src, CallsInProgress[id], true)
+            TriggerClientEvent('mythic_phone:client:acceptCall', CallsInProgress[id].receiver_src, CallsInProgress[id], false)
+            saveCallRecord(CallsInProgress[id])
         end
     end
 end)
@@ -402,34 +403,34 @@ end)
 
 
 
-RegisterServerEvent('gcPhone:rejectCall')
-AddEventHandler('gcPhone:rejectCall', function (infoCall)
+RegisterServerEvent('mythic_phone:server:rejectCall')
+AddEventHandler('mythic_phone:server:rejectCall', function (infoCall)
     local id = infoCall.id
-    if AppelsEnCours[id] ~= nil then
+    if CallsInProgress[id] ~= nil then
         if PhoneFixeInfo[id] ~= nil then
             onRejectFixePhone(source, infoCall)
             return
         end
 
-        if AppelsEnCours[id].transmitter_src ~= nil then
-            TriggerClientEvent('gcPhone:rejectCall', AppelsEnCours[id].transmitter_src)
+        if CallsInProgress[id].transmitter_src ~= nil then
+            TriggerClientEvent('mythic_phone:client:rejectCall', CallsInProgress[id].transmitter_src)
         end
 
-        if AppelsEnCours[id].receiver_src ~= nil then
-            TriggerClientEvent('gcPhone:rejectCall', AppelsEnCours[id].receiver_src)
+        if CallsInProgress[id].receiver_src ~= nil then
+            TriggerClientEvent('mythic_phone:client:rejectCall', CallsInProgress[id].receiver_src)
         end
 
-        if AppelsEnCours[id].is_accepts == false then 
-            saveAppels(AppelsEnCours[id])
+        if CallsInProgress[id].is_accepts == false then 
+            saveCallRecord(CallsInProgress[id])
         end
 
-        TriggerEvent('gcPhone:removeCall', AppelsEnCours)
-        AppelsEnCours[id] = nil
+        TriggerEvent('mythic_phone:server:removeCall', CallsInProgress)
+        CallsInProgress[id] = nil
     end
 end)
 
-RegisterServerEvent('gcPhone:appelsDeleteHistorique')
-AddEventHandler('gcPhone:appelsDeleteHistorique', function (numero)
+RegisterServerEvent('mythic_phone:server:appelsDeleteHistorique')
+AddEventHandler('mythic_phone:server:appelsDeleteHistorique', function (numero)
     local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     local cData = char.getCharData()
     MySQL.Sync.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
@@ -445,52 +446,11 @@ function appelsDeleteAllHistorique(char)
     })
 end
 
-RegisterServerEvent('gcPhone:appelsDeleteAllHistorique')
-AddEventHandler('gcPhone:appelsDeleteAllHistorique', function ()
+RegisterServerEvent('mythic_phone:server:appelsDeleteAllHistorique')
+AddEventHandler('mythic_phone:server:appelsDeleteAllHistorique', function ()
     local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     appelsDeleteAllHistorique(char)
 end)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 --====================================================================================
 --  OnLoad
@@ -500,22 +460,22 @@ AddEventHandler('mythic_characters:server:CharacterSpawned',function()
     local src = source
     local char = exports['mythic_base']:getPlayerFromId(src).getChar()
     local cData = char.getCharData()
-    TriggerClientEvent("gcPhone:myPhoneNumber", src, cData.phone)
-    TriggerClientEvent("gcPhone:contactList", src, getContacts(char))
-    TriggerClientEvent("gcPhone:allMessage", src, getMessages(char))
+    TriggerClientEvent("mythic_phone:client:myPhoneNumber", src, cData.phone)
+    TriggerClientEvent("mythic_phone:client:contactList", src, getContacts(char))
+    TriggerClientEvent("mythic_phone:client:allMessage", src, getMessages(char))
 end)
 
 -- Just For reload
-RegisterServerEvent('gcPhone:allUpdate')
-AddEventHandler('gcPhone:allUpdate', function()
+RegisterServerEvent('mythic_phone:server:allUpdate')
+AddEventHandler('mythic_phone:server:allUpdate', function()
     local src = source
     local char = exports['mythic_base']:getPlayerFromId(src).getChar()
     local cData = char.getCharData()
-    TriggerClientEvent("gcPhone:myPhoneNumber", src, cData.phone)
-    TriggerClientEvent("gcPhone:contactList", src, getContacts(char))
-    TriggerClientEvent("gcPhone:allMessage", src, getMessages(char))
-    TriggerClientEvent('gcPhone:getBourse', src, getBourse())
-    sendHistoriqueCall(src, num)
+    TriggerClientEvent("mythic_phone:client:myPhoneNumber", src, cData.phone)
+    TriggerClientEvent("mythic_phone:client:contactList", src, getContacts(char))
+    TriggerClientEvent("mythic_phone:client:allMessage", src, getMessages(char))
+    TriggerClientEvent('mythic_phone:client:getBourse', src, getBourse())
+    sendHistoriqueCall(char)
 end)
 
 
@@ -555,27 +515,6 @@ function getBourse()
     return result
 end
 
---====================================================================================
---  App ... WIP
---====================================================================================
-
-
--- SendNUIMessage('ongcPhoneRTC_receive_offer')
--- SendNUIMessage('ongcPhoneRTC_receive_answer')
-
--- RegisterNUICallback('gcPhoneRTC_send_offer', function (data)
-
-
--- end)
-
-
--- RegisterNUICallback('gcPhoneRTC_send_answer', function (data)
-
-
--- end)
-
-
-
 function onCallFixePhone (source, phone_number, rtcOffer, extraData)
     local indexCall = lastIndexCall
     lastIndexCall = lastIndexCall + 1
@@ -595,8 +534,7 @@ function onCallFixePhone (source, phone_number, rtcOffer, extraData)
         srcPhone = cData.phone
     end
 
-    print(cData.phone)
-    AppelsEnCours[indexCall] = {
+    CallsInProgress[indexCall] = {
         id = indexCall,
         transmitter_src = cData.source,
         transmitter_num = cData.phone,
@@ -610,10 +548,10 @@ function onCallFixePhone (source, phone_number, rtcOffer, extraData)
         coords = FixePhone[phone_number].coords
     }
     
-    PhoneFixeInfo[indexCall] = AppelsEnCours[indexCall]
+    PhoneFixeInfo[indexCall] = CallsInProgress[indexCall]
 
-    TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, PhoneFixeInfo)
-    TriggerClientEvent('gcPhone:waitingCall', cData.source, AppelsEnCours[indexCall], true)
+    TriggerClientEvent('mythic_phone:client:notifyFixePhoneChange', -1, PhoneFixeInfo)
+    TriggerClientEvent('mythic_phone:client:waitingCall', cData.source, CallsInProgress[indexCall], true)
 end
 
 
@@ -621,27 +559,27 @@ end
 function onAcceptFixePhone(source, infoCall, rtcAnswer)
     local id = infoCall.id
     
-    AppelsEnCours[id].receiver_src = source
-    if AppelsEnCours[id].transmitter_src ~= nil and AppelsEnCours[id].receiver_src ~= nil then
-        AppelsEnCours[id].is_accepts = true
-        AppelsEnCours[id].forceSaveAfter = true
-        AppelsEnCours[id].rtcAnswer = rtcAnswer
+    CallsInProgress[id].receiver_src = source
+    if CallsInProgress[id].transmitter_src ~= nil and CallsInProgress[id].receiver_src ~= nil then
+        CallsInProgress[id].is_accepts = true
+        CallsInProgress[id].forceSaveAfter = true
+        CallsInProgress[id].rtcAnswer = rtcAnswer
         PhoneFixeInfo[id] = nil
-        TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, PhoneFixeInfo)
-        TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].transmitter_src, AppelsEnCours[id], true)
-        TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].receiver_src, AppelsEnCours[id], false)
-        saveAppels(AppelsEnCours[id])
+        TriggerClientEvent('mythic_phone:client:notifyFixePhoneChange', -1, PhoneFixeInfo)
+        TriggerClientEvent('mythic_phone:client:acceptCall', CallsInProgress[id].transmitter_src, CallsInProgress[id], true)
+        TriggerClientEvent('mythic_phone:client:acceptCall', CallsInProgress[id].receiver_src, CallsInProgress[id], false)
+        saveCallRecord(CallsInProgress[id])
     end
 end
 
 function onRejectFixePhone(source, infoCall, rtcAnswer)
     local id = infoCall.id
     PhoneFixeInfo[id] = nil
-    TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, PhoneFixeInfo)
-    TriggerClientEvent('gcPhone:rejectCall', AppelsEnCours[id].transmitter_src)
-    if AppelsEnCours[id].is_accepts == false then
-        saveAppels(AppelsEnCours[id])
+    TriggerClientEvent('mythic_phone:client:notifyFixePhoneChange', -1, PhoneFixeInfo)
+    TriggerClientEvent('mythic_phone:client:rejectCall', CallsInProgress[id].transmitter_src)
+    if CallsInProgress[id].is_accepts == false then
+        saveCallRecord(CallsInProgress[id])
     end
-    AppelsEnCours[id] = nil
+    CallsInProgress[id] = nil
     
 end
