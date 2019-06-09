@@ -316,7 +316,9 @@ function requestAllContact()
   TriggerServerEvent('mythic_phone:server:requestAllContact')
 end
 
-
+function SendVoiceToPlayer(intPlayer, boolSend)
+	Citizen.InvokeNative(0x97DD4C5944CC2E6A, intPlayer, boolSend)
+end
 
 --====================================================================================
 --  Function client | Appels
@@ -339,8 +341,13 @@ RegisterNetEvent("mythic_phone:client:acceptCall")
 AddEventHandler("mythic_phone:client:acceptCall", function(infoCall, initiator)
   if inCall == false and USE_RTC == false then
     inCall = true
-    NetworkSetVoiceChannel(infoCall.id + 1)
-    NetworkSetTalkerProximity(0.0)
+    --NetworkSetVoiceChannel(infoCall.id + 1)
+    --NetworkSetTalkerProximity(0.0)
+    if initiator then
+      SendVoiceToPlayer(GetPlayerFromServerId(infoCall.receiver_src), true)
+    else
+      SendVoiceToPlayer(GetPlayerFromServerId(infoCall.transmitter_src), true)
+    end
   end
   if menuIsOpen == false then 
     TooglePhone()
@@ -353,8 +360,11 @@ RegisterNetEvent("mythic_phone:client:rejectCall")
 AddEventHandler("mythic_phone:client:rejectCall", function(infoCall)
   if inCall == true then
     inCall = false
-    Citizen.InvokeNative(0xE036A705F989E049)
-    NetworkSetTalkerProximity(2.5)
+    if PlayerId() == GetPlayerFromServerId(infoCall.transmitter_src) then
+      SendVoiceToPlayer(GetPlayerFromServerId(infoCall.receiver_src), false)
+    else
+      SendVoiceToPlayer(GetPlayerFromServerId(infoCall.transmitter_src), false)
+    end
   end
   PhonePlayText()
   SendNUIMessage({event = 'rejectCall', infoCall = infoCall})

@@ -44,16 +44,17 @@
     "Stormtrooper": "back003.jpg",
     "Custom URL": "URL"
   },
+
   "background_default": {
     "label": "Calvin & Hobbes",
     "value": "back001.jpg"
   },
 
-
   "coque": {
-    "Sansumg S8": "s8.png",
-    "Iphone X": "iphonex.png"
+    "Sansumg Galaxy S8": "s8.png",
+    "iPhone X": "iphonex.png"
   },
+
   "coque_default": {
     "label": "Samsumg S8",
     "value": "s8.png"

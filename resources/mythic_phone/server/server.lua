@@ -413,11 +413,11 @@ AddEventHandler('mythic_phone:server:rejectCall', function (infoCall)
         end
 
         if CallsInProgress[id].transmitter_src ~= nil then
-            TriggerClientEvent('mythic_phone:client:rejectCall', CallsInProgress[id].transmitter_src)
+            TriggerClientEvent('mythic_phone:client:rejectCall', CallsInProgress[id].transmitter_src, CallsInProgress[id])
         end
 
         if CallsInProgress[id].receiver_src ~= nil then
-            TriggerClientEvent('mythic_phone:client:rejectCall', CallsInProgress[id].receiver_src)
+            TriggerClientEvent('mythic_phone:client:rejectCall', CallsInProgress[id].receiver_src, CallsInProgress[id])
         end
 
         if CallsInProgress[id].is_accepts == false then 
@@ -576,7 +576,7 @@ function onRejectFixePhone(source, infoCall, rtcAnswer)
     local id = infoCall.id
     PhoneFixeInfo[id] = nil
     TriggerClientEvent('mythic_phone:client:notifyFixePhoneChange', -1, PhoneFixeInfo)
-    TriggerClientEvent('mythic_phone:client:rejectCall', CallsInProgress[id].transmitter_src)
+    TriggerClientEvent('mythic_phone:client:rejectCall', CallsInProgress[id].transmitter_src, CallsInProgress[id])
     if CallsInProgress[id].is_accepts == false then
         saveCallRecord(CallsInProgress[id])
     end

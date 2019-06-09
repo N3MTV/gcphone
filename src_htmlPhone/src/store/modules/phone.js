@@ -155,7 +155,7 @@ const actions = {
     dispatch('setVolume', 1)
     dispatch('setBackground', getters.config.background_default)
     dispatch('setCoque', getters.config.coque_default)
-    dispatch('setLanguage', 'fr_FR')
+    dispatch('setLanguage', 'en_US')
   }
 }
 
