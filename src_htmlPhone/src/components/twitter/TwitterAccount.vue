@@ -1,21 +1,7 @@
 <template>
   <div class='phone_content content inputText'>
     <template v-if="state === STATES.MENU">
-      <template v-if="!isLogin">
-        <div class="group" data-type="button" @click.stop="state = STATES.LOGIN">      
-          <input type='button' class="btn btn-blue" @click.stop="state = STATES.LOGIN" :value="IntlString('APP_TWITTER_ACCOUNT_LOGIN')"/>
-        </div>
-
-        <div class="group" data-type="button" @click.stop="state = STATES.NOTIFICATION">      
-          <input type='button' class="btn btn-blue" @click.stop="state = STATES.NOTIFICATION" :value="IntlString('APP_TWITTER_NOTIFICATION')" />
-        </div>
-
-        <div class="group bottom" data-type="button" @click.stop="state = STATES.NEW_ACCOUNT">      
-          <input type='button' class="btn btn-red" @click.stop="state = STATES.NEW_ACCOUNT" :value="IntlString('APP_TWITTER_ACCOUNT_NEW')" />
-        </div>
-      </template>
-
-      <template v-if="isLogin">
+      <template>
         <img :src="twitterAvatarUrl" height="128" width="128" style="align-self: center;">
 
         <div class="group" data-type="button" @click.stop="state = STATES.ACCOUNT">      
@@ -30,26 +16,6 @@
           <input type='button' class="btn btn-red" @click.stop="logout" :value="IntlString('APP_TWITTER_ACCOUNT_LOGOUT')" />
         </div>
       </template>
-    </template>
-
-    <template v-else-if="state === STATES.LOGIN">
-      <div class="group inputText" data-type="text" data-maxlength='64' :data-defaultValue="localAccount.username">      
-          <input type="text" :value="localAccount.username" @change="setLocalAccount($event, 'username')">
-          <span class="highlight"></span>
-          <span class="bar"></span>
-          <label>{{ IntlString('APP_TWITTER_ACCOUNT_USERNAME') }}</label>
-      </div>
-      
-      <div class="group inputText" data-type="text" data-model='password' data-maxlength='30'>      
-          <input autocomplete="new-password" type="password" :value="localAccount.password" @change="setLocalAccount($event, 'password')">
-          <span class="highlight"></span>
-          <span class="bar"></span>
-          <label>{{ IntlString('APP_TWITTER_ACCOUNT_PASSWORD') }}</label>
-      </div>
-
-      <div class="group" data-type="button" @click.stop="login">      
-        <input type='button' class="btn btn-blue" @click.stop="login" :value="IntlString('APP_TWITTER_ACCOUNT_LOGIN')" />
-      </div>
     </template>
 
     <template v-else-if="state === STATES.NOTIFICATION">
@@ -276,10 +242,7 @@ export default {
       } catch (e) {}
     },
     login () {
-      this.twitterLogin({
-        username: this.localAccount.username,
-        password: this.localAccount.password
-      })
+      this.twitterLogin({})
       this.state = STATES.MENU
     },
     logout () {

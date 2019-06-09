@@ -2,48 +2,28 @@
 --  Function APP BANK
 --====================================================================================
 
---[[
-      Appeller SendNUIMessage({event = 'updateBankbalance', banking = xxxx})
-      à la connection & à chaque changement du compte
---]]
-
--- ES / ESX Implementation
-
 local bank = 0
 function setBankBalance (value)
       bank = value
       SendNUIMessage({event = 'updateBankbalance', banking = bank})
 end
 
-RegisterNetEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded', function(playerData)
-      local accounts = playerData.accounts or {}
-      for index, account in ipairs(accounts) do 
-            if account.name == 'bank' then
-                  setBankBalance(account.money)
-                  break
-            end
-      end
+RegisterNetEvent('mythic_phone:client:SetupBankApp')
+AddEventHandler('mythic_phone:client:SetupBankApp', function(cData)
+      setBankBalance(cData.bank)
 end)
 
-RegisterNetEvent('esx:setAccountMoney')
-AddEventHandler('esx:setAccountMoney', function(account)
-      if account.name == 'bank' then
-            setBankBalance(account.money)
-      end
+RegisterNetEvent('mythic_base:client:SetBankMoney')
+AddEventHandler('mythic_base:client:SetBankMoney', function(cData)
+      setBankBalance(cData.bank)
 end)
 
-RegisterNetEvent("es:addedBank")
-AddEventHandler("es:addedBank", function(m)
-      setBankBalance(bank + m)
+RegisterNetEvent("mythic_base:client:AddBankBalance")
+AddEventHandler("mythic_base:client:AddBankBalance", function(amount)
+      setBankBalance(bank + amount)
 end)
 
-RegisterNetEvent("es:removedBank")
-AddEventHandler("es:removedBank", function(m)
-      setBankBalance(bank - m)
-end)
-
-RegisterNetEvent('es:displayBank')
-AddEventHandler('es:displayBank', function(bank)
-      setBankBalance(bank)
+RegisterNetEvent("mythic_base:client:RemoveBankBalance")
+AddEventHandler("mythic_base:client:RemoveBankBalance", function(amount)
+      setBankBalance(bank - amount)
 end)

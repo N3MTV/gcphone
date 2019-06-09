@@ -37,7 +37,7 @@ export default {
         if (rep !== undefined && rep.text !== undefined) {
           const message = rep.text.trim()
           if (message.length !== 0) {
-            this.twitterPostTweet({ message })
+            this.twitterPostTweet({ message: message })
           }
         }
       } catch (e) {}

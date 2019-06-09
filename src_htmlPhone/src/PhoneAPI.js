@@ -249,32 +249,26 @@ class PhoneAPI {
   }
 
   // === Twitter
-  twitter_login (username, password) {
-    this.post('twitter_login', {username, password})
+  twitter_login (username) {
+    this.post('twitter_login', {username})
   }
-  twitter_changePassword (username, password, newPassword) {
-    this.post('twitter_changePassword', {username, password, newPassword})
+  twitter_postTweet (message) {
+    this.post('twitter_postTweet', { message })
   }
-  twitter_createAccount (username, password, avatarUrl) {
-    this.post('twitter_createAccount', {username, password, avatarUrl})
+  twitter_postTweetImg (img) {
+    this.post('twitter_postTweetImg', { img })
   }
-  twitter_postTweet (username, password, message) {
-    this.post('twitter_postTweet', { username, password, message })
+  twitter_toggleLikeTweet (tweetId) {
+    this.post('twitter_toggleLikeTweet', { tweetId })
   }
-  twitter_postTweetImg (username, password, img) {
-    this.post('twitter_postTweetImg', { username, password, img })
+  twitter_setAvatar (avatarUrl) {
+    this.post('twitter_setAvatarUrl', { avatarUrl })
   }
-  twitter_toggleLikeTweet (username, password, tweetId) {
-    this.post('twitter_toggleLikeTweet', { username, password, tweetId })
+  twitter_getTweets (username) {
+    this.post('twitter_getTweets', { username })
   }
-  twitter_setAvatar (username, password, avatarUrl) {
-    this.post('twitter_setAvatarUrl', { username, password, avatarUrl })
-  }
-  twitter_getTweets (username, password) {
-    this.post('twitter_getTweets', { username, password })
-  }
-  twitter_getFavoriteTweets (username, password) {
-    this.post('twitter_getFavoriteTweets', { username, password })
+  twitter_getFavoriteTweets (username) {
+    this.post('twitter_getFavoriteTweets', { username })
   }
   ontwitter_tweets (data) {
     store.commit('SET_TWEETS', data)
@@ -287,6 +281,9 @@ class PhoneAPI {
   }
   ontwitter_setAccount (data) {
     store.dispatch('setAccount', data)
+  }
+  ontwitter_logout (data) {
+    store.dispatch('twitterLogout', data)
   }
   ontwitter_updateTweetLikes (data) {
     store.commit('UPDATE_TWEET_LIKE', data)

@@ -3,7 +3,6 @@ import Vue from 'vue'
 
 const state = {
   twitterUsername: localStorage['gcphone_twitter_username'],
-  twitterPassword: localStorage['gcphone_twitter_password'],
   twitterAvatarUrl: localStorage['gcphone_twitter_avatarUrl'],
   twitterNotification: localStorage['gcphone_twitter_notif'] ? parseInt(localStorage['gcphone_twitter_notif']) : 1,
   twitterNotificationSound: localStorage['gcphone_twitter_notif_sound'] !== 'false',
@@ -13,7 +12,6 @@ const state = {
 
 const getters = {
   twitterUsername: ({ twitterUsername }) => twitterUsername,
-  twitterPassword: ({ twitterPassword }) => twitterPassword,
   twitterAvatarUrl: ({ twitterAvatarUrl }) => twitterAvatarUrl,
   twitterNotification: ({ twitterNotification }) => twitterNotification,
   twitterNotificationSound: ({ twitterNotificationSound }) => twitterNotificationSound,
@@ -22,41 +20,29 @@ const getters = {
 }
 
 const actions = {
-  twitterCreateNewAccount (_, {username, password, avatarUrl}) {
-    PhoneAPI.twitter_createAccount(username, password, avatarUrl)
-  },
-  twitterLogin ({ commit }, { username, password }) {
-    PhoneAPI.twitter_login(username, password)
-  },
-  twitterChangePassword ({ state }, newPassword) {
-    PhoneAPI.twitter_changePassword(state.twitterUsername, state.twitterPassword, newPassword)
-  },
   twitterLogout ({ commit }) {
     localStorage.removeItem('gcphone_twitter_username')
-    localStorage.removeItem('gcphone_twitter_password')
     localStorage.removeItem('gcphone_twitter_avatarUrl')
     commit('UPDATE_ACCOUNT', {
       username: undefined,
-      password: undefined,
       avatarUrl: undefined
     })
   },
   twitterSetAvatar ({ state }, { avatarUrl }) {
-    PhoneAPI.twitter_setAvatar(state.twitterUsername, state.twitterPassword, avatarUrl)
+    PhoneAPI.twitter_setAvatar(avatarUrl)
   },
-  twitterPostTweet ({ state, commit }, { message }) {
+  twitterPostTweet ({ state }, { message }) {
     if (/^https?:\/\/.*\.(png|jpg|jpeg|gif)$/.test(message)) {
-      PhoneAPI.twitter_postTweetImg(state.twitterUsername, state.twitterPassword, message)
+      PhoneAPI.twitter_postTweetImg(message)
     } else {
-      PhoneAPI.twitter_postTweet(state.twitterUsername, state.twitterPassword, PhoneAPI.convertEmoji(message))
+      PhoneAPI.twitter_postTweet(message)
     }
   },
   twitterToogleLike ({ state }, { tweetId }) {
-    PhoneAPI.twitter_toggleLikeTweet(state.twitterUsername, state.twitterPassword, tweetId)
+    PhoneAPI.twitter_toggleLikeTweet(tweetId)
   },
   setAccount ({ commit }, data) {
     localStorage['gcphone_twitter_username'] = data.username
-    localStorage['gcphone_twitter_password'] = data.password
     localStorage['gcphone_twitter_avatarUrl'] = data.avatarUrl
     commit('UPDATE_ACCOUNT', data)
   },
@@ -76,10 +62,10 @@ const actions = {
     commit('ADD_TWEET', { tweet })
   },
   fetchTweets ({ state }) {
-    PhoneAPI.twitter_getTweets(state.twitterUsername, state.twitterPassword)
+    PhoneAPI.twitter_getTweets(state.twitterUsername)
   },
   fetchFavoriteTweets ({ state }) {
-    PhoneAPI.twitter_getFavoriteTweets(state.twitterUsername, state.twitterPassword)
+    PhoneAPI.twitter_getFavoriteTweets(state.twitterUsername)
   },
   setTwitterNotification ({ commit }, value) {
     localStorage['gcphone_twitter_notif'] = value
@@ -98,9 +84,8 @@ const mutations = {
   SET_TWITTER_NOTIFICATION_SOUND (state, { notificationSound }) {
     state.twitterNotificationSound = notificationSound
   },
-  UPDATE_ACCOUNT (state, { username, password, avatarUrl }) {
+  UPDATE_ACCOUNT (state, { username, avatarUrl }) {
     state.twitterUsername = username
-    state.twitterPassword = password
     state.twitterAvatarUrl = avatarUrl
   },
   SET_TWEETS (state, { tweets }) {

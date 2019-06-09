@@ -11,9 +11,10 @@ local KeyToucheCloseEvent = {
   { code = 176, event = 'Enter' },
   { code = 177, event = 'Backspace' },
 }
-local KeyOpenClose = 289 -- F2
+local KeyOpenClose = 170 -- F2
 local KeyTakeCall = 38 -- E
 local menuIsOpen = false
+local openingCd = false
 local contacts = {}
 local messages = {}
 local myPhoneNumber = ''
@@ -28,45 +29,21 @@ local PhoneInCall = {}
 local currentPlaySound = false
 local soundDistanceMax = 8.0
 
-
---====================================================================================
---  Check si le joueurs poséde un téléphone
---  Callback true or false
---====================================================================================
-function hasPhone (cb)
-  cb(true)
-end
---====================================================================================
---  Que faire si le joueurs veut ouvrir sont téléphone n'est qu'il en a pas ?
---====================================================================================
-function ShowNoPhoneWarning ()
-end
-
 --[[
   Ouverture du téphone lié a un item
   Un solution ESC basé sur la solution donnée par HalCroves
   https://forum.fivem.net/t/tutorial-for-gcphone-with-call-and-job-message-other/177904
 --]]
---[[
-ESX = nil
-Citizen.CreateThread(function()
-	while ESX == nil do
-		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-		Citizen.Wait(0)
-  end
-end)
 
-function hasPhone (cb)
-  if (ESX == nil) then return cb(0) end
-  ESX.TriggerServerCallback('gcphone:getItemAmount', function(qtty)
-    cb(qtty > 0)
-  end, 'phone')
+function hasPhone(cb)
+  TriggerEvent('mythic_inventory:client:CheckItemCount', 26, 1, function(hasPhone)
+    cb(hasPhone)
+  end)
 end
-function ShowNoPhoneWarning () 
-  if (ESX == nil) then return end
-  ESX.ShowNotification("Vous n'avez pas de ~r~téléphone~s~")
+
+function ShowNoPhoneWarning()
+  exports['mythic_notify']:DoHudText('error', 'You Don\'t Have a Phone')
 end
---]]
 
 
 --====================================================================================
@@ -77,20 +54,22 @@ Citizen.CreateThread(function()
     Citizen.Wait(0)
     if takePhoto ~= true then
       if IsControlJustPressed(1, KeyOpenClose) then
-        hasPhone(function (hasPhone)
-          if hasPhone == true then
+        hasPhone(function(hasPhone)
+          if hasPhone then
             TooglePhone()
           else
             ShowNoPhoneWarning()
           end
         end)
       end
+
       if menuIsOpen == true then
         for _, value in ipairs(KeyToucheCloseEvent) do
           if IsControlJustPressed(1, value.code) then
             SendNUIMessage({keyUp = value.event})
           end
         end
+
         if useMouse == true and hasFocus == ignoreFocus then
           local nuiFocus = not hasFocus
           SetNuiFocus(nuiFocus, nuiFocus)
@@ -232,17 +211,6 @@ end
 function StopSoundJS (sound)
   SendNUIMessage({ event = 'stopSound', sound = sound})
 end
-
-
-
-
-
-
-
-
-
-
-
 
 RegisterNetEvent("gcPhone:forceOpenPhone")
 AddEventHandler("gcPhone:forceOpenPhone", function(_myPhoneNumber)
@@ -593,6 +561,7 @@ end)
 RegisterNUICallback('getMessages', function(data, cb)
   cb(json.encode(messages))
 end)
+
 RegisterNUICallback('sendMessage', function(data, cb)
   if data.message == '%pos%' then
     local myPos = GetEntityCoords(PlayerPedId())
@@ -600,18 +569,22 @@ RegisterNUICallback('sendMessage', function(data, cb)
   end
   TriggerServerEvent('gcPhone:sendMessage', data.phoneNumber, data.message)
 end)
+
 RegisterNUICallback('deleteMessage', function(data, cb)
   deleteMessage(data.id)
   cb()
 end)
+
 RegisterNUICallback('deleteMessageNumber', function (data, cb)
   deleteMessageContact(data.number)
   cb()
 end)
+
 RegisterNUICallback('deleteAllMessage', function (data, cb)
   deleteAllMessage()
   cb()
 end)
+
 RegisterNUICallback('setReadMessageNumber', function (data, cb)
   setReadMessageNumber(data.number)
   cb()
@@ -622,15 +595,19 @@ end)
 RegisterNUICallback('addContact', function(data, cb) 
   TriggerServerEvent('gcPhone:addContact', data.display, data.phoneNumber)
 end)
+
 RegisterNUICallback('updateContact', function(data, cb)
   TriggerServerEvent('gcPhone:updateContact', data.id, data.display, data.phoneNumber)
 end)
+
 RegisterNUICallback('deleteContact', function(data, cb)
   TriggerServerEvent('gcPhone:deleteContact', data.id)
 end)
+
 RegisterNUICallback('getContacts', function(data, cb)
   cb(json.encode(contacts))
 end)
+
 RegisterNUICallback('setGPS', function(data, cb)
   SetNewWaypoint(tonumber(data.x), tonumber(data.y))
   cb()
@@ -650,25 +627,35 @@ RegisterNUICallback('callEvent', function(data, cb)
   end
   cb()
 end)
+
 RegisterNUICallback('useMouse', function(um, cb)
   useMouse = um
 end)
+
 RegisterNUICallback('deleteALL', function(data, cb)
   TriggerServerEvent('gcPhone:deleteALL')
   cb()
 end)
 
+function TooglePhone()
+  if not openingCd then
+    menuIsOpen = not menuIsOpen
+    SendNUIMessage( {show = menuIsOpen} )
+    if menuIsOpen == true then 
+      PhonePlayIn()
+    else
+      PhonePlayOut()
+    end
 
-
-function TooglePhone() 
-  menuIsOpen = not menuIsOpen
-  SendNUIMessage({show = menuIsOpen})
-  if menuIsOpen == true then 
-    PhonePlayIn()
-  else
-    PhonePlayOut()
+    openingCd = true
   end
+
+  Citizen.CreateThread(function()
+    Citizen.Wait(2000)
+    openingCd = false
+  end)
 end
+
 RegisterNUICallback('faketakePhoto', function(data, cb)
   menuIsOpen = false
   SendNUIMessage({show = false})
@@ -682,9 +669,6 @@ RegisterNUICallback('closePhone', function(data, cb)
   PhonePlayOut()
   cb()
 end)
-
-
-
 
 ----------------------------------
 ---------- GESTION APPEL ---------
@@ -705,7 +689,11 @@ end)
 AddEventHandler('onClientResourceStart', function(res)
   DoScreenFadeIn(300)
   if res == "gcphone" then
-      TriggerServerEvent('gcPhone:allUpdate')
+    while exports['mythic_base']:GetIfChoosing() do
+      Citizen.Wait(1)
+    end
+
+    TriggerServerEvent('gcPhone:allUpdate')
   end
 end)
 

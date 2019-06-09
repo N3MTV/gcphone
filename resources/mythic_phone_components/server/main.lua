@@ -1,5 +1,3 @@
-
-ESX                       = nil
 local PhoneNumbers        = {}
 
 -- PhoneNumbers = {
@@ -10,10 +8,6 @@ local PhoneNumbers        = {}
 --     }
 --   }
 -- }
-
-TriggerEvent('esx:getSharedObject', function(obj)
-  ESX = obj
-end)
 
 function notifyAlertSMS (number, alert, listSrc)
   if PhoneNumbers[number] ~= nil then
@@ -33,7 +27,7 @@ function notifyAlertSMS (number, alert, listSrc)
   end
 end
 
-AddEventHandler('esx_phone:registerNumber', function(number, type, sharePos, hasDispatch, hideNumber, hidePosIfAnon)
+AddEventHandler('mythic_phone_component:server:registerNumber', function(number, type, sharePos, hasDispatch, hideNumber, hidePosIfAnon)
   print('= INFO = Enregistrement du telephone ' .. number .. ' => ' .. type)
 	local hideNumber    = hideNumber    or false
 	local hidePosIfAnon = hidePosIfAnon or false
@@ -46,21 +40,21 @@ AddEventHandler('esx_phone:registerNumber', function(number, type, sharePos, has
 end)
 
 
-AddEventHandler('esx:setJob', function(source, job, lastJob)
-  if PhoneNumbers[lastJob.name] ~= nil then
-    TriggerEvent('esx_addons_gcphone:removeSource', lastJob.name, source)
+AddEventHandler('mythic_jobs:server:UpdateJob', function(source, job, lastJob)
+  if PhoneNumbers[lastJob.base] ~= nil then
+    TriggerEvent('mythic_phone_component:server:removeSource', lastJob.base, source)
   end
 
-  if PhoneNumbers[job.name] ~= nil then
-    TriggerEvent('esx_addons_gcphone:addSource', job.name, source)
+  if PhoneNumbers[job.base] ~= nil then
+    TriggerEvent('mythic_phone_component:server:addSource', job.base, source)
   end
 end)
 
-AddEventHandler('esx_addons_gcphone:addSource', function(number, source)
+AddEventHandler('mythic_phone_component:server:addSource', function(number, source)
 	PhoneNumbers[number].sources[tostring(source)] = true
 end)
 
-AddEventHandler('esx_addons_gcphone:removeSource', function(number, source)
+AddEventHandler('mythic_phone_component:server:removeSource', function(number, source)
 	PhoneNumbers[number].sources[tostring(source)] = nil
 end)
 
@@ -77,8 +71,8 @@ AddEventHandler('gcPhone:sendMessage', function(number, message)
     end
 end)
 
-RegisterServerEvent('esx_addons_gcphone:startCall')
-AddEventHandler('esx_addons_gcphone:startCall', function (number, message, coords)
+RegisterServerEvent('mythic_phone_component:server:startCall')
+AddEventHandler('mythic_phone_component:server:startCall', function (number, message, coords)
   local source = source
   if PhoneNumbers[number] ~= nil then
     getPhoneNumber(source, function (phone) 
@@ -93,45 +87,30 @@ AddEventHandler('esx_addons_gcphone:startCall', function (number, message, coord
   end
 end)
 
-
-AddEventHandler('esx:playerLoaded', function(source)
-
-  local xPlayer = ESX.GetPlayerFromId(source)
-
-  MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier',{
-    ['@identifier'] = xPlayer.identifier
-  }, function(result)
-
-    local phoneNumber = result[1].phone_number
-    xPlayer.set('phoneNumber', phoneNumber)
-
-    if PhoneNumbers[xPlayer.job.name] ~= nil then
-      TriggerEvent('esx_addons_gcphone:addSource', xPlayer.job.name, source)
-    end
-  end)
-
+RegisterServerEvent('mythic_characters:server:CharacterSpawned')
+AddEventHandler('mythic_characters:server:CharacterSpawned', function()
+  local char = exports['mythic_base']:getPlayerFromId(source).getChar()
+  local cData = char.getCharData()
+  if PhoneNumbers[cData.phone_number] ~= nil then
+    TriggerEvent('mythic_phone_component:server:addSource', cData.job.base, source)
+  end
 end)
 
 
-AddEventHandler('esx:playerDropped', function(source)
-  local source = source
-  local xPlayer = ESX.GetPlayerFromId(source)
-  if PhoneNumbers[xPlayer.job.name] ~= nil then
-    TriggerEvent('esx_addons_gcphone:removeSource', xPlayer.job.name, source)
+AddEventHandler('mythic_base:server:PlayerDropped', function(source)
+  local char = exports['mythic_base']:getPlayerFromId(source).getChar()
+  local cData = char.getCharData()
+  if PhoneNumbers[cData.job.base] ~= nil then
+    TriggerEvent('mythic_phone_component:server:removeSource', cData.job.base, source)
   end
 end)
 
 
 function getPhoneNumber (source, callback) 
-  local xPlayer = ESX.GetPlayerFromId(source)
-  if xPlayer == nil then
-    callback(nil)
-  end
-  MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier',{
-    ['@identifier'] = xPlayer.identifier
-  }, function(result)
-    callback(result[1].phone_number)
-  end)
+  local char = exports['mythic_base']:getPlayerFromId(source).getChar()
+  local cData = char.getCharData()
+
+  callback(cData.phone_number)
 end
 
 

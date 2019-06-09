@@ -34,7 +34,7 @@ export default {
       if (contact.num === -1) {
         Modal.CreateTextModal({
           title: this.IntlString('APP_PHONE_ENTER_NUMBER'),
-          limit: 10
+          limit: 12
         }).then(data => {
           let message = data.text.trim()
           if (message !== '') {

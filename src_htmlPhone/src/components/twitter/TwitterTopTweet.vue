@@ -82,7 +82,7 @@ export default {
         icons: 'fa-heart'
       }, {
         id: 2,
-        title: 'Répondre',
+        title: 'Reply',
         icons: 'fa-reply'
       }, {
         id: -1,
@@ -118,7 +118,7 @@ export default {
       try {
         this.ignoreControls = true
         const rep = await Modal.CreateTextModal({
-          title: 'Répondre',
+          title: 'Reply',
           text: `@${authorName} `
         })
         if (rep !== undefined && rep.text !== undefined) {
