@@ -131,7 +131,7 @@ export default {
       try {
         // let message = this.messagesList[this.selectMessage]
         let isGPS = /(-?\d+(\.\d+)?), (-?\d+(\.\d+)?)/.test(message.message)
-        let hasNumber = /#([0-9]+)/.test(message.message)
+        let hasNumber = /([0-9]+)/.test(message.message)
         let isSMSImage = this.isSMSImage(message)
         let choix = [{
           id: 'delete',
@@ -150,7 +150,7 @@ export default {
           }, ...choix]
         }
         if (hasNumber === true) {
-          const num = message.message.match(/#([0-9-]*)/)[1]
+          const num = message.message.match(/([0-9-]*)/)[1]
           choix = [{
             id: 'num',
             title: `${this.IntlString('APP_MESSAGE_MESS_NUMBER')} ${num}`,
