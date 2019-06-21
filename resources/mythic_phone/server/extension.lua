@@ -2,7 +2,7 @@ local PhoneNumbers        = {}
 
 function notifyAlertSMS (number, alert, listSrc)
   if PhoneNumbers[number] ~= nil then
-    local mess = 'From ' .. alert.numero  .. ' : ' .. alert.message
+    local mess = 'From #' .. alert.numero  .. ' : ' .. alert.message
     if alert.coords ~= nil then
       mess = mess .. ' ' .. alert.coords.x .. ', ' .. alert.coords.y 
     end
@@ -19,7 +19,6 @@ function notifyAlertSMS (number, alert, listSrc)
 end
 
 AddEventHandler('mythic_phone:server:RegisterServiceNumber', function(number, type, sharePos, hasDispatch, hideNumber, hidePosIfAnon)
-  print("^7[^8MYTHIC_PHONE ^7: ^8Service Number Register^7] " .. number .. ' => ' .. type)
 	local hideNumber    = hideNumber    or false
 	local hidePosIfAnon = hidePosIfAnon or false
 
@@ -90,9 +89,11 @@ end)
 
 AddEventHandler('mythic_base:server:PlayerDropped', function(source)
   local char = exports['mythic_base']:getPlayerFromId(source).getChar()
-  local cData = char.getCharData()
-  if PhoneNumbers[cData.job.base] ~= nil then
-    TriggerEvent('mythic_phone_component:server:removeSource', cData.job.base, source)
+  if char ~= nil then
+    local cData = char.getCharData()
+    if PhoneNumbers[cData.job.base] ~= nil then
+      TriggerEvent('mythic_phone_component:server:removeSource', cData.job.base, source)
+    end
   end
 end)
 

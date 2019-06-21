@@ -1,5 +1,4 @@
 AddEventHandler('mythic_characters:client:CharacterSpawned', function()
-  print("????")
   TriggerServerEvent('mythic_phone:server:twitter_login')
 end)
 

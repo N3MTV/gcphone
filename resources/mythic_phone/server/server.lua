@@ -257,7 +257,7 @@ function saveCallRecord(appelInfo)
             ['@incoming'] = 1,
             ['@accepts'] = appelInfo.is_accepts
         }, function()
-            local char = exports['mythic_base']:getPlayerFromId(appelInfo.transmitter_src)
+            local char = exports['mythic_base']:getPlayerFromId(appelInfo.transmitter_src).getChar()
             notifyNewAppelsHisto(char)
         end)
     end
@@ -274,7 +274,7 @@ function saveCallRecord(appelInfo)
             ['@accepts'] = appelInfo.is_accepts
         }, function()
             if appelInfo.receiver_src ~= nil then
-                local char = exports['mythic_base']:getPlayerFromId(appelInfo.receiver_src)
+                local char = exports['mythic_base']:getPlayerFromId(appelInfo.receiver_src).getChar()
                 notifyNewAppelsHisto(char)
             end
         end)
@@ -313,7 +313,7 @@ AddEventHandler('mythic_phone:server:internal_startCall', function(source, phone
     local indexCall = lastIndexCall
     lastIndexCall = lastIndexCall + 1
 
-    local char = exports['mythic_base']:getPlayerFromId(source)
+    local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     local cData = char.getCharData()
     local dSource = exports['mythic_base']:getPlayerFromCharId(getCharIDByPhoneNumber(phone_number))
 
@@ -368,14 +368,12 @@ end)
 
 RegisterServerEvent('mythic_phone:server:candidates')
 AddEventHandler('mythic_phone:server:candidates', function (callId, candidates)
-    -- print('send cadidate', callId, candidates)
     if CallsInProgress[callId] ~= nil then
         local source = source
         local to = CallsInProgress[callId].transmitter_src
         if source == to then 
             to = CallsInProgress[callId].receiver_src
         end
-        -- print('TO', to)
         TriggerClientEvent('mythic_phone:client:candidates', to, candidates)
     end
 end)
@@ -524,7 +522,7 @@ function onCallFixePhone (source, phone_number, rtcOffer, extraData)
         phone_number = string.sub(phone_number, 2)
     end
 
-    local char = exports['mythic_base']:getPlayerFromId(source)
+    local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     local cData = char.getCharData()
 
     local srcPhone = ''

@@ -198,7 +198,6 @@ end)
 --]]
 AddEventHandler('mythic_phone:server:twitter_newTweets', function (char, tweet)
   local cData = char.getCharData()
-  -- print(json.encode(tweet))
   local discord_webhook = GetConvar('discord_webhook', '')
   if discord_webhook == '' then
     return
