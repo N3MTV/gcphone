@@ -1,3 +1,14 @@
+Citizen.CreateThread(function()
+  Citizen.Wait(1000)
+  print('^7[^8MYTHIC_BASE ^7: ^8Startup^0] ^5Registering Service Numbers^7')
+  local mythic = exports['mythic_base']:GetMythicObject()
+  mythic.getServiceJobs(function(jobs)
+      for k, v in pairs(jobs) do
+          TriggerEvent('mythic_phone:server:RegisterServiceNumber', v['base'], v['base'], false, true, false, true)
+      end
+  end)
+end)
+
 local PhoneNumbers        = {}
 
 function notifyAlertSMS (number, alert, listSrc)
@@ -62,15 +73,23 @@ AddEventHandler('mythic_phone:server:sendMessage', function(number, message)
 end)
 
 RegisterServerEvent('mythic_phone_component:server:startCall')
-AddEventHandler('mythic_phone_component:server:startCall', function (number, message, coords)
+AddEventHandler('mythic_phone_component:server:startCall', function (number, message, coords, hideCoords)
   local source = source
   if PhoneNumbers[number] ~= nil then
-    getPhoneNumber(source, function (phone) 
-      notifyAlertSMS(number, {
-        message = message,
-        coords = coords,
-        numero = phone,
-      }, PhoneNumbers[number].sources)
+    getPhoneNumber(source, function (phone)
+      if hideCoords then
+        notifyAlertSMS(number, {
+          message = message,
+          --coords = coords,
+          numero = phone,
+        }, PhoneNumbers[number].sources)
+      else
+        notifyAlertSMS(number, {
+          message = message,
+          coords = coords,
+          numero = phone,
+        }, PhoneNumbers[number].sources)
+      end
     end)
   else
     print("^7[^8MYTHIC_PHONE ^7: ^8Service Number Register^7] Call Attempted To A Non-Service Number - " .. number)

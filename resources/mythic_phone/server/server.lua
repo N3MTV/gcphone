@@ -22,8 +22,8 @@ end
 --  Utils
 --====================================================================================
 function getCharIDByPhoneNumber(phone_number) 
-    local result = MySQL.Sync.fetchScalar("SELECT characters.id FROM characters WHERE characters.phone_number = @phone_number", {
-        ['@phone_number'] = phone_number
+    local result = exports['ghmattimysql']:scalar("SELECT characters.id FROM characters WHERE characters.phone_number = @phone_number", {
+        ['phone_number'] = phone_number
     })
     if result ~= nil then
         return result
@@ -48,28 +48,33 @@ end
 --====================================================================================
 function getContacts(char)
     local cData = char.getCharData()
-    local result = MySQL.Sync.fetchAll("SELECT * FROM phone_users_contacts WHERE phone_users_contacts.charid = @charid", {
-        ['@charid'] = cData.id
+    local result = exports['ghmattimysql']:execute("SELECT * FROM phone_users_contacts WHERE phone_users_contacts.charid = @charid", {
+        ['charid'] = cData.id
     })
+
+    if result == nil then
+        result = {}
+    end
+
     return result
 end
 
 function addContact(char, number, display)
     local cData = char.getCharData()
-    MySQL.Async.insert("INSERT INTO phone_users_contacts (`charid`, `number`,`display`) VALUES(@charid, @number, @display)", {
-        ['@charid'] = cData.id,
-        ['@number'] = number,
-        ['@display'] = display,
+    exports['ghmattimysql']:execute("INSERT INTO phone_users_contacts (`charid`, `number`,`display`) VALUES(@charid, @number, @display)", {
+        ['charid'] = cData.id,
+        ['number'] = number,
+        ['display'] = display,
     },function()
         notifyContactChange(char)
     end)
 end
 
 function updateContact(char, id, number, display)
-    MySQL.Async.insert("UPDATE phone_users_contacts SET number = @number, display = @display WHERE id = @id", { 
-        ['@number'] = number,
-        ['@display'] = display,
-        ['@id'] = id,
+    exports['ghmattimysql']:execute("UPDATE phone_users_contacts SET number = @number, display = @display WHERE id = @id", { 
+        ['number'] = number,
+        ['display'] = display,
+        ['id'] = id,
     },function()
         notifyContactChange(char)
     end)
@@ -77,17 +82,17 @@ end
 
 function deleteContact(char, id)
     local cData = char.getCharData()
-    MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `charid` = @charid AND `id` = @id", {
-        ['@charid'] = cData.id,
-        ['@id'] = id,
+    exports['ghmattimysql']:execute("DELETE FROM phone_users_contacts WHERE `charid` = @charid AND `id` = @id", {
+        ['charid'] = cData.id,
+        ['id'] = id,
     })
     notifyContactChange(char)
 end
 
 function deleteAllContact(char)
     local cData = char.getCharData()
-    MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `charid` = @charid", {
-        ['@charid'] = cData.id
+    exports['ghmattimysql']:execute("DELETE FROM phone_users_contacts WHERE `charid` = @charid", {
+        ['charid'] = cData.id
     })
 end
 
@@ -119,32 +124,52 @@ end)
 --====================================================================================
 function getMessages(char)
     local cData = char.getCharData()
-    local result = MySQL.Sync.fetchAll("SELECT phone_messages.* FROM phone_messages LEFT JOIN characters ON characters.id = @charid WHERE phone_messages.receiver = characters.phone_number", {
-         ['@charid'] = cData.id
-    })
-    return result
-    --return MySQLQueryTimeStamp("SELECT phone_messages.* FROM phone_messages LEFT JOIN characters ON characters.id = @charid WHERE phone_messages.receiver = characters.phone_number", {['@charid'] = cData.id})
+    local returned = false
+    local messages = {}
+    exports['ghmattimysql']:execute("SELECT * FROM phone_messages WHERE receiver = @number", {
+         ['number'] = cData.phone
+    }, function(msgs)
+        if msgs ~= nil then
+            messages = msgs
+        end
+        returned = true
+    end)
+
+    while not returned do
+        Citizen.Wait(1)
+    end
+
+    return messages
+    --return MySQLQueryTimeStamp("SELECT phone_messages.* FROM phone_messages LEFT JOIN characters ON characters.id = @charid WHERE phone_messages.receiver = characters.phone_number", {['charid'] = cData.id})
 end
 
 RegisterServerEvent('mythic_phone:server:_internalAddMessage')
 AddEventHandler('mythic_phone:server:_internalAddMessage', function(transmitter, receiver, message, owner, cb)
-    cb(_internalAddMessage(transmitter, receiver, message, owner))
+    local msg = _internalAddMessage(transmitter, receiver, message, owner)
+    cb(msg)
 end)
 
-function _internalAddMessage(transmitter, receiver, message, owner)
-    local Query = "INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner);"
-    local Query2 = 'SELECT * from phone_messages WHERE `id` = @id;'
-	local Parameters = {
-        ['@transmitter'] = transmitter,
-        ['@receiver'] = receiver,
-        ['@message'] = message,
-        ['@isRead'] = owner,
-        ['@owner'] = owner
-    }
-    local id = MySQL.Sync.insert(Query, Parameters)
-    return MySQL.Sync.fetchAll(Query2, {
-        ['@id'] = id
-    })[1]
+function _internalAddMessage(transmitter, receiver, message, owner, cb)
+    local msg = nil
+    exports['ghmattimysql']:execute('INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)', {
+        ['transmitter'] = transmitter,
+        ['receiver'] = receiver,
+        ['message'] = message,
+        ['isRead'] = owner,
+        ['owner'] = owner
+    }, function(status)
+        exports['ghmattimysql']:execute('SELECT * from phone_messages WHERE `id` = @id', {
+            ['id'] = status.insertId
+        }, function(stuff)
+            msg = stuff[1]
+        end)
+    end)
+
+    while msg == nil do
+        Citizen.Wait(1)
+    end
+
+    return msg
 end
 
 function addMessage(char, phone_number, message)
@@ -164,27 +189,27 @@ end
 
 function setReadMessageNumber(char, num)
     local cData = char.getCharData()
-    MySQL.Sync.execute("UPDATE phone_messages SET phone_messages.isRead = 1 WHERE phone_messages.receiver = @receiver AND phone_messages.transmitter = @transmitter", { 
-        ['@receiver'] = cData.phone,
-        ['@transmitter'] = num
+    exports['ghmattimysql']:execute("UPDATE phone_messages SET phone_messages.isRead = 1 WHERE phone_messages.receiver = @receiver AND phone_messages.transmitter = @transmitter", { 
+        ['receiver'] = cData.phone,
+        ['transmitter'] = num
     })
 end
 
 function deleteMessage(msgId)
-    MySQL.Sync.execute("DELETE FROM phone_messages WHERE `id` = @id", {
-        ['@id'] = msgId
+    exports['ghmattimysql']:execute("DELETE FROM phone_messages WHERE `id` = @id", {
+        ['id'] = msgId
     })
 end
 
 function deleteAllMessageFromPhoneNumber(char, phone_number)
     local cData = char.getCharData()
-    MySQL.Sync.execute("DELETE FROM phone_messages WHERE `receiver` = @mePhoneNumber and `transmitter` = @phone_number", {['@mePhoneNumber'] = cData.phone, ['@phone_number'] = phone_number})
+    exports['ghmattimysql']:execute("DELETE FROM phone_messages WHERE `receiver` = @mePhoneNumber and `transmitter` = @phone_number", {['mePhoneNumber'] = cData.phone, ['phone_number'] = phone_number})
 end
 
 function deleteAllMessage(char)
     local cData = char.getCharData()
-    MySQL.Sync.execute("DELETE FROM phone_messages WHERE `charid` = @charid", {
-        ['@mePhoneNumber'] = cData.id
+    exports['ghmattimysql']:execute("DELETE FROM phone_messages WHERE `charid` = @charid", {
+        ['charid'] = cData.id
     })
 end
 
@@ -237,8 +262,8 @@ local PhoneFixeInfo = {}
 local lastIndexCall = 10
 
 function getHistoriqueCall (num)
-    local result = MySQL.Sync.fetchAll("SELECT * FROM phone_calls WHERE phone_calls.owner = @num ORDER BY time DESC LIMIT 120", {
-        ['@num'] = num
+    local result = exports['ghmattimysql']:execute("SELECT * FROM phone_calls WHERE owner = @num ORDER BY time DESC LIMIT 120", {
+        ['num'] = num
     })
     return result
 end
@@ -251,11 +276,11 @@ end
 
 function saveCallRecord(appelInfo)     
     if appelInfo.extraData == nil or appelInfo.extraData.useNumber == nil then
-        MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
-            ['@owner'] = appelInfo.transmitter_num,
-            ['@num'] = appelInfo.receiver_num,
-            ['@incoming'] = 1,
-            ['@accepts'] = appelInfo.is_accepts
+        exports['ghmattimysql']:execute("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
+            ['owner'] = appelInfo.transmitter_num,
+            ['num'] = appelInfo.receiver_num,
+            ['incoming'] = 1,
+            ['accepts'] = appelInfo.is_accepts
         }, function()
             local char = exports['mythic_base']:getPlayerFromId(appelInfo.transmitter_src).getChar()
             notifyNewAppelsHisto(char)
@@ -267,11 +292,11 @@ function saveCallRecord(appelInfo)
             num = "Hidden #"
         end
 
-        MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
-            ['@owner'] = appelInfo.receiver_num,
-            ['@num'] = num,
-            ['@incoming'] = 0,
-            ['@accepts'] = appelInfo.is_accepts
+        exports['ghmattimysql']:execute("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
+            ['owner'] = appelInfo.receiver_num,
+            ['num'] = num,
+            ['incoming'] = 0,
+            ['accepts'] = appelInfo.is_accepts
         }, function()
             if appelInfo.receiver_src ~= nil then
                 local char = exports['mythic_base']:getPlayerFromId(appelInfo.receiver_src).getChar()
@@ -431,16 +456,16 @@ RegisterServerEvent('mythic_phone:server:appelsDeleteHistorique')
 AddEventHandler('mythic_phone:server:appelsDeleteHistorique', function (numero)
     local char = exports['mythic_base']:getPlayerFromId(source).getChar()
     local cData = char.getCharData()
-    MySQL.Sync.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
-        ['@owner'] = cData.phone,
-        ['@num'] = numero
+    exports['ghmattimysql']:execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
+        ['owner'] = cData.phone,
+        ['num'] = numero
     })
 end)
 
 function appelsDeleteAllHistorique(char)
     local cData = char.getCharData()
-    MySQL.Sync.execute("DELETE FROM phone_calls WHERE `owner` = @owner", {
-        ['@owner'] = cData.phone
+    exports['ghmattimysql']:execute("DELETE FROM phone_calls WHERE `owner` = @owner", {
+        ['owner'] = cData.phone
     })
 end
 
@@ -476,11 +501,6 @@ AddEventHandler('mythic_phone:server:allUpdate', function()
     sendHistoriqueCall(char)
 end)
 
-
-AddEventHandler('onMySQLReady', function ()
-    -- MySQL.Async.fetchAll("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE,time) > 10)")
-end)
-
 --====================================================================================
 --  App bourse
 --====================================================================================
@@ -492,7 +512,7 @@ function getBourse()
     --      -- price type number      | Prix actuelle
     --      -- difference type number | Evolution 
     -- 
-    -- local result = MySQL.Sync.fetchAll("SELECT * FROM `recolt` LEFT JOIN `items` ON items.`id` = recolt.`treated_id` WHERE fluctuation = 1 ORDER BY price DESC",{})
+    -- local result = exports['ghmattimysql']:execute("SELECT * FROM `recolt` LEFT JOIN `items` ON items.`id` = recolt.`treated_id` WHERE fluctuation = 1 ORDER BY price DESC",{})
     local result = {
         {
             libelle = 'Google',

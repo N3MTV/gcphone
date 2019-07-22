@@ -30,9 +30,23 @@ local currentPlaySound = false
 local soundDistanceMax = 8.0
 
 function hasPhone(cb)
-  TriggerEvent('mythic_inventory:client:CheckItemCount', 26, 1, function(hasPhone)
+  TriggerEvent('mythic_inventory:client:CheckItemCount', 'phone-check', { { item = 'phone', count = 1 } }, function(hasPhone)
     cb(hasPhone)
   end)
+end
+
+function hasDecrypt(cb)
+  TriggerEvent('mythic_inventory:client:CheckItemCount', 'irc-check', { { item = 'decryptor', count = 1 } }, function(hasDecrypt)
+    cb(hasDecrypt)
+  end)
+end
+
+function toggleIrc(status)
+  if not status then
+    TriggerEvent('mythic_phone:client:setEnableApp', 'IRC', false)
+  else
+    TriggerEvent('mythic_phone:client:setEnableApp', 'IRC', true)
+  end
 end
 
 function ShowNoPhoneWarning()
@@ -50,6 +64,9 @@ Citizen.CreateThread(function()
       if IsControlJustPressed(1, KeyOpenClose) then
         hasPhone(function(hasPhone)
           if hasPhone then
+            hasDecrypt(function(hasDecrypt)
+              toggleIrc(hasDecrypt)
+            end)
             TooglePhone()
           else
             ShowNoPhoneWarning()
@@ -127,9 +144,7 @@ end)
 --]]
 function showFixePhoneHelper (coords)
   for number, data in pairs(FixePhone) do
-    local dist = GetDistanceBetweenCoords(
-      data.coords.x, data.coords.y, data.coords.z,
-      coords.x, coords.y, coords.z, 1)
+    local dist = #(vector3(data.coords.x, data.coords.y, data.coords.z) - coords)
     if dist <= 2.0 then
       SetTextComponentFormat("STRING")
       AddTextComponentString("~g~" .. data.name .. ' ~o~' .. number .. '~n~~INPUT_PICKUP~~w~ Utiliser')
@@ -150,10 +165,8 @@ Citizen.CreateThread(function ()
     local coords      = GetEntityCoords(playerPed)
     local inRangeToActivePhone = false
     local inRangedist = 0
-    for i, _ in pairs(PhoneInCall) do 
-        local dist = GetDistanceBetweenCoords(
-          PhoneInCall[i].coords.x, PhoneInCall[i].coords.y, PhoneInCall[i].coords.z,
-          coords.x, coords.y, coords.z, 1)
+    for i, _ in pairs(PhoneInCall) do
+        local dist = #(vector3(PhoneInCall[i].coords.x, PhoneInCall[i].coords.y, PhoneInCall[i].coords.z) - coords)
         if (dist <= soundDistanceMax) then
           DrawMarker(1, PhoneInCall[i].coords.x, PhoneInCall[i].coords.y, PhoneInCall[i].coords.z,
               0,0,0, 0,0,0, 0.1,0.1,0.1, 0,255,0,255, 0,0,0,0,0,0,0)
@@ -582,7 +595,7 @@ end)
 function TooglePhone()
   if not openingCd then
     menuIsOpen = not menuIsOpen
-    SendNUIMessage( {show = menuIsOpen} )
+    SendNUIMessage( { show = menuIsOpen } )
     if menuIsOpen == true then 
       PhonePlayIn()
     else

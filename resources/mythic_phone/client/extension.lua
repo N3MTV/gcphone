@@ -1,6 +1,6 @@
 RegisterNetEvent('mythic_phone:client:call')
 AddEventHandler('mythic_phone:client:call', function(data)
-  local playerPed   = GetPlayerPed(-1)
+  local playerPed   = PlayerPedId()
   local coords      = GetEntityCoords(playerPed)
   local message     = data.message
   local number      = data.number
@@ -19,6 +19,6 @@ AddEventHandler('mythic_phone:client:call', function(data)
       x = coords.x,
       y = coords.y,
       z = coords.z
-    })
+    }, data.hideCoords)
   end
 end)
