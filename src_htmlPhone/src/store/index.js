@@ -7,7 +7,7 @@ import messages from './modules/messages'
 import appels from './modules/appels'
 import bank from './modules/bank'
 import bourse from './modules/bourse'
-import tchat from './modules/tchat'
+import irc from './modules/irc'
 import twitter from './modules/twitter'
 
 Vue.use(Vuex)
@@ -20,7 +20,7 @@ export default new Vuex.Store({
     appels,
     bank,
     bourse,
-    tchat,
+    irc,
     twitter
   },
   strict: true

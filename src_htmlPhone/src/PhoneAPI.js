@@ -114,7 +114,7 @@ class PhoneAPI {
   }
   async deleteALL () {
     localStorage.clear()
-    store.dispatch('tchatReset')
+    store.dispatch('ircReset')
     store.dispatch('resetPhone')
     store.dispatch('resetMessage')
     store.dispatch('resetContact')
@@ -144,20 +144,30 @@ class PhoneAPI {
     store.dispatch('setEnableApp', data)
   }
 
+  async onsetDisableApp (data) {
+    store.dispatch('setDisableApp', data)
+  }
+
   async setIgnoreFocus (ignoreFocus) {
     this.post('setIgnoreFocus', { ignoreFocus })
   }
 
-  // === App Tchat
-  async tchatGetMessagesChannel (channel) {
-    this.post('tchat_getChannel', { channel })
+  // === App IRC
+  async ircJoinChannel (channel) {
+    this.post('irc_joinChannel', { channel })
   }
-  async tchatSendMessage (channel, message) {
-    this.post('tchat_addMessage', { channel, message })
+  async ircLeaveChannel (channel) {
+    this.post('irc_leaveChannel', { channel })
+  }
+  async ircGetMessagesChannel (channel) {
+    this.post('irc_getChannel', { channel })
+  }
+  async ircSendMessage (channel, message) {
+    this.post('irc_addMessage', { channel, message })
   }
 
   // ==========================================================================
-  //  Gestion des events
+  //  Event management
   // ==========================================================================
   onupdateMyPhoneNumber (data) {
     store.commit('SET_MY_PHONE_NUMBER', data.myPhoneNumber)
@@ -231,12 +241,21 @@ class PhoneAPI {
     }
     store.commit('SET_APPELS_INFO', null)
   }
-  // Tchat Event
-  ontchat_receive (data) {
-    store.dispatch('tchatAddMessage', data)
+  // IRC Event
+  onirc_reset () {
+    store.dispatch('ircReset')
   }
-  ontchat_channel (data) {
-    store.commit('TCHAT_SET_MESSAGES', data)
+  // IRC Event
+  onirc_set_channels (data) {
+    store.dispatch('ircAddChannels', data)
+  }
+  // IRC Event
+  onirc_receive (data) {
+    store.dispatch('ircAddMessage', data)
+  }
+  // IRC Event
+  onirc_channel (data) {
+    store.commit('IRC_SET_MESSAGES', data)
   }
 
   // =====================

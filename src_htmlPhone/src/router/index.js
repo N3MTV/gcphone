@@ -15,9 +15,9 @@ import Appels from '@/components/Appels/Appels'
 import AppelsActive from '@/components/Appels/AppelsActive'
 import AppelsNumber from '@/components/Appels/AppelsNumber'
 
-import TchatSplashScreen from '@/components/Tchat/TchatSplashScreen'
-import TchatChannel from '@/components/Tchat/TchatChannel'
-import TchatMessage from '@/components/Tchat/TchatMessage'
+import IRCSplashScreen from '@/components/irc/IRCSplash'
+import IRCChannel from '@/components/irc/IRCChannel'
+import IRCMessage from '@/components/irc/IRCMessage'
 
 import TwitterSpashScreen from '@/components/twitter/TwitterSpashScreen'
 import TwitterScreen from '@/components/twitter/TwitterScreen'
@@ -96,17 +96,17 @@ export default new Router({
       name: 'appels.number',
       component: AppelsNumber
     }, {
-      path: '/tchatsplash',
-      name: 'tchat',
-      component: TchatSplashScreen
+      path: '/ircsplash',
+      name: 'irc',
+      component: IRCSplashScreen
     }, {
-      path: '/tchat',
-      name: 'tchat.channel',
-      component: TchatChannel
+      path: '/irc',
+      name: 'irc.channel',
+      component: IRCChannel
     }, {
-      path: '/tchat/:channel',
-      name: 'tchat.channel.show',
-      component: TchatMessage
+      path: '/irc/:channel',
+      name: 'irc.channel.show',
+      component: IRCMessage
     }, {
       path: '/twitter/splash',
       name: 'twitter.splash',

@@ -39,15 +39,14 @@
   "fileUploadService_Field": "files[]",
 
   "background": {
-    "Calvin & Hobbes": "back001.jpg",
-    "Destiny": "back002.jpg",
-    "Stormtrooper": "back003.jpg",
-    "Custom URL": "URL"
+    "MRP": "back001.png",
+    "Mythic Roleplay": "back002.png",
+    "Route 68": "back003.png"
   },
 
   "background_default": {
-    "label": "Calvin & Hobbes",
-    "value": "back001.jpg"
+    "label": "MRP",
+    "value": "back001.png"
   },
 
   "coque": {
@@ -241,13 +240,6 @@
   ],
 
   "apps": [{
-      "name": "Twitter",
-      "en_US__name": "Twitter",
-      "icons": "/html/static/img/icons_app/twitter.png",
-      "routeName": "twitter.splash",
-      "inHomePage": true
-    },
-    {
       "name": "Phone",
       "en_US__name": "Phone",
       "icons": "/html/static/img/icons_app/call.png",
@@ -294,13 +286,23 @@
       "name": "Camera",
       "en_US__name": "Camera",
       "icons": "/html/static/img/icons_app/photo.png",
-      "routeName": "photo"
+      "routeName": "photo",
+      "inHomePage": true
     },
     {
-      "name": "Dark Chat",
+      "name": "IRC",
       "en_US__name": "IRC",
-      "icons": "/html/static/img/icons_app/tchat.png",
-      "routeName": "tchat"
+      "icons": "/html/static/img/icons_app/irc.png",
+      "routeName": "irc",
+      "enabled": false,
+      "inHomePage": true
+    },
+    {
+      "name": "Twitter",
+      "en_US__name": "Twitter",
+      "icons": "/html/static/img/icons_app/twitter.png",
+      "routeName": "twitter.splash",
+      "inHomePage": true
     }
   ],
   "defaultLanguage": "en_US",
@@ -358,11 +360,11 @@
       "APP_MESSAGE_MESS_SMS": "Text",
       "APP_MESSAGE_MESS_CALL": "Call",
       "APP_MESSAGE_MESS_COPY": "Copy Number",
-      "APP_DARKTCHAT_TITLE": "Dark Chat",
-      "APP_DARKTCHAT_NEW_CHANNEL": "Add a Channel",
-      "APP_DARKTCHAT_DELETE_CHANNEL": "Delete Channel",
-      "APP_DARKTCHAT_CANCEL": "Cancel",
-      "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Enter a Message",
+      "APP_IRC_TITLE": "IRC",
+      "APP_IRC_NEW_CHANNEL": "Join New Channel",
+      "APP_IRC_DELETE_CHANNEL": "Leave Channel",
+      "APP_IRC_CANCEL": "Cancel",
+      "APP_IRC_PLACEHOLDER_ENTER_MESSAGE": "Enter a Message",
       "APP_TWITTER_NAME": "Twitter",
       "APP_TWITTER_VIEW_TWITTER": "Twitter",
       "APP_TWITTER_VIEW_TOP_TWEETS": "Top Tweets",
