@@ -1,6 +1,0 @@
-RegisterServerEvent('mythic_characters:server:CharacterSpawned')
-AddEventHandler('mythic_characters:server:CharacterSpawned', function()
-    local char = exports['mythic_base']:getPlayerFromId(source).getChar()
-    local cData = char.getCharData()
-    TriggerClientEvent('mythic_phone:client:SetupBankApp', source, cData)
-end)

@@ -35,7 +35,6 @@ files {
 	'html/static/img/icons_app/menu.png',
 	'html/static/img/icons_app/bourse.png',
 	'html/static/img/icons_app/irc.png',
-	'html/static/img/icons_app/tchat.png',
 	'html/static/img/icons_app/photo.png',
 	'html/static/img/icons_app/bank.png',
 	'html/static/img/icons_app/9gag.png',
@@ -44,8 +43,6 @@ files {
 	'html/static/img/app_bank/logo_mazebank.jpg',
 
 	'html/static/img/app_irc/irc_splash.png',
-
-	'html/static/img/app_tchat/splashtchat.png',
 
 	'html/static/img/twitter/bird.png',
 	'html/static/img/twitter/default_profile.png',
@@ -68,7 +65,6 @@ client_script {
 	"client/extension.lua",
 
 	"client/apps/app_photo.lua",
-	"client/apps/app_tchat.lua",
 	"client/apps/app_irc.lua",
 	"client/apps/app_bank.lua",
 	"client/apps/app_twitter.lua"
@@ -79,7 +75,6 @@ server_script {
 	"server/server.lua",
 	"server/extension.lua",
 
-	"server/apps/app_tchat.lua",
 	"server/apps/app_irc.lua",
 	"server/apps/app_twitter.lua",
 	"server/apps/app_bank.lua"
