@@ -4,4 +4,4 @@
 
 ![Image of mythic_phone1](https://i.imgur.com/VtMD6bA.png)
 ![Image of mythic_phone2](https://i.imgur.com/7vxOQtN.png)
-![Image of mythic_phone3](https://i.imgur.com/ayscQx6.png)
+![Image of mythic_phone3](https://i.imgur.com/Z9idgDz.png)
