@@ -5,7 +5,7 @@
     <PhoneTitle :title="IntlString('APP_PHONE_TITLE')" @back="quit" />
     <div class="content">
       <div class="number">
-        {{ numeroFormat }}
+        <input type="text" id="input-phone" @keyup="numberUpdate($event)" maxlength="12">
         <span class="deleteNumber" @click.stop="deleteNumber"></span>
       </div>
 
@@ -102,14 +102,45 @@ export default {
     },
     deleteNumber () {
       if (this.numero.length !== 0) {
+        var input = document.getElementById('input-phone')
         this.numero = this.numero.slice(0, -1)
+        input.value = this.numeroFormat
       }
     },
     onPressKey (key) {
-      this.numero = this.numero + key.primary
+      var input = document.getElementById('input-phone')
+      const regex = /[^(\d{3})?(-\d{3})?(-\d{4})]/gi
+      const matches = regex.exec(input.value)
+      if (matches) {
+        this.numero = this.numero + key.primary
+      } else {
+        this.numero = this.numero + key.primary
+        input.value = this.numeroFormat
+      }
+    },
+    numberUpdate (evt) {
+      var input = document.getElementById('input-phone')
+      const regex = /[^(\d{3})?(-\d{3})?(-\d{4})]/gi
+      const matches = regex.exec(input.value)
+      if (matches) {
+        this.numero = input.value
+      } else {
+        this.numero = input.value.replace(/[^\w\s]/gi, '')
+        input.value = this.numeroFormat
+      }
     },
     onPressCall () {
-      this.startCall({ numero: this.numeroFormat })
+      var input = document.getElementById('input-phone')
+      const regex = /[^(\d{3})?(-\d{3})?(-\d{4})]/gi
+      const matches = regex.exec(input.value)
+      console.log(matches)
+      if (matches) {
+        console.log(this.numero)
+        this.startCall({ numero: this.numero })
+      } else {
+        console.log(this.numeroFormat)
+        this.startCall({ numero: this.numeroFormat })
+      }
     },
     quit () {
       history.back()
@@ -156,10 +187,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
-
-.number{
+<style lang="scss" scoped>
+.number {
   margin-top: 140px;
   width: 100%;
   height: 52px;
@@ -183,6 +212,13 @@ export default {
   flex: 1 1 33.33%;
   text-align: center;
   height: 96px;
+}
+
+#input-phone {
+  line-height: 30px;
+  font-size: 30px;
+  border: 1px solid #303f9f;
+  width: 95%;
 }
 
 .key-select::after, .key:hover::after {
@@ -247,16 +283,22 @@ export default {
   height: 18px;
   width: 32px;
   padding: 0;
-}
-.deleteNumber:after {
-  content: '';
-  position: absolute;
-  left: -5px;
-  top:0;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 9px 5px 9px 0;
-  border-color: transparent #2C2C2C transparent transparent;
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top:0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 9px 5px 9px 0;
+    border-color: transparent #2C2C2C transparent transparent;
+  }
+
+  &:hover {
+    background: #303f9f;
+    transition: all ease-in 0.15s;
+  }
 }
 </style>
