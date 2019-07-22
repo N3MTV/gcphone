@@ -1,7 +1,7 @@
 <template>
-  <div style="height: 100vh; width: 100vw;" @contextmenu="closePhone">
+  <div style="height: 100vh; width: 100vw;">
     <notification />
-    <div v-if="show === true && tempoHide === false" :style="{zoom: zoom}" @contextmenu.stop>
+    <div v-if="show === true && tempoHide === false" :style="{zoom: zoom}">
       <div class="phone_wrapper">
         <div class="phone_coque" :style="{backgroundImage: 'url(/html/static/img/coque/' + coque.value + ')'}"></div>
         <div id="app" class="phone_screen">
@@ -84,7 +84,7 @@ export default {
       if (keyValid.indexOf(event.key) !== -1) {
         this.$bus.$emit('keyUp' + event.key)
       }
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' || event.key === 'F3') {
         this.$phoneAPI.closePhone()
       }
     })
