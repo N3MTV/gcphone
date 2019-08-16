@@ -16,7 +16,7 @@ USE `essentialmode`;
 CREATE TABLE IF NOT EXISTS `twitter_accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT '0',
-  `password` varchar(50) COLLATE utf8mb4_bin NOT NULL DEFAULT '0',
+  `password` varchar(64) COLLATE utf8mb4_bin NOT NULL DEFAULT '0',
   `avatar_url` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)

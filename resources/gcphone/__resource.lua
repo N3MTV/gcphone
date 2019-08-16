@@ -59,7 +59,8 @@ client_script {
 	"client/photo.lua",
 	"client/app_tchat.lua",
 	"client/bank.lua",
-	"client/twitter.lua"
+	"client/twitter.lua",
+	"client/sha256.lua"
 }
 
 server_script {

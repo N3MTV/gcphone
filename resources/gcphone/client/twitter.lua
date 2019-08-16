@@ -50,15 +50,15 @@ end)
 
 
 RegisterNUICallback('twitter_login', function(data, cb)
-  TriggerServerEvent('gcPhone:twitter_login', data.username, data.password)
+  TriggerServerEvent('gcPhone:twitter_login', data.username, sha256(data.password))
 end)
 RegisterNUICallback('twitter_changePassword', function(data, cb)
-  TriggerServerEvent('gcPhone:twitter_changePassword', data.username, data.password, data.newPassword)
+  TriggerServerEvent('gcPhone:twitter_changePassword', data.username, data.password, sha256(data.newPassword))
 end)
 
 
 RegisterNUICallback('twitter_createAccount', function(data, cb)
-  TriggerServerEvent('gcPhone:twitter_createAccount', data.username, data.password, data.avatarUrl)
+  TriggerServerEvent('gcPhone:twitter_createAccount', data.username, sha256(data.password), data.avatarUrl, GetPlayerIdentifier)
 end)
 
 RegisterNUICallback('twitter_getTweets', function(data, cb)
