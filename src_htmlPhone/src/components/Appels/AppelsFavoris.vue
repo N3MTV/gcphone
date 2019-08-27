@@ -30,8 +30,7 @@ export default {
       Modal.CreateModal({choix: [...itemSelect.subMenu, {title: 'Retour'}]}).then(rep => {
         this.ignoreControls = false
         if (rep.title === 'Retour') return
-        this.$phoneAPI.callEvent(rep.eventName, rep.type)
-        this.$router.push({name: 'home'})
+        this.$router.push({ name: 'messages.view', params: { number: itemSelect.subMenu[0].type.number, display: itemSelect.display } })
       })
     }
   },
