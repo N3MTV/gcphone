@@ -27,7 +27,7 @@
   "useWebRTCVocal": true,
   "RTCConfig": {
     "iceServers": [{
-      "urls": ["turn:barrax.needrp.net"],
+      "urls": ["turn:webrtc.needrp.net"],
       "username": "gcphone",
       "credential": "gcphone"
     }]
