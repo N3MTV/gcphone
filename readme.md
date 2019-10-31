@@ -63,9 +63,9 @@
   "//": "Configuration des serveurs TURN à utilisé",
   "RTCConfig": {
     "iceServers": [{
-      "urls": ["turn:gannon.ovh"],
-      "username": "jojo",
-      "credential": "pass"
+      "urls": ["turn:webrtc.needrp.net"],
+      "username": "gcphone",
+      "credential": "gcphone"
     }]
   },
 
