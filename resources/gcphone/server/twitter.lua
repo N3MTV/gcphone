@@ -130,9 +130,9 @@ function TwitterToogleLike (username, password, tweetId, sourcePlayer)
             MySQL.Async.execute('UPDATE `twitter_tweets` SET `likes`= likes - 1 WHERE id = @id', {
               ['@id'] = tweet.id
             }, function ()
-              TriggerClientEvent('gcPhone:twitter_updateTweetLikes', -1, tweet.id, tweet.likes - 1)
+              TriggerClientEvent('gcPhone:twitter_updateTweetLikes', -1, tweet.id, math.max(tweet.likes - 1, 0))
               TriggerClientEvent('gcPhone:twitter_setTweetLikes', sourcePlayer, tweet.id, false)
-              TriggerEvent('gcPhone:twitter_updateTweetLikes', tweet.id, tweet.likes - 1)
+              TriggerEvent('gcPhone:twitter_updateTweetLikes', tweet.id, math.max(tweet.likes - 1, 0))
             end)
           end)
         end
