@@ -19,15 +19,15 @@ end
 -- end
 
 
---[[
-  Ouverture du téphone lié a un item
-  Un solution ESC basé sur la solution donnée par HalCroves
-  https://forum.fivem.net/t/tutorial-for-gcphone-with-call-and-job-message-other/177904
---]]
---[[
+
 local ESX = nil
 TriggerEvent('esx:getSharedObject', function(obj) 
-    ESX = obj 
+    ESX = obj
+
+    --[[
+        Ouverture du téphone lié a un item
+        Un solution ESC basé sur la solution donnée par HalCroves
+        https://forum.fivem.net/t/tutorial-for-gcphone-with-call-and-job-message-other/177904
     ESX.RegisterServerCallback('gcphone:getItemAmount', function(source, cb, item)
         print('gcphone:getItemAmount call item : ' .. item)
         local xPlayer = ESX.GetPlayerFromId(source)
@@ -38,23 +38,20 @@ TriggerEvent('esx:getSharedObject', function(obj)
             cb(items.count)
         end
     end)
+    --]]
 end)
---]]
-
-
 
 --====================================================================================
 --  Utils
 --====================================================================================
 function getSourceFromIdentifier(identifier, cb)
-    TriggerEvent("es:getPlayers", function(users)
-        for k , user in pairs(users) do
-            if (user.getIdentifier ~= nil and user.getIdentifier() == identifier) or (user.identifier == identifier) then
-                cb(k)
-                return
-            end
+    local users = ESX.Game.GetPlayers()
+    for k , user in pairs(users) do
+        if (user.getIdentifier ~= nil and user.getIdentifier() == identifier) or (user.identifier == identifier) then
+            cb(k)
+            return
         end
-    end)
+    end
     cb(nil)
 end
 function getNumberPhone(identifier)
@@ -78,9 +75,7 @@ end
 
 
 function getPlayerID(source)
-    local identifiers = GetPlayerIdentifiers(source)
-    local player = getIdentifiant(identifiers)
-    return player
+    return ESX.GetPlayerFromId(source).identifier
 end
 function getIdentifiant(id)
     for _, v in ipairs(id) do
@@ -89,8 +84,7 @@ function getIdentifiant(id)
 end
 
 
-function getOrGeneratePhoneNumber (sourcePlayer, identifier, cb)
-    local sourcePlayer = sourcePlayer
+function getOrGeneratePhoneNumber (identifier, cb)
     local identifier = identifier
     local myPhoneNumber = getNumberPhone(identifier)
     if myPhoneNumber == '0' or myPhoneNumber == nil then
@@ -405,8 +399,8 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
         hidden = hidden,
         rtcOffer = rtcOffer,
         extraData = extraData
-    }
-    
+    }    
+
 
     if is_valid == true then
         getSourceFromIdentifier(destPlayer, function (srcTo)
@@ -563,10 +557,12 @@ end)
 --====================================================================================
 --  OnLoad
 --====================================================================================
-AddEventHandler('es:playerLoaded',function(source)
+RegisterNetEvent('esx:playerLoaded')
+AddEventHandler('esx:playerLoaded', function(source)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(source)
-    getOrGeneratePhoneNumber(sourcePlayer, identifier, function (myPhoneNumber)
+
+    getOrGeneratePhoneNumber(identifier, function (myPhoneNumber)
         TriggerClientEvent("gcPhone:myPhoneNumber", sourcePlayer, myPhoneNumber)
         TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier))
         TriggerClientEvent("gcPhone:allMessage", sourcePlayer, getMessages(identifier))
@@ -585,7 +581,6 @@ AddEventHandler('gcPhone:allUpdate', function()
     TriggerClientEvent('gcPhone:getBourse', sourcePlayer, getBourse())
     sendHistoriqueCall(sourcePlayer, num)
 end)
-
 
 AddEventHandler('onMySQLReady', function ()
     -- MySQL.Async.fetchAll("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE,time) > 10)")
