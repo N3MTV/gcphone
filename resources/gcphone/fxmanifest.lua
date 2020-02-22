@@ -1,3 +1,6 @@
+fx_version 'adamant'
+
+game 'gta5'
 
 ui_page 'html/index.html'
 
@@ -48,25 +51,24 @@ files {
 	'html/static/sound/ring2.ogg',
 	'html/static/sound/tchatNotification.ogg',
 	'html/static/sound/Phone_Call_Sound_Effect.ogg',
-
 }
 
 client_script {
-	"config.lua",
-	"client/animation.lua",
-	"client/client.lua",
+	'config.lua',
+	'client/animation.lua',
+	'client/client.lua',
 
-	"client/photo.lua",
-	"client/app_tchat.lua",
-	"client/bank.lua",
-	"client/twitter.lua"
+	'client/photo.lua',
+	'client/app_tchat.lua',
+	'client/bank.lua',
+	'client/twitter.lua'
 }
 
 server_script {
 	'@mysql-async/lib/MySQL.lua',
-	"config.lua",
-	"server/server.lua",
+	'config.lua',
+	'server/server.lua',
 
-	"server/app_tchat.lua",
-	"server/twitter.lua"
+	'server/app_tchat.lua',
+	'server/twitter.lua'
 }
