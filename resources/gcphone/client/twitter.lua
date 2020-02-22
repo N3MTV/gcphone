@@ -1,7 +1,6 @@
 --====================================================================================
 -- #Author: Jonathan D @ Gannon
 --====================================================================================
-
 RegisterNetEvent("gcPhone:twitter_getTweets")
 AddEventHandler("gcPhone:twitter_getTweets", function(tweets)
   SendNUIMessage({event = 'twitter_tweets', tweets = tweets})
@@ -47,15 +46,12 @@ AddEventHandler("gcPhone:twitter_setTweetLikes", function(tweetId, isLikes)
   SendNUIMessage({event = 'twitter_setTweetLikes', tweetId = tweetId, isLikes = isLikes})
 end)
 
-
-
 RegisterNUICallback('twitter_login', function(data, cb)
   TriggerServerEvent('gcPhone:twitter_login', data.username, data.password)
 end)
 RegisterNUICallback('twitter_changePassword', function(data, cb)
   TriggerServerEvent('gcPhone:twitter_changePassword', data.username, data.password, data.newPassword)
 end)
-
 
 RegisterNUICallback('twitter_createAccount', function(data, cb)
   TriggerServerEvent('gcPhone:twitter_createAccount', data.username, data.password, data.avatarUrl)
