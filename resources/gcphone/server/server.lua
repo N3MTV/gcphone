@@ -2,7 +2,6 @@
 -- #Author: Jonathan D @Gannon
 -- #Version 2.0
 --====================================================================================
-
 math.randomseed(os.time()) 
 
 --- Pour les numero du style XXX-XXXX
@@ -10,14 +9,14 @@ function getPhoneRandomNumber()
     local numBase0 = math.random(100,999)
     local numBase1 = math.random(0,9999)
     local num = string.format("%03d-%04d", numBase0, numBase1 )
-	return num
+	
+    return num
 end
 
 --- Exemple pour les numero du style 06XXXXXXXX
 -- function getPhoneRandomNumber()
 --     return '0' .. math.random(600000000,699999999)
 -- end
-
 
 --[[
   Ouverture du téphone lié a un item
@@ -41,8 +40,6 @@ TriggerEvent('esx:getSharedObject', function(obj)
 end)
 --]]
 
-
-
 --====================================================================================
 --  Utils
 --====================================================================================
@@ -57,6 +54,7 @@ function getSourceFromIdentifier(identifier, cb)
     end)
     cb(nil)
 end
+
 function getNumberPhone(identifier)
     local result = MySQL.Sync.fetchAll("SELECT users.phone_number FROM users WHERE users.identifier = @identifier", {
         ['@identifier'] = identifier
@@ -76,18 +74,17 @@ function getIdentifierByPhoneNumber(phone_number)
     return nil
 end
 
-
 function getPlayerID(source)
     local identifiers = GetPlayerIdentifiers(source)
     local player = getIdentifiant(identifiers)
     return player
 end
+
 function getIdentifiant(id)
     for _, v in ipairs(id) do
         return v
     end
 end
-
 
 function getOrGeneratePhoneNumber (sourcePlayer, identifier, cb)
     local sourcePlayer = sourcePlayer
@@ -108,6 +105,7 @@ function getOrGeneratePhoneNumber (sourcePlayer, identifier, cb)
         cb(myPhoneNumber)
     end
 end
+
 --====================================================================================
 --  Contacts
 --====================================================================================
@@ -127,6 +125,7 @@ function addContact(source, identifier, number, display)
         notifyContactChange(sourcePlayer, identifier)
     end)
 end
+
 function updateContact(source, identifier, id, number, display)
     local sourcePlayer = tonumber(source)
     MySQL.Async.insert("UPDATE phone_users_contacts SET number = @number, display = @display WHERE id = @id", { 
@@ -137,6 +136,7 @@ function updateContact(source, identifier, id, number, display)
         notifyContactChange(sourcePlayer, identifier)
     end)
 end
+
 function deleteContact(source, identifier, id)
     local sourcePlayer = tonumber(source)
     MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier AND `id` = @id", {
@@ -145,11 +145,13 @@ function deleteContact(source, identifier, id)
     })
     notifyContactChange(sourcePlayer, identifier)
 end
+
 function deleteAllContact(identifier)
     MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier", {
         ['@identifier'] = identifier
     })
 end
+
 function notifyContactChange(source, identifier)
     local sourcePlayer = tonumber(source)
     local identifier = identifier
@@ -361,7 +363,6 @@ AddEventHandler('gcPhone:getHistoriqueCall', function()
     sendHistoriqueCall(sourcePlayer, num)
 end)
 
-
 RegisterServerEvent('gcPhone:internal_startCall')
 AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtcOffer, extraData)
     if FixePhone[phone_number] ~= nil then
@@ -406,7 +407,6 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
         rtcOffer = rtcOffer,
         extraData = extraData
     }
-    
 
     if is_valid == true then
         getSourceFromIdentifier(destPlayer, function (srcTo)
@@ -446,7 +446,6 @@ AddEventHandler('gcPhone:candidates', function (callId, candidates)
     end
 end)
 
-
 RegisterServerEvent('gcPhone:acceptCall')
 AddEventHandler('gcPhone:acceptCall', function(infoCall, rtcAnswer)
     local id = infoCall.id
@@ -467,9 +466,6 @@ AddEventHandler('gcPhone:acceptCall', function(infoCall, rtcAnswer)
         end
     end
 end)
-
-
-
 
 RegisterServerEvent('gcPhone:rejectCall')
 AddEventHandler('gcPhone:rejectCall', function (infoCall)
@@ -519,47 +515,6 @@ AddEventHandler('gcPhone:appelsDeleteAllHistorique', function ()
     appelsDeleteAllHistorique(srcIdentifier)
 end)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --====================================================================================
 --  OnLoad
 --====================================================================================
@@ -586,10 +541,10 @@ AddEventHandler('gcPhone:allUpdate', function()
     sendHistoriqueCall(sourcePlayer, num)
 end)
 
-
+--[[
 AddEventHandler('onMySQLReady', function ()
-    -- MySQL.Async.fetchAll("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE,time) > 10)")
-end)
+    MySQL.Async.fetchAll("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE,time) > 10)")
+end) --]]
 
 --====================================================================================
 --  App bourse
@@ -598,10 +553,10 @@ function getBourse()
     --  Format
     --  Array 
     --    Object
-    --      -- libelle type String    | Nom
-    --      -- price type number      | Prix actuelle
-    --      -- difference type number | Evolution 
-    -- 
+    --       libelle type String    | Nom
+    --       price type number      | Prix actuelle
+    --       difference type number | Evolution 
+
     -- local result = MySQL.Sync.fetchAll("SELECT * FROM `recolt` LEFT JOIN `items` ON items.`id` = recolt.`treated_id` WHERE fluctuation = 1 ORDER BY price DESC",{})
     local result = {
         {
@@ -618,31 +573,21 @@ function getBourse()
             libelle = 'Amazon',
             price = 120,
             difference = 0
-        }
-    }
+        }}
     return result
 end
 
 --====================================================================================
 --  App ... WIP
 --====================================================================================
-
-
 -- SendNUIMessage('ongcPhoneRTC_receive_offer')
 -- SendNUIMessage('ongcPhoneRTC_receive_answer')
 
 -- RegisterNUICallback('gcPhoneRTC_send_offer', function (data)
-
-
 -- end)
-
 
 -- RegisterNUICallback('gcPhoneRTC_send_answer', function (data)
-
-
 -- end)
-
-
 
 function onCallFixePhone (source, phone_number, rtcOffer, extraData)
     local indexCall = lastIndexCall
@@ -682,8 +627,6 @@ function onCallFixePhone (source, phone_number, rtcOffer, extraData)
     TriggerClientEvent('gcPhone:waitingCall', sourcePlayer, AppelsEnCours[indexCall], true)
 end
 
-
-
 function onAcceptFixePhone(source, infoCall, rtcAnswer)
     local id = infoCall.id
     
@@ -711,5 +654,4 @@ function onRejectFixePhone(source, infoCall, rtcAnswer)
         saveAppels(AppelsEnCours[id])
     end
     AppelsEnCours[id] = nil
-    
 end
