@@ -702,11 +702,17 @@ end)
 ----------------------------------
 ---------- GESTION VIA WEBRTC ----
 ----------------------------------
-AddEventHandler('onClientResourceStart', function(res)
-  DoScreenFadeIn(300)
-  if res == "gcphone" then
-      TriggerServerEvent('gcPhone:allUpdate')
+AddEventHandler('onClientResourceStart', function (resourceName)
+  if(GetCurrentResourceName() ~= resourceName) then
+    return
   end
+  
+  -- We wait for ESX to be initialized before sending allUpdate.
+  RegisterNetEvent('esx:playerLoaded')
+  AddEventHandler('esx:playerLoaded', function(res)
+    DoScreenFadeIn(300)
+    TriggerServerEvent('gcPhone:allUpdate')
+  end)
 end)
 
 
