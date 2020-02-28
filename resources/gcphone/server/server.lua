@@ -82,12 +82,6 @@ function getIdentifierByPhoneNumber(phone_number)
     return nil
 end
 
-function getPlayerID(source)
-    local xplayer = ESX.GetPlayerFromId(source)
-    local player = xplayer.identifier
-    return player
-end
-
 function getIdentifiant(id)
     for _, v in ipairs(id) do
         return v
@@ -170,21 +164,24 @@ end
 RegisterServerEvent('gcPhone:addContact')
 AddEventHandler('gcPhone:addContact', function(display, phoneNumber)
     local sourcePlayer = tonumber(source)
-    local identifier = getPlayerID(source)
+    xplayer = ESX.GetPlayerFromId(source)
+    identifier = xplayer.identifier
     addContact(sourcePlayer, identifier, phoneNumber, display)
 end)
 
 RegisterServerEvent('gcPhone:updateContact')
 AddEventHandler('gcPhone:updateContact', function(id, display, phoneNumber)
     local sourcePlayer = tonumber(source)
-    local identifier = getPlayerID(source)
+    xplayer = ESX.GetPlayerFromId(source)
+    identifier = xplayer.identifier
     updateContact(sourcePlayer, identifier, id, phoneNumber, display)
 end)
 
 RegisterServerEvent('gcPhone:deleteContact')
 AddEventHandler('gcPhone:deleteContact', function(id)
     local sourcePlayer = tonumber(source)
-    local identifier = getPlayerID(source)
+	xplayer = ESX.GetPlayerFromId(source)
+    identifier = xplayer.identifier
     deleteContact(sourcePlayer, identifier, id)
 end)
 
@@ -268,7 +265,8 @@ end
 RegisterServerEvent('gcPhone:sendMessage')
 AddEventHandler('gcPhone:sendMessage', function(phoneNumber, message)
     local sourcePlayer = tonumber(source)
-    local identifier = getPlayerID(source)
+	xplayer = ESX.GetPlayerFromId(source)
+    identifier = xplayer.identifier
     addMessage(sourcePlayer, identifier, phoneNumber, message)
 end)
 
@@ -280,28 +278,31 @@ end)
 RegisterServerEvent('gcPhone:deleteMessageNumber')
 AddEventHandler('gcPhone:deleteMessageNumber', function(number)
     local sourcePlayer = tonumber(source)
-    local identifier = getPlayerID(source)
+	xplayer = ESX.GetPlayerFromId(source)
+    identifier = xplayer.identifier
     deleteAllMessageFromPhoneNumber(sourcePlayer,identifier, number)
     -- TriggerClientEvent("gcphone:allMessage", sourcePlayer, getMessages(identifier))
 end)
 
 RegisterServerEvent('gcPhone:deleteAllMessage')
 AddEventHandler('gcPhone:deleteAllMessage', function()
-    local sourcePlayer = tonumber(source)
-    local identifier = getPlayerID(source)
+	xplayer = ESX.GetPlayerFromId(source)
+    identifier = xplayer.identifier
     deleteAllMessage(identifier)
 end)
 
 RegisterServerEvent('gcPhone:setReadMessageNumber')
 AddEventHandler('gcPhone:setReadMessageNumber', function(num)
-    local identifier = getPlayerID(source)
+	xplayer = ESX.GetPlayerFromId(source)
+    identifier = xplayer.identifier
     setReadMessageNumber(identifier, num)
 end)
 
 RegisterServerEvent('gcPhone:deleteALL')
 AddEventHandler('gcPhone:deleteALL', function()
     local sourcePlayer = tonumber(source)
-    local identifier = getPlayerID(source)
+	xplayer = ESX.GetPlayerFromId(source)
+    identifier = xplayer.identifier
     deleteAllMessage(identifier)
     deleteAllContact(identifier)
     appelsDeleteAllHistorique(identifier)
@@ -365,8 +366,9 @@ end
 RegisterServerEvent('gcPhone:getHistoriqueCall')
 AddEventHandler('gcPhone:getHistoriqueCall', function()
     local sourcePlayer = tonumber(source)
-    local srcIdentifier = getPlayerID(source)
-    local srcPhone = getNumberPhone(srcIdentifier)
+	xplayer = ESX.GetPlayerFromId(source)
+    identifier = xplayer.identifier
+    local srcPhone = getNumberPhone(identifier)
     sendHistoriqueCall(sourcePlayer, num)
 end)
 
@@ -392,16 +394,17 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
     lastIndexCall = lastIndexCall + 1
 
     local sourcePlayer = tonumber(source)
-    local srcIdentifier = getPlayerID(source)
+	local xplayer = ESX.GetPlayerFromId(source)
+    local identifier = xplayer.identifier
 
     local srcPhone = ''
     if extraData ~= nil and extraData.useNumber ~= nil then
         srcPhone = extraData.useNumber
     else
-        srcPhone = getNumberPhone(srcIdentifier)
+        srcPhone = getNumberPhone(identifier)
     end
     local destPlayer = getIdentifierByPhoneNumber(phone_number)
-    local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier
+    local is_valid = destPlayer ~= nil and destPlayer ~= identifier
     AppelsEnCours[indexCall] = {
         id = indexCall,
         transmitter_src = sourcePlayer,
@@ -500,8 +503,9 @@ end)
 RegisterServerEvent('gcPhone:appelsDeleteHistorique')
 AddEventHandler('gcPhone:appelsDeleteHistorique', function (numero)
     local sourcePlayer = tonumber(source)
-    local srcIdentifier = getPlayerID(source)
-    local srcPhone = getNumberPhone(srcIdentifier)
+	local xplayer = ESX.GetPlayerFromId(source)
+    local identifier = xplayer.identifier
+    local srcPhone = getNumberPhone(identifier)
     MySQL.Sync.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
         ['@owner'] = srcPhone,
         ['@num'] = numero
@@ -518,8 +522,9 @@ end
 RegisterServerEvent('gcPhone:appelsDeleteAllHistorique')
 AddEventHandler('gcPhone:appelsDeleteAllHistorique', function ()
     local sourcePlayer = tonumber(source)
-    local srcIdentifier = getPlayerID(source)
-    appelsDeleteAllHistorique(srcIdentifier)
+	local xplayer = ESX.GetPlayerFromId(source)
+    local identifier = xplayer.identifier
+    appelsDeleteAllHistorique(identifier)
 end)
 
 --====================================================================================
@@ -543,7 +548,8 @@ end)
 RegisterServerEvent('gcPhone:allUpdate')
 AddEventHandler('gcPhone:allUpdate', function()
     local sourcePlayer = tonumber(source)
-    local identifier = getPlayerID(source)
+	local xplayer = ESX.GetPlayerFromId(source)
+    local identifier = xplayer.identifier
     local num = getNumberPhone(identifier)
     TriggerClientEvent("gcPhone:myPhoneNumber", sourcePlayer, num)
     TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier))
@@ -610,13 +616,14 @@ function onCallFixePhone (source, phone_number, rtcOffer, extraData)
         phone_number = string.sub(phone_number, 2)
     end
     local sourcePlayer = tonumber(source)
-    local srcIdentifier = getPlayerID(source)
+	local xplayer = ESX.GetPlayerFromId(source)
+    local identifier = xplayer.identifier
 
     local srcPhone = ''
     if extraData ~= nil and extraData.useNumber ~= nil then
         srcPhone = extraData.useNumber
     else
-        srcPhone = getNumberPhone(srcIdentifier)
+        srcPhone = getNumberPhone(identifier)
     end
 
     AppelsEnCours[indexCall] = {
