@@ -531,6 +531,10 @@ end)
 --  OnLoad
 --====================================================================================
 AddEventHandler('esx:playerLoaded',function(source)
+    while not PlayerLoaded do
+	Citizen.Wait(1000)
+    end
+
     local sourcePlayer = tonumber(source)
     local xplayer = ESX.GetPlayerFromId(source)
     local identifier = xplayer.identifier
