@@ -531,16 +531,13 @@ end)
 --  OnLoad
 --====================================================================================
 RegisterNetEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded', function(source, xPlayer)
-    local sourcePlayer = tonumber(source)
+AddEventHandler('esx:playerLoaded', function(xPlayer)
     local identifier = xPlayer.identifier
 
     getOrGeneratePhoneNumber(identifier, function (myPhoneNumber)
-        TriggerClientEvent("gcPhone:myPhoneNumber", sourcePlayer, myPhoneNumber)
-        TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier))
-        TriggerClientEvent("gcPhone:allMessage", sourcePlayer, getMessages(identifier))
-        TriggerClientEvent('gcPhone:getBourse', sourcePlayer, getBourse())
-        sendHistoriqueCall(sourcePlayer, myPhoneNumber)
+        xplayer.triggerEvent('gcPhone:myPhoneNumber', myPhoneNumber)
+        xplayer.triggerEvent('gcPhone:contactList', getContacts(identifier))
+        xplayer.triggerEvent('gcPhone:allMessage', getMessages(identifier))
     end)
 end)
 
