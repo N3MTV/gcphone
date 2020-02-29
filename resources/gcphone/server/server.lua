@@ -4,9 +4,7 @@
 --====================================================================================
 ESX = nil
 
-TriggerEvent('esx:getSharedObject', function(obj)
-  ESX = obj
-end)
+TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 math.randomseed(os.time()) 
 
@@ -30,19 +28,16 @@ end
   https://forum.fivem.net/t/tutorial-for-gcphone-with-call-and-job-message-other/177904
 --]]
 --[[
-local ESX = nil
-TriggerEvent('esx:getSharedObject', function(obj) 
-    ESX = obj 
-    ESX.RegisterServerCallback('gcphone:getItemAmount', function(source, cb, item)
-        print('gcphone:getItemAmount call item : ' .. item)
-        local xPlayer = ESX.GetPlayerFromId(source)
+ ESX.RegisterServerCallback('gcphone:getItemAmount', function(source, cb, item)
+	print('gcphone:getItemAmount call item : ' .. item)
+	local xPlayer = ESX.GetPlayerFromId(source)
         local items = xPlayer.getInventoryItem(item)
+
         if items == nil then
             cb(0)
         else
             cb(items.count)
         end
-    end)
 end)
 --]]
 
@@ -530,6 +525,16 @@ end)
 --====================================================================================
 --  OnLoad
 --====================================================================================
+AddEventHandler('esx:playerLoaded',function(source)
+    local sourcePlayer = tonumber(source)
+    local identifier = getPlayerID(source)
+    getOrGeneratePhoneNumber(sourcePlayer, identifier, function (myPhoneNumber)
+        TriggerClientEvent('gcPhone:myPhoneNumber', sourcePlayer, myPhoneNumber)
+        TriggerClientEvent('gcPhone:contactList', sourcePlayer, getContacts(identifier))
+        TriggerClientEvent('gcPhone:allMessage', sourcePlayer, getMessages(identifier))
+    end)
+end)
+
 -- Just For reload
 RegisterServerEvent('gcPhone:allUpdate')
 AddEventHandler('gcPhone:allUpdate', function()
@@ -538,9 +543,9 @@ AddEventHandler('gcPhone:allUpdate', function()
     local identifier = xplayer.identifier
     local num = getNumberPhone(identifier)
 
-    TriggerClientEvent("gcPhone:myPhoneNumber", sourcePlayer, num)
-    TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier))
-    TriggerClientEvent("gcPhone:allMessage", sourcePlayer, getMessages(identifier))
+    TriggerClientEvent('gcPhone:myPhoneNumber', sourcePlayer, num)
+    TriggerClientEvent('gcPhone:contactList', sourcePlayer, getContacts(identifier))
+    TriggerClientEvent('gcPhone:allMessage', sourcePlayer, getMessages(identifier))
     TriggerClientEvent('gcPhone:getBourse', sourcePlayer, getBourse())
     sendHistoriqueCall(sourcePlayer, num)
 end)
