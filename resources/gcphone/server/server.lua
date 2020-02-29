@@ -522,7 +522,7 @@ end
 RegisterServerEvent('gcPhone:appelsDeleteAllHistorique')
 AddEventHandler('gcPhone:appelsDeleteAllHistorique', function ()
     local sourcePlayer = tonumber(source)
-	local xplayer = ESX.GetPlayerFromId(source)
+    local xplayer = ESX.GetPlayerFromId(source)
     local identifier = xplayer.identifier
     appelsDeleteAllHistorique(identifier)
 end)
@@ -532,7 +532,8 @@ end)
 --====================================================================================
 AddEventHandler('esx:playerLoaded',function(source)
     local sourcePlayer = tonumber(source)
-    local identifier = getPlayerID(source)
+    local xplayer = ESX.GetPlayerFromId(source)
+    local identifier = xplayer.identifier
     getOrGeneratePhoneNumber(sourcePlayer, identifier, function (myPhoneNumber)
         TriggerClientEvent('gcPhone:myPhoneNumber', sourcePlayer, myPhoneNumber)
         TriggerClientEvent('gcPhone:contactList', sourcePlayer, getContacts(identifier))
