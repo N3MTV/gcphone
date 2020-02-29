@@ -530,13 +530,13 @@ end)
 --====================================================================================
 --  OnLoad
 --====================================================================================
-AddEventHandler('esx:playerLoaded',function(source)
-    while not PlayerLoaded do
-	Citizen.Wait(1000)
-    end
+AddEventHandler('esx:playerLoaded',function(source, xPlayer)
+--    while not PlayerLoaded do
+--	Citizen.Wait(1000)
+--    end
 
     local sourcePlayer = tonumber(source)
-    local xplayer = ESX.GetPlayerFromId(source)
+--    local xplayer = ESX.GetPlayerFromId(source)
     local identifier = xplayer.identifier
     getOrGeneratePhoneNumber(sourcePlayer, identifier, function (myPhoneNumber)
         TriggerClientEvent('gcPhone:myPhoneNumber', sourcePlayer, myPhoneNumber)
