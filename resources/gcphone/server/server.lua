@@ -530,24 +530,14 @@ end)
 --====================================================================================
 --  OnLoad
 --====================================================================================
-RegisterNetEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded', function(xPlayer)
-    local identifier = xPlayer.identifier
-
-    getOrGeneratePhoneNumber(identifier, function (myPhoneNumber)
-        xplayer.triggerEvent('gcPhone:myPhoneNumber', myPhoneNumber)
-        xplayer.triggerEvent('gcPhone:contactList', getContacts(identifier))
-        xplayer.triggerEvent('gcPhone:allMessage', getMessages(identifier))
-    end)
-end)
-
 -- Just For reload
 RegisterServerEvent('gcPhone:allUpdate')
 AddEventHandler('gcPhone:allUpdate', function()
     local sourcePlayer = tonumber(source)
-	local xplayer = ESX.GetPlayerFromId(source)
+    local xplayer = ESX.GetPlayerFromId(source)
     local identifier = xplayer.identifier
     local num = getNumberPhone(identifier)
+
     TriggerClientEvent("gcPhone:myPhoneNumber", sourcePlayer, num)
     TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier))
     TriggerClientEvent("gcPhone:allMessage", sourcePlayer, getMessages(identifier))
