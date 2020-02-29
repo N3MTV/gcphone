@@ -3,8 +3,13 @@
 -- #Version 2.0
 --====================================================================================
 ESX = nil
+PlayerLoaded = nil
 
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+TriggerEvent('esx:getSharedObject', function(obj)
+	ESX = obj
+
+	PlayerLoaded = true
+end)
 
 math.randomseed(os.time()) 
 
@@ -538,6 +543,10 @@ end)
 -- Just For reload
 RegisterServerEvent('gcPhone:allUpdate')
 AddEventHandler('gcPhone:allUpdate', function()
+    while not PlayerLoaded do
+	Citizen.Wait(1000)
+    end
+
     local sourcePlayer = tonumber(source)
     local xplayer = ESX.GetPlayerFromId(source)
     local identifier = xplayer.identifier
