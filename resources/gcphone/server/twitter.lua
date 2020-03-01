@@ -242,8 +242,9 @@ end)
 RegisterServerEvent('gcPhone:twitter_postTweets')
 AddEventHandler('gcPhone:twitter_postTweets', function(username, password, message)
   local sourcePlayer = tonumber(source)
-  local srcIdentifier = getPlayerID(source)
-  TwitterPostTweet(username, password, message, sourcePlayer, srcIdentifier)
+  xplayer = ESX.GetPlayerFromId(source)
+  identifier = xplayer.identifier
+  TwitterPostTweet(username, password, message, sourcePlayer, identifier)
 end)
 
 RegisterServerEvent('gcPhone:twitter_toogleLikeTweet')
