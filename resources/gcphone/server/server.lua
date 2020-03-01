@@ -538,26 +538,9 @@ AddEventHandler('esx:playerLoaded',function(playerId, xPlayer)
         TriggerClientEvent('gcPhone:myPhoneNumber', sourcePlayer, myPhoneNumber)
         TriggerClientEvent('gcPhone:contactList', sourcePlayer, getContacts(identifier))
         TriggerClientEvent('gcPhone:allMessage', sourcePlayer, getMessages(identifier))
+    	TriggerClientEvent('gcPhone:getBourse', sourcePlayer, getBourse())
+    	sendHistoriqueCall(sourcePlayer, num)
     end)
-end)
-
--- Just For reload
-RegisterServerEvent('gcPhone:allUpdate')
-AddEventHandler('gcPhone:allUpdate', function()
-    while not PlayerLoaded do
-	Citizen.Wait(1000)
-    end
-
-    local sourcePlayer = tonumber(source)
-    local xplayer = ESX.GetPlayerFromId(source)
-    local identifier = xplayer.identifier
-    local num = getNumberPhone(identifier)
-
-    TriggerClientEvent('gcPhone:myPhoneNumber', sourcePlayer, num)
-    TriggerClientEvent('gcPhone:contactList', sourcePlayer, getContacts(identifier))
-    TriggerClientEvent('gcPhone:allMessage', sourcePlayer, getMessages(identifier))
-    TriggerClientEvent('gcPhone:getBourse', sourcePlayer, getBourse())
-    sendHistoriqueCall(sourcePlayer, num)
 end)
 
 --[[ AddEventHandler('onMySQLReady', function ()
