@@ -533,13 +533,14 @@ end)
 AddEventHandler('esx:playerLoaded',function(playerId, xPlayer)
     local sourcePlayer = playerId
     local identifier = xPlayer.identifier
+    local num = getNumberPhone(identifier)
 
 	getOrGeneratePhoneNumber(identifier, function (myPhoneNumber)
         TriggerClientEvent('gcPhone:myPhoneNumber', sourcePlayer, myPhoneNumber)
         TriggerClientEvent('gcPhone:contactList', sourcePlayer, getContacts(identifier))
         TriggerClientEvent('gcPhone:allMessage', sourcePlayer, getMessages(identifier))
-    	TriggerClientEvent('gcPhone:getBourse', sourcePlayer, getBourse())
-    	sendHistoriqueCall(sourcePlayer, num)
+        TriggerClientEvent('gcPhone:getBourse', sourcePlayer, getBourse())
+        sendHistoriqueCall(sourcePlayer, num)
     end)
 end)
 
