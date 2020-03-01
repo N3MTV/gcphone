@@ -530,11 +530,11 @@ end)
 --====================================================================================
 --  OnLoad
 --====================================================================================
-AddEventHandler('esx:playerLoaded',function(source, xPlayer)
-    local sourcePlayer = tonumber(source)
+AddEventHandler('esx:playerLoaded',function(playerId, xPlayer)
+    local sourcePlayer = playerId
     local identifier = xPlayer.identifier
 
-    	getOrGeneratePhoneNumber(sourcePlayer, identifier, function (myPhoneNumber)
+	getOrGeneratePhoneNumber(identifier, function (myPhoneNumber)
         TriggerClientEvent('gcPhone:myPhoneNumber', sourcePlayer, myPhoneNumber)
         TriggerClientEvent('gcPhone:contactList', sourcePlayer, getContacts(identifier))
         TriggerClientEvent('gcPhone:allMessage', sourcePlayer, getMessages(identifier))
