@@ -1,7 +1,7 @@
 --====================================================================================
 -- #Author: Jonathan D @ Gannon
 --====================================================================================
-local KeyOpenClose = 289 -- F2
+local KeyOpenClose = 288 -- F1
 local KeyTakeCall = 38 -- E
 local isDead, USE_RTC, useMouse, hasFocus, takePhoto = false, false, false, false, false
 local menuIsOpen, ignoreFocus, currentPlaySound = false, false ,false
@@ -616,13 +616,6 @@ end)
 ----------------------------------
 ---------- GESTION VIA WEBRTC ----
 ----------------------------------
-AddEventHandler('onClientResourceStart', function(res)
-  DoScreenFadeIn(300)
-  if res == "gcphone" then
-      TriggerServerEvent('gcPhone:allUpdate')
-  end
-end)
-
 RegisterNUICallback('setIgnoreFocus', function (data, cb)
   ignoreFocus = data.ignoreFocus
   cb()
