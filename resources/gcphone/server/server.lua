@@ -3,13 +3,8 @@
 -- #Version 2.0
 --====================================================================================
 ESX = nil
-PlayerLoaded = nil
 
-TriggerEvent('esx:getSharedObject', function(obj)
-	ESX = obj
-
-	PlayerLoaded = true
-end)
+TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 math.randomseed(os.time()) 
 
