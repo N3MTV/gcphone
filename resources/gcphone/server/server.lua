@@ -563,9 +563,9 @@ end)
 --====================================================================================
 --  OnLoad
 --====================================================================================
-AddEventHandler('es:playerLoaded',function(source)
-    local sourcePlayer = tonumber(source)
-    local identifier = getPlayerID(source)
+AddEventHandler('esx:playerLoaded', function(playerId, xPlayer)
+    local sourcePlayer = tonumber(xPlayer.source)
+    local identifier = playerId)
     getOrGeneratePhoneNumber(sourcePlayer, identifier, function (myPhoneNumber)
         TriggerClientEvent("gcPhone:myPhoneNumber", sourcePlayer, myPhoneNumber)
         TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier))
