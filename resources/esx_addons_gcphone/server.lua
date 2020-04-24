@@ -24,8 +24,8 @@ function notifyAlertSMS (number, alert, listSrc)
     for k, _ in pairs(listSrc) do
       getPhoneNumber(tonumber(k), function (n)
         if n ~= nil then
-          TriggerEvent('gcPhone:_internalAddMessage', number, n, mess, 0, function (smsMess)
-            TriggerClientEvent("gcPhone:receiveMessage", tonumber(k), smsMess)
+          TriggerEvent('gcphone:_internalAddMessage', number, n, mess, 0, function (smsMess)
+            TriggerClientEvent("gcphone:receiveMessage", tonumber(k), smsMess)
           end)
         end
       end)
