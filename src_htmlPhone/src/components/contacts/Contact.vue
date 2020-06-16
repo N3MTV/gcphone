@@ -100,14 +100,14 @@ export default {
       }
     },
     save () {
-      if (this.id !== -1) {
-        this.updateContact({
-          id: this.id,
+      if (this.id === -1 || this.id === 0) {
+        this.addContact({
           display: this.contact.display,
           number: this.contact.number
         })
       } else {
-        this.addContact({
+        this.updateContact({
+          id: this.id,
           display: this.contact.display,
           number: this.contact.number
         })
@@ -149,6 +149,7 @@ export default {
     this.$bus.$on('keyUpBackspace', this.cancel)
     this.id = parseInt(this.$route.params.id)
     this.contact.display = this.IntlString('APP_CONTACT_NEW')
+    this.contact.number = this.$route.params.number
     if (this.id !== -1) {
       const c = this.contacts.find(e => e.id === this.id)
       if (c !== undefined) {
