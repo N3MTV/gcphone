@@ -1,19 +1,12 @@
 --====================================================================================
 -- #Author: Jonathan D @ Gannon
 --====================================================================================
-
-local myPedId = nil
-
+local myPedId, lastDict, lastIsFreeze, lastAnim = nil, nil, nil, nil
 local phoneProp = 0
-local phoneModel = "prop_amb_phone"
--- OR "prop_npc_phone"
--- OR "prop_npc_phone_02"
--- OR "prop_cs_phone_01"
-
+local phoneModel = 'prop_amb_phone' -- OR 'prop_npc_phone'
+-- OR 'prop_npc_phone_02'
+-- OR 'prop_cs_phone_01'
 local currentStatus = 'out'
-local lastDict = nil
-local lastAnim = nil
-local lastIsFreeze = false
 
 local ANIMS = {
 	['cellphone@'] = {
@@ -46,9 +39,7 @@ local ANIMS = {
 			['out'] = 'cellphone_horizontal_exit',
 			['text'] = 'cellphone_call_to_text',
 			['call'] = 'cellphone_text_to_call',
-		}
-	}
-}
+		}}}
 
 function newPhoneProp()
 	deletePhone()
@@ -110,7 +101,6 @@ function PhonePlayAnim (status, freeze, force)
 		deletePhone()
 		StopAnimTask(myPedId, lastDict, lastAnim, 1.0)
 	end
-
 end
 
 function PhonePlayOut ()

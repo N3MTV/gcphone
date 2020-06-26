@@ -1,7 +1,14 @@
 --====================================================================================
 -- #Author: Jonathan D @ Gannon
 --====================================================================================
- 
+local KeyOpenClose = 288 -- F1
+local KeyTakeCall = 38 -- E
+local isDead, USE_RTC, useMouse, hasFocus, takePhoto = false, false, false, false, false
+local menuIsOpen, ignoreFocus, currentPlaySound = false, false ,false
+local contacts, messages, PhoneInCall = {}, {}, {}
+local myPhoneNumber = ''
+local soundDistanceMax = 8.0
+
 -- Configuration
 local KeyToucheCloseEvent = {
   { code = 172, event = 'ArrowUp' },
@@ -11,23 +18,6 @@ local KeyToucheCloseEvent = {
   { code = 176, event = 'Enter' },
   { code = 177, event = 'Backspace' },
 }
-local KeyOpenClose = 289 -- F2
-local KeyTakeCall = 38 -- E
-local menuIsOpen = false
-local contacts = {}
-local messages = {}
-local myPhoneNumber = ''
-local isDead = false
-local USE_RTC = false
-local useMouse = false
-local ignoreFocus = false
-local takePhoto = false
-local hasFocus = false
-
-local PhoneInCall = {}
-local currentPlaySound = false
-local soundDistanceMax = 8.0
-
 
 --====================================================================================
 --  Check si le joueurs poséde un téléphone
@@ -67,7 +57,6 @@ function ShowNoPhoneWarning ()
   ESX.ShowNotification("Vous n'avez pas de ~r~téléphone~s~")
 end
 --]]
-
 
 --====================================================================================
 --  
@@ -109,8 +98,6 @@ Citizen.CreateThread(function()
   end
 end)
 
-
-
 --====================================================================================
 --  Active ou Deactive une application (appName => config.json)
 --====================================================================================
@@ -133,9 +120,7 @@ function startFixeCall (fixeNumber)
     number =  GetOnscreenKeyboardResult()
   end
   if number ~= '' then
-    TriggerEvent('gcphone:autoCall', number, {
-      useNumber = fixeNumber
-    })
+    TriggerEvent('gcphone:autoCall', number, {useNumber = fixeNumber})
     PhonePlayCall(true)
   end
 end
@@ -168,7 +153,6 @@ function showFixePhoneHelper (coords)
     end
   end
 end
- 
 
 Citizen.CreateThread(function ()
   local mod = 0
@@ -220,7 +204,6 @@ Citizen.CreateThread(function ()
   end
 end)
 
-
 function PlaySoundJS (sound, volume)
   SendNUIMessage({ event = 'playSound', sound = sound, volume = volume })
 end
@@ -232,17 +215,6 @@ end
 function StopSoundJS (sound)
   SendNUIMessage({ event = 'stopSound', sound = sound})
 end
-
-
-
-
-
-
-
-
-
-
-
 
 RegisterNetEvent("gcPhone:forceOpenPhone")
 AddEventHandler("gcPhone:forceOpenPhone", function(_myPhoneNumber)
@@ -314,6 +286,7 @@ end
 function deleteContact(num) 
     TriggerServerEvent('gcPhone:deleteContact', num)
 end
+
 --====================================================================================
 --  Function client | Messages
 --====================================================================================
@@ -357,8 +330,6 @@ function requestAllContact()
   TriggerServerEvent('gcPhone:requestAllContact')
 end
 
-
-
 --====================================================================================
 --  Function client | Appels
 --====================================================================================
@@ -401,12 +372,10 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
   SendNUIMessage({event = 'rejectCall', infoCall = infoCall})
 end)
 
-
 RegisterNetEvent("gcPhone:historiqueCall")
 AddEventHandler("gcPhone:historiqueCall", function(historique)
   SendNUIMessage({event = 'historiqueCall', historique = historique})
 end)
-
 
 function startCall (phone_number, rtcOffer, extraData)
   TriggerServerEvent('gcPhone:startCall', phone_number, rtcOffer, extraData)
@@ -435,12 +404,10 @@ end
 function appelsDeleteAllHistorique ()
   TriggerServerEvent('gcPhone:appelsDeleteAllHistorique')
 end
-  
 
 --====================================================================================
 --  Event NUI - Appels
---====================================================================================
-
+--===================================================================================
 RegisterNUICallback('startCall', function (data, cb)
   startCall(data.numero, data.rtcOffer, data.extraData)
   cb()
@@ -470,7 +437,6 @@ RegisterNUICallback('notififyUseRTC', function (use, cb)
   cb()
 end)
 
-
 RegisterNUICallback('onCandidates', function (data, cb)
   TriggerServerEvent('gcPhone:candidates', data.id, data.candidates)
   cb()
@@ -480,8 +446,6 @@ RegisterNetEvent("gcPhone:candidates")
 AddEventHandler("gcPhone:candidates", function(candidates)
   SendNUIMessage({event = 'candidatesAvailable', candidates = candidates})
 end)
-
-
 
 RegisterNetEvent('gcphone:autoCall')
 AddEventHandler('gcphone:autoCall', function(number, extraData)
@@ -500,66 +464,6 @@ AddEventHandler('gcphone:autoAcceptCall', function(infoCall)
   SendNUIMessage({ event = "autoAcceptCall", infoCall = infoCall})
 end)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --====================================================================================
 --  Gestion des evenements NUI
 --==================================================================================== 
@@ -567,12 +471,15 @@ RegisterNUICallback('log', function(data, cb)
   print(data)
   cb()
 end)
+
 RegisterNUICallback('focus', function(data, cb)
   cb()
 end)
+
 RegisterNUICallback('blur', function(data, cb)
   cb()
 end)
+
 RegisterNUICallback('reponseText', function(data, cb)
   local limit = data.limit or 255
   local text = data.text or ''
@@ -587,12 +494,14 @@ RegisterNUICallback('reponseText', function(data, cb)
   end
   cb(json.encode({text = text}))
 end)
+
 --====================================================================================
 --  Event - Messages
 --====================================================================================
 RegisterNUICallback('getMessages', function(data, cb)
   cb(json.encode(messages))
 end)
+
 RegisterNUICallback('sendMessage', function(data, cb)
   if data.message == '%pos%' then
     local myPos = GetEntityCoords(PlayerPedId())
@@ -600,37 +509,46 @@ RegisterNUICallback('sendMessage', function(data, cb)
   end
   TriggerServerEvent('gcPhone:sendMessage', data.phoneNumber, data.message)
 end)
+
 RegisterNUICallback('deleteMessage', function(data, cb)
   deleteMessage(data.id)
   cb()
 end)
+
 RegisterNUICallback('deleteMessageNumber', function (data, cb)
   deleteMessageContact(data.number)
   cb()
 end)
+
 RegisterNUICallback('deleteAllMessage', function (data, cb)
   deleteAllMessage()
   cb()
 end)
+
 RegisterNUICallback('setReadMessageNumber', function (data, cb)
   setReadMessageNumber(data.number)
   cb()
 end)
+
 --====================================================================================
 --  Event - Contacts
 --====================================================================================
 RegisterNUICallback('addContact', function(data, cb) 
   TriggerServerEvent('gcPhone:addContact', data.display, data.phoneNumber)
 end)
+
 RegisterNUICallback('updateContact', function(data, cb)
   TriggerServerEvent('gcPhone:updateContact', data.id, data.display, data.phoneNumber)
 end)
+
 RegisterNUICallback('deleteContact', function(data, cb)
   TriggerServerEvent('gcPhone:deleteContact', data.id)
 end)
+
 RegisterNUICallback('getContacts', function(data, cb)
   cb(json.encode(contacts))
 end)
+
 RegisterNUICallback('setGPS', function(data, cb)
   SetNewWaypoint(tonumber(data.x), tonumber(data.y))
   cb()
@@ -658,8 +576,6 @@ RegisterNUICallback('deleteALL', function(data, cb)
   cb()
 end)
 
-
-
 function TooglePhone() 
   menuIsOpen = not menuIsOpen
   SendNUIMessage({show = menuIsOpen})
@@ -669,6 +585,7 @@ function TooglePhone()
     PhonePlayOut()
   end
 end
+
 RegisterNUICallback('faketakePhoto', function(data, cb)
   menuIsOpen = false
   SendNUIMessage({show = false})
@@ -683,9 +600,6 @@ RegisterNUICallback('closePhone', function(data, cb)
   cb()
 end)
 
-
-
-
 ----------------------------------
 ---------- GESTION APPEL ---------
 ----------------------------------
@@ -693,44 +607,22 @@ RegisterNUICallback('appelsDeleteHistorique', function (data, cb)
   appelsDeleteHistorique(data.numero)
   cb()
 end)
+
 RegisterNUICallback('appelsDeleteAllHistorique', function (data, cb)
   appelsDeleteAllHistorique(data.infoCall)
   cb()
 end)
 
-
 ----------------------------------
 ---------- GESTION VIA WEBRTC ----
 ----------------------------------
-AddEventHandler('onClientResourceStart', function(res)
-  DoScreenFadeIn(300)
-  if res == "gcphone" then
-      TriggerServerEvent('gcPhone:allUpdate')
-  end
-end)
-
-
 RegisterNUICallback('setIgnoreFocus', function (data, cb)
   ignoreFocus = data.ignoreFocus
   cb()
 end)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 RegisterNUICallback('takePhoto', function(data, cb)
-	CreateMobilePhone(1)
+  CreateMobilePhone(1)
   CellCamActivate(true, true)
   takePhoto = true
   Citizen.Wait(0)
@@ -738,12 +630,13 @@ RegisterNUICallback('takePhoto', function(data, cb)
     SetNuiFocus(false, false)
     hasFocus = false
   end
-	while takePhoto do
+
+while takePhoto do
     Citizen.Wait(0)
 
-		if IsControlJustPressed(1, 27) then -- Toogle Mode
-			frontCam = not frontCam
-			CellFrontCamActivate(frontCam)
+    if IsControlJustPressed(1, 27) then -- Toogle Mode
+	frontCam = not frontCam
+	CellFrontCamActivate(frontCam)
     elseif IsControlJustPressed(1, 177) then -- CANCEL
       DestroyMobilePhone()
       CellCamActivate(false, false)
@@ -751,19 +644,19 @@ RegisterNUICallback('takePhoto', function(data, cb)
       takePhoto = false
       break
     elseif IsControlJustPressed(1, 176) then -- TAKE.. PIC
-			exports['screenshot-basic']:requestScreenshotUpload(data.url, data.field, function(data)
+	exports['screenshot-basic']:requestScreenshotUpload(data.url, data.field, function(data)
         local resp = json.decode(data)
         DestroyMobilePhone()
         CellCamActivate(false, false)
         cb(json.encode({ url = resp.files[1].url }))   
       end)
       takePhoto = false
-		end
-		HideHudComponentThisFrame(7)
-		HideHudComponentThisFrame(8)
-		HideHudComponentThisFrame(9)
-		HideHudComponentThisFrame(6)
-		HideHudComponentThisFrame(19)
+    end
+    HideHudComponentThisFrame(7)
+    HideHudComponentThisFrame(8)
+    HideHudComponentThisFrame(9)
+    HideHudComponentThisFrame(6)
+    HideHudComponentThisFrame(19)
     HideHudAndRadarThisFrame()
   end
   Citizen.Wait(1000)

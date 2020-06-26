@@ -1,7 +1,6 @@
 --====================================================================================
 -- #Author: Jonathan D @ Gannon
 --====================================================================================
-
 function TwitterGetTweets (accountId, cb)
   if accountId == nil then
     MySQL.Async.fetchAll([===[
@@ -193,7 +192,6 @@ AddEventHandler('gcPhone:twitter_changePassword', function(username, password, n
   end)
 end)
 
-
 RegisterServerEvent('gcPhone:twitter_createAccount')
 AddEventHandler('gcPhone:twitter_createAccount', function(username, password, avatarUrl)
   local sourcePlayer = tonumber(source)
@@ -244,8 +242,9 @@ end)
 RegisterServerEvent('gcPhone:twitter_postTweets')
 AddEventHandler('gcPhone:twitter_postTweets', function(username, password, message)
   local sourcePlayer = tonumber(source)
-  local srcIdentifier = getPlayerID(source)
-  TwitterPostTweet(username, password, message, sourcePlayer, srcIdentifier)
+  xplayer = ESX.GetPlayerFromId(source)
+  identifier = xplayer.identifier
+  TwitterPostTweet(username, password, message, sourcePlayer, identifier)
 end)
 
 RegisterServerEvent('gcPhone:twitter_toogleLikeTweet')
@@ -253,7 +252,6 @@ AddEventHandler('gcPhone:twitter_toogleLikeTweet', function(username, password, 
   local sourcePlayer = tonumber(source)
   TwitterToogleLike(username, password, tweetId, sourcePlayer)
 end)
-
 
 RegisterServerEvent('gcPhone:twitter_setAvatarUrl')
 AddEventHandler('gcPhone:twitter_setAvatarUrl', function(username, password, avatarUrl)
@@ -272,7 +270,6 @@ AddEventHandler('gcPhone:twitter_setAvatarUrl', function(username, password, ava
   end)
 end)
 
-
 --[[
   Discord WebHook
   set discord_webhook 'https//....' in config.cfg
@@ -289,16 +286,17 @@ AddEventHandler('gcPhone:twitter_newTweets', function (tweet)
   local data = {
     ["username"] = tweet.author,
     ["embeds"] = {{
-      ["thumbnail"] = {
-        ["url"] = tweet.authorIcon
-      },
-      ["color"] = 1942002,
-      ["timestamp"] = os.date("!%Y-%m-%dT%H:%M:%SZ", tweet.time / 1000 )
-    }}
-  }
+    ["thumbnail"] = {
+    ["url"] = tweet.authorIcon
+},
+    ["color"] = 1942002,
+    ["timestamp"] = os.date("!%Y-%m-%dT%H:%M:%SZ", tweet.time / 1000 )
+}}}
+
   local isHttp = string.sub(tweet.message, 0, 7) == 'http://' or string.sub(tweet.message, 0, 8) == 'https://'
   local ext = string.sub(tweet.message, -4)
   local isImg = ext == '.png' or ext == '.pjg' or ext == '.gif' or string.sub(tweet.message, -5) == '.jpeg'
+
   if (isHttp and isImg) and true then
     data['embeds'][1]['image'] = { ['url'] = tweet.message }
   else

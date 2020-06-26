@@ -1,6 +1,5 @@
-
-ESX                       = nil
-local PhoneNumbers        = {}
+ESX = nil
+local PhoneNumbers = {}
 
 -- PhoneNumbers = {
 --   ambulance = {
@@ -38,13 +37,12 @@ AddEventHandler('esx_phone:registerNumber', function(number, type, sharePos, has
 	local hideNumber    = hideNumber    or false
 	local hidePosIfAnon = hidePosIfAnon or false
 
-	PhoneNumbers[number] = {
-		type          = type,
+PhoneNumbers[number] = {
+    type          = type,
     sources       = {},
     alerts        = {}
-	}
+}
 end)
-
 
 AddEventHandler('esx:setJob', function(source, job, lastJob)
   if PhoneNumbers[lastJob.name] ~= nil then
@@ -93,9 +91,7 @@ AddEventHandler('esx_addons_gcphone:startCall', function (number, message, coord
   end
 end)
 
-
 AddEventHandler('esx:playerLoaded', function(source)
-
   local xPlayer = ESX.GetPlayerFromId(source)
 
   MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier',{
@@ -109,9 +105,7 @@ AddEventHandler('esx:playerLoaded', function(source)
       TriggerEvent('esx_addons_gcphone:addSource', xPlayer.job.name, source)
     end
   end)
-
 end)
-
 
 AddEventHandler('esx:playerDropped', function(source)
   local source = source
@@ -120,7 +114,6 @@ AddEventHandler('esx:playerDropped', function(source)
     TriggerEvent('esx_addons_gcphone:removeSource', xPlayer.job.name, source)
   end
 end)
-
 
 function getPhoneNumber (source, callback) 
   local xPlayer = ESX.GetPlayerFromId(source)
@@ -133,8 +126,6 @@ function getPhoneNumber (source, callback)
     callback(result[1].phone_number)
   end)
 end
-
-
 
 RegisterServerEvent('esx_phone:send')
 AddEventHandler('esx_phone:send', function(number, message, _, coords)
