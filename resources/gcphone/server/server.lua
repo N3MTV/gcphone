@@ -415,7 +415,7 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
 
     if is_valid == true then
         getSourceFromIdentifier(destPlayer, function (srcTo)
-            if srcTo ~= nill then
+            if srcTo ~= nil then
                 AppelsEnCours[indexCall].receiver_src = srcTo
                 TriggerEvent('gcPhone:addCall', AppelsEnCours[indexCall])
                 TriggerClientEvent('gcPhone:waitingCall', sourcePlayer, AppelsEnCours[indexCall], true)
