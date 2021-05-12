@@ -1,6 +1,8 @@
 --====================================================================================
 -- #Author: Jonathan D @ Gannon
 --====================================================================================
+local IsPhoneOpen = false
+
 local KeyOpenClose = 288 -- F1
 local KeyTakeCall = 38 -- E
 local isDead, USE_RTC, useMouse, hasFocus, takePhoto = false, false, false, false, false
@@ -568,9 +570,39 @@ RegisterNUICallback('callEvent', function(data, cb)
   end
   cb()
 end)
+
 RegisterNUICallback('useMouse', function(um, cb)
   useMouse = um
+  if um then
+    SetNuiFocusKeepInput(true)
+  end
 end)
+
+RegisterNetEvent("gcPhone:setMenuStatus")
+AddEventHandler("gcPhone:setMenuStatus", function(ummmm)
+  IsPhoneOpen = ummmm
+end)
+
+CreateThread(function()
+    while true do
+        Wait(0)
+        if useMouse == true then
+            if IsPhoneOpen == true then
+                for i = 0,7 do
+                    DisableControlAction(0, i, true) -- look up, down, right...
+                end
+                DisableControlAction(0, 177, true) -- esc
+                DisableControlAction(0, 200, true) -- esc
+                DisableControlAction(0, 202, true) -- esc
+                DisableControlAction(0, 322, true) -- esc
+                DisableControlAction(0, 199, true) -- pause menu
+                DisableControlAction(0, 24, true) -- attack
+            end
+        end
+    end
+end)
+
+
 RegisterNUICallback('deleteALL', function(data, cb)
   TriggerServerEvent('gcPhone:deleteALL')
   cb()
@@ -581,14 +613,17 @@ function TooglePhone()
   SendNUIMessage({show = menuIsOpen})
   if menuIsOpen == true then 
     PhonePlayIn()
+    TriggerEvent('gcPhone:setMenuStatus', true)
   else
     PhonePlayOut()
+    TriggerEvent('gcPhone:setMenuStatus', false)
   end
 end
 
 RegisterNUICallback('faketakePhoto', function(data, cb)
   menuIsOpen = false
   SendNUIMessage({show = false})
+  TriggerEvent('gcPhone:setMenuStatus', false)
   cb()
   TriggerEvent('camera:open')
 end)
@@ -596,6 +631,7 @@ end)
 RegisterNUICallback('closePhone', function(data, cb)
   menuIsOpen = false
   SendNUIMessage({show = false})
+  TriggerEvent('gcPhone:setMenuStatus', false)
   PhonePlayOut()
   cb()
 end)
